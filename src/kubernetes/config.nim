@@ -1,4 +1,4 @@
-import yaml, streams, byte_array, tables, strutils, sequtils
+import yaml, streams, byte_array, tables, strutils, sequtils, os, httpcore, base64
 from sugar import `=>`
 
 type 
@@ -105,19 +105,45 @@ proc representObject*(value: User, ts: TagStyle, c: SerializationContext, tag: T
 
 setDefaultValue(Config, preferences, Table[string,string]())
 
+proc authHeaders(self: User): HttpHeaders =
+    case self.kind:
+        of ukBasic:
+            result = newHttpHeaders({"Authorization": "Basic " & encode(self.username & ":" & self.password)})
+        of ukToken:
+            result = newHttpHeaders({"Authorization": "Bearer " & self.token})
+        of ukCert:
+            result = newHttpHeaders()
+
+
 proc load*(kubeconfig: string): Config =
-    let s = newFileStream(kubeconfig)
+    var kc = kubeconfig
+    if kc == "":
+        kc = os.getEnv("KUBECONFIG")
+        if kc == "":
+            kc = os.getHomeDir() & ".kube/config"
+    let s = newFileStream(kc)
     load(s, result)
 
+proc load*(): Config =
+    return load("")
 
-proc server*(config: Config): string =
-    let contexts = config.contexts.filter( (x) => x.name == config.`current-context` )
+proc server*(self: Config): string =
+    let contexts = self.contexts.filter( (x) => x.name == self.`current-context` )
     if contexts.len != 1:
-        raise newException(ValueError,"Invalid context " & config.`current-context`)
-    let clusters = config.clusters.filter((x) => x.name == contexts[0].context.cluster)
+        raise newException(ValueError,"Invalid context " & self.`current-context`)
+    let clusters = self.clusters.filter((x) => x.name == contexts[0].context.cluster)
     if clusters.len != 1:
         raise newException(ValueError,"Invalid cluster " & contexts[0].context.cluster)
     return clusters[0].cluster.server
+
+proc authHeaders*(self: Config): HttpHeaders =
+    let contexts = self.contexts.filter( (x) => x.name == self.`current-context` )
+    if contexts.len != 1:
+        raise newException(ValueError,"Invalid context " & self.`current-context`)
+    let users = self.users.filter((x) => x.name == contexts[0].context.user)
+    if users.len != 1:
+        raise newException(ValueError,"Invalid users " & contexts[0].context.user)
+    return users[0].user.authHeaders
 
 when isMainModule: 
     let s = newStringStream("""
@@ -154,3 +180,4 @@ users:
     doAssert(config.clusters.len == 1)
     doAssert(string(config.clusters[0].cluster.`certificate-authority-data`).startsWith("-----BEGIN CERTIFICATE-----"))
     doAssert(config.contexts.len == 1)
+    doAssert(config.server == "https://localhost")
