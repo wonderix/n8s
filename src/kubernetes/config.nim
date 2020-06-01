@@ -1,11 +1,12 @@
-import yaml, streams, byte_array, tables, strutils, sequtils, os, httpcore, base64
+import yaml, streams, byte_array, tables, strutils, sequtils, os, httpcore, base64, net, md5
 from sugar import `=>`
 
 type 
     Cluster* = object
         `certificate-authority-data`: ByteArray
         server: string
-    NamedCluster* = object
+
+    NamedCluster = object
         cluster: Cluster
         name: string
 
@@ -13,27 +14,28 @@ type
         cluster: string
         user: string
 
-    NamedContext* = object
+    NamedContext = object
         context: Context
         name: string
 
-    UserKind* = enum 
-        ukToken,
-        ukCert,
-        ukBasic
-    User* = object
-        case kind: UserKind
-        of ukToken:
+    AccountKind* = enum 
+        akToken,
+        akCert,
+        akBasic
+
+    Account* = object
+        case kind: AccountKind
+        of akToken:
             token: string
-        of ukCert:
+        of akCert:
             `client-certificate-data`: ByteArray
             `client-key-data`: ByteArray
-        of ukBasic:
+        of akBasic:
             username: string
             password: string
 
-    NamedUser* = object
-        user: User
+    NamedAccount = object
+        user: Account
         name: string
 
     Config* = object
@@ -42,12 +44,12 @@ type
         contexts: seq[NamedContext]
         `current-context`: string
         kind: string
-        users: seq[NamedUser]
+        users: seq[NamedAccount]
         preferences: Table[string,string]
 
 
 
-proc constructObject*( s: var YamlStream, c: ConstructionContext, result: var User)
+proc constructObject*( s: var YamlStream, c: ConstructionContext, result: var Account)
         {.raises: [YamlConstructionError, YamlStreamError ].} =
     let event = s.next()
     if event.kind != yamlStartMap:
@@ -73,30 +75,30 @@ proc constructObject*( s: var YamlStream, c: ConstructionContext, result: var Us
                 constructChild(s, c, client_key_data)
     discard s.next()
     if token != "":
-        result = User(kind: ukToken, token: token)
+        result = Account(kind: akToken, token: token)
     elif username != "":
-        result = User(kind: ukBasic, username: username, password: password)
+        result = Account(kind: akBasic, username: username, password: password)
     elif string(client_certificate_data) != "":
-        result = User(kind: ukCert, `client-certificate-data`: client_certificate_data, `client-key-data`: client_key_data)
+        result = Account(kind: akCert, `client-certificate-data`: client_certificate_data, `client-key-data`: client_key_data)
     else:
-        raise newException(YamlConstructionError,"Invalid User type")
+        raise newException(YamlConstructionError,"Invalid Account type")
     
 
 
-proc representObject*(value: User, ts: TagStyle, c: SerializationContext, tag: TagId) {.raises: [].} =
+proc representObject*(value: Account, ts: TagStyle, c: SerializationContext, tag: TagId) {.raises: [].} =
   ## represents an integer value as YAML scalar
   c.put(startMapEvent(tag))
   let childTagStyle = if ts == tsRootOnly: tsNone else: ts
   case value.kind:
-    of ukToken:
+    of akToken:
         representChild("token", childTagStyle, c)
         representChild(value.token, childTagStyle, c)
-    of ukCert:
+    of akCert:
         representChild("client-certificate-data", childTagStyle, c)
         representChild(value.`client-certificate-data`, childTagStyle, c)
         representChild("client-key-data", childTagStyle, c)
         representChild(value.`client-key-data`, childTagStyle, c)
-    of ukBasic:
+    of akBasic:
         representChild("username", childTagStyle, c)
         representChild(value.username, childTagStyle, c)
         representChild("password", childTagStyle, c)
@@ -105,14 +107,26 @@ proc representObject*(value: User, ts: TagStyle, c: SerializationContext, tag: T
 
 setDefaultValue(Config, preferences, Table[string,string]())
 
-proc authHeaders(self: User): HttpHeaders =
+proc authHeaders*(self: Account): HttpHeaders =
     case self.kind:
-        of ukBasic:
+        of akBasic:
             result = newHttpHeaders({"Authorization": "Basic " & encode(self.username & ":" & self.password)})
-        of ukToken:
+        of akToken:
             result = newHttpHeaders({"Authorization": "Bearer " & self.token})
-        of ukCert:
+        of akCert:
             result = newHttpHeaders()
+
+proc createFile(content: string): string =
+    let fileName = os.getTempDir() & getMD5(content)
+    writeFile(filename,content)
+    return fileName
+
+proc sslContext*(self: Account): SslContext =
+    case self.kind:
+        of akCert:
+            return newContext(verifyMode = CVerifyNone,certFile=createFile(string(self.`client-certificate-data`)),keyFile=createFile(string(self.`client-key-data`)))
+        else:
+            return newContext(verifyMode = CVerifyNone)
 
 
 proc load*(kubeconfig: string): Config =
@@ -136,14 +150,14 @@ proc server*(self: Config): string =
         raise newException(ValueError,"Invalid cluster " & contexts[0].context.cluster)
     return clusters[0].cluster.server
 
-proc authHeaders*(self: Config): HttpHeaders =
+proc account*(self: Config): Account =
     let contexts = self.contexts.filter( (x) => x.name == self.`current-context` )
     if contexts.len != 1:
         raise newException(ValueError,"Invalid context " & self.`current-context`)
     let users = self.users.filter((x) => x.name == contexts[0].context.user)
     if users.len != 1:
         raise newException(ValueError,"Invalid users " & contexts[0].context.user)
-    return users[0].user.authHeaders
+    return users[0].user
 
 when isMainModule: 
     let s = newStringStream("""
@@ -174,9 +188,9 @@ users:
     var config: Config
     load(s, config)
     doAssert(config.users.len == 2) 
-    doAssert(config.users[0].user.kind == ukToken)
-    doAssert(config.users[1].user.kind == ukBasic)
-    doAssert(config.users[1].user.kind == ukBasic)
+    doAssert(config.users[0].user.kind == akToken)
+    doAssert(config.users[1].user.kind == akBasic)
+    doAssert(config.users[1].user.kind == akBasic)
     doAssert(config.clusters.len == 1)
     doAssert(string(config.clusters[0].cluster.`certificate-authority-data`).startsWith("-----BEGIN CERTIFICATE-----"))
     doAssert(config.contexts.len == 1)
