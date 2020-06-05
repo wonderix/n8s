@@ -122,11 +122,11 @@ proc createFile(content: string): string =
     return fileName
 
 proc sslContext*(self: Account): SslContext =
-    case self.kind:
+    return case self.kind:
         of akCert:
-            return newContext(verifyMode = CVerifyNone,certFile=createFile(string(self.`client-certificate-data`)),keyFile=createFile(string(self.`client-key-data`)))
+            newContext(verifyMode = CVerifyNone,certFile=createFile(string(self.`client-certificate-data`)),keyFile=createFile(string(self.`client-key-data`)))
         else:
-            return newContext(verifyMode = CVerifyNone)
+            newContext(verifyMode = CVerifyNone)
 
 
 proc load*(kubeconfig: string): Config =
