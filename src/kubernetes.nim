@@ -2,6 +2,9 @@
 # exports the main API in this file. Note that you cannot rename this file
 # but you can remove it if you wish.
 
-proc add*(x, y: int): int =
-  ## Adds two files together.
-  return x + y
+import kubernetes/client
+import kubernetes/config
+import kubernetes/byte_array
+export client
+export config
+export byte_array

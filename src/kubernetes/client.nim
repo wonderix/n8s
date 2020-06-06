@@ -48,7 +48,11 @@ type
         spec*: JsonNode
         status*: ServiceStatus
 
-proc newClient(kubeconfig: string = ""): Client =
+
+func groupVersion(t: typedesc[Service]): string =
+    return "/api/v1"
+
+proc newClient*(kubeconfig: string = ""): Client =
     new(result)
     result.config = load(kubeconfig)
     result.account = result.config.account
@@ -62,7 +66,8 @@ proc get(client: Client, kind: string, name: string, namespace = "default"): Fut
 
 proc get[T](client: Client, t: typedesc[T], name: string, namespace = "default"): Future[T] {.async.}=
     let kind = ($t).toLowerAscii() & "s"
-    let response = await client.client.request(client.config.server & "/api/v1/namespaces/" & namespace & "/" & kind & "/" & name, httpMethod = HttpGet, headers= client.account.authHeaders)
+    let p = groupVersion(t)
+    let response = await client.client.request(client.config.server & p & "/namespaces/" & namespace & "/" & kind & "/" & name, httpMethod = HttpGet, headers= client.account.authHeaders)
     let body = await response.body
     if not response.code.is2xx:
         raise newException(HttpRequestError,$parseJson(body)["message"].getStr)
