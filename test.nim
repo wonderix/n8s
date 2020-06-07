@@ -1,4 +1,5 @@
 import asyncdispatch
+import test/io_k8s_api_core_v1
 import src/kubernetes
 
 when isMainModule: 
