@@ -1,7 +1,7 @@
 
 
 
-bin/test: test.nim $(wildcard src/kubernetes/*.nim)
+bin/test: test.nim $(wildcard src/kubernetes/*.nim) $(wildcard test/*.nim)
 	mkdir -p bin
 	nim c -d:ssl test.nim
 	mv test.out bin/test

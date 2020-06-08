@@ -1,4 +1,4 @@
-import httpClient, asyncdispatch, config, json, sequtils, options, strutils
+import httpClient, asyncdispatch, config, json, sequtils, options, strutils, streams
 from sugar import `=>`
 
 type
@@ -23,12 +23,12 @@ proc newClient*(kubeconfig: string = ""): Client =
     result.client = newAsyncHttpClient(sslContext= result.account.sslContext)
 
 
-proc get*(client: Client, groupVersion: string, kind: string, name: string, namespace: string): Future[JsonNode] {.async.}=
+proc get*(client: Client, groupVersion: string, kind: string, name: string, namespace: string): Future[Stream] {.async.}=
     let response = await client.client.request(client.config.server & groupVersion & "/namespaces/" & namespace & "/" & kind & "/" & name, httpMethod = HttpGet, headers= client.account.authHeaders)
     let body = await response.body
     if not response.code.is2xx:
         raise newException(HttpRequestError,$parseJson(body)["message"].getStr)
-    return parseJson(body)
+    return newStringStream(body)
 
 proc apiResources*(client: Client): Future[seq[APIResource]] {.async.}=
     let response = await client.client.request(client.config.server & "/api/v1", httpMethod = HttpGet, headers= client.account.authHeaders)
@@ -38,4 +38,7 @@ proc apiResources*(client: Client): Future[seq[APIResource]] {.async.}=
 proc openapi*(client: Client): Future[JsonNode] {.async.}=
     let response = await client.client.request(client.config.server & "/openapi/v2", httpMethod = HttpGet, headers= client.account.authHeaders)
     return parseJson(await response.body)
+
+
+
 

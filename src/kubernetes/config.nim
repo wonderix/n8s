@@ -1,4 +1,4 @@
-import yaml, streams, byte_array, tables, strutils, sequtils, os, httpcore, base64, net, md5
+import yaml, streams, base_types, tables, strutils, sequtils, os, httpcore, base64, net, md5
 from sugar import `=>`
 
 type 

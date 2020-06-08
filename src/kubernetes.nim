@@ -4,7 +4,7 @@
 
 import kubernetes/client
 import kubernetes/config
-import kubernetes/byte_array
+import kubernetes/base_types
 export client
 export config
-export byte_array
+export base_types
