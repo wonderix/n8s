@@ -131,82 +131,21 @@ proc nimLoad(name: string,`type`: Option[string], `$ref`: Option[string], items:
   if `type`.isSome:
     case `type`.get:
       of "string":
-        if format.isSome:
-          case format.get:
-            of "date-time":
-              f.writeLine(fmt"load({name},parser)")
-            of "email":
-              f.writeLine(fmt"{name} = parser.str")
-              f.writeLine("parser.next")
-            of "hostname":
-              f.writeLine(fmt"{name} = parser.str")
-              f.writeLine("parser.next")
-            of "ipv4":
-              f.writeLine(fmt"{name} = parser.str")
-              f.writeLine("parser.next")
-            of "ipv6":
-              f.writeLine(fmt"{name} = parser.str")
-              f.writeLine("parser.next")
-            of "uri":
-              f.writeLine(fmt"{name} = parser.str")
-              f.writeLine("parser.next")
-            of "byte":
-              f.writeLine(fmt"load({name},parser)")
-            else:
-              f.writeLine(fmt"{name} = parser.str")
-              f.writeLine("parser.next")
-        else:
-              f.writeLine(fmt"{name} = parser.str")
-              f.writeLine("parser.next")
+        f.writeLine(fmt"load({name},parser)")
       of "integer":
-        f.writeLine(fmt"{name} = int(parser.getInt)")
-        f.writeLine("parser.next")
+        f.writeLine(fmt"load({name},parser)")
       of "float":
-        f.writeLine(fmt"{name} = parser.getFloat")
-        f.writeLine("parser.next")
+        f.writeLine(fmt"load({name},parser)")
       of "boolean":
-        f.writeLine(fmt"{name} = parser.kind == jsonTrue")
-        f.writeLine("parser.next")
+        f.writeLine(fmt"load({name},parser)")
       of "array":
-        f.writeLine("if parser.kind != jsonArrayStart: raiseParseErr(parser,\"array start\")")
-        f.writeLine("parser.next")
-        f.writeLine("while true:")
-        f.writeLine("  case parser.kind:")
-        f.writeLine("    of jsonArrayEnd:")
-        f.writeLine("      parser.next")
-        f.writeLine("      break")
-        f.writeLine("    else:")
-        let sub = f.sub(6)
-        if items.isSome:
-          let items = items.get()
-          sub.writeLine("var item: " & nimType(items.`type`,items.`$ref`,none(TypeSpec),none(TypeSpec),none(string),modulename))
-          nimLoad("item",items.`type`,items.`$ref`,none(TypeSpec),none(TypeSpec),items.format,modulename,sub)
-        else:
-          sub.writeLine("let item=parser.str")
-        sub.writeLine(&"{name}.add(item)")
+        f.writeLine(fmt"load({name},parser)")
       of "object":
-        f.writeLine("if parser.kind != jsonObjectStart: raiseParseErr(parser,\"object start\")")
-        f.writeLine("block load:")
-        f.writeLine("  parser.next")
-        f.writeLine("  while true:")
-        f.writeLine("    case parser.kind:")
-        f.writeLine("      of jsonObjectEnd:")
-        f.writeLine("        parser.next")
-        f.writeLine("        break load")
-        f.writeLine("      of jsonString:")
-        f.writeLine("        let key = parser.str")
-        f.writeLine("        parser.next")
-        let sub = f.sub(8)
-        if additionalProperties.isSome:
-          let items = additionalProperties.get()
-          nimLoad(&"{name}[key]",items.`type`,items.`$ref`,none(TypeSpec),none(TypeSpec),items.format,modulename,sub)
-        else:
-          sub.writeLine(&"{name}[key] = parser.str")
-        f.writeLine("      else: raiseParseErr(parser,\"string not \" & $(parser.kind))")
+        f.writeLine(fmt"load({name},parser)")
   elif `$ref`.isSome:
     f.writeLine(fmt"load({name},parser)")
   else:
-    f.writeLine(fmt"{name} = parser.str")
+    f.writeLine(fmt"load({name},parser)")
 
 proc generate(definition: Definition, name: string, f: File) =
   let required = definition.required.get(@[]).toOrderedSet
@@ -232,7 +171,7 @@ proc generate(definition: Definition, name: string, f: File) =
     f.writeLine("        case key:")
     for propertyName, property in definition.properties.get.pairs:
       f.writeLine(&"""          of "{propertyName}":""")
-      nimLoad(&"self.`{propertyName}`",property.`type`,property.`$ref`,property.items,property.additionalProperties,property.format,name.modulename,IndentFile(f:f,indent:12))
+      f.writeLine(fmt"            load(self.`{propertyName}`,parser)")
     f.writeLine("      else: raiseParseErr(parser,\"string not \" & $(parser.kind))")
 
     if definition.`x-kubernetes-group-version-kind`.isSome:
@@ -244,13 +183,11 @@ proc generate(definition: Definition, name: string, f: File) =
         groupVersion =  "/apis/" & groupVersionKind.group & "/" & groupVersionKind.version
       f.writeLine("")
       f.writeLine("proc get*(client: Client, t: typedesc[", name.typename, "], name: string, namespace = \"default\"): Future[", name.typename, "] {.async.}=")
-      f.writeLine("  var ret: ", name.typename)
-      f.writeLine("  var parser: JsonParser")
-      f.writeLine("  parser.open(await client.get(\"" & groupVersion & "\",($t).toLowerAscii() & \"s\",name,namespace),\"http\")")
-      f.writeLine("  parser.next")
-      f.writeLine("  load(ret, parser)")
-      f.writeLine("  parser.close")
-      f.writeLine("  return ret")
+      f.writeLine("  proc unmarshal(parser: var JsonParser):", name.typename," = ")
+      f.writeLine("    var ret: ", name.typename, "")
+      f.writeLine("    load(ret,parser)")
+      f.writeLine("    return ret ")
+      f.writeLine("  return await client.get(\"" & groupVersion & "\",t,name,namespace, unmarshal)")
   else:
     if name.typename == "IntOrString":
       f.writeLine("  ", name.typename, "* = distinct base_types.IntOrString")
@@ -260,7 +197,8 @@ proc generate(definition: Definition, name: string, f: File) =
       let subtype = nimType(definition.`type`,none(string),none(TypeSpec),none(TypeSpec),definition.format,name.modulename)
       f.writeLine("  ", name.typename, "* = distinct ",subtype)
       f.writeLine("proc load*(self: var ", name.typename, ", parser: var JsonParser) =")
-      nimLoad(&"{subtype}(self)", definition.`type`,none(string),none(TypeSpec),none(TypeSpec),definition.format,name.modulename,IndentFile(f:f,indent:2))
+      f.writeLine(fmt"  load({subtype}(self),parser)")
+
 
 
 

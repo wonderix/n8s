@@ -37,17 +37,17 @@ proc load*(ios: var IntOrString,parser: var JsonParser )=
     else: raiseParseErr(parser,"string or int")
   parser.next
 
-proc load*(bytes: var ByteArray,parser: var JsonParser )=
+proc load*(bytes: var ByteArray, parser: var JsonParser )=
   if parser.kind != jsonString: raiseParseErr(parser,"string")
   bytes = decode(parser.str).ByteArray
   parser.next
 
-proc load*(time: var DateTime,parser: var JsonParser )=
+proc load*(time: var DateTime, parser: var JsonParser )=
   if parser.kind != jsonString: raiseParseErr(parser,"string")
   time = parse(parser.str, """yyyy-MM-dd'T'HH:mm:ss'Z'""")
   parser.next
 
-proc load*(value: var string,parser: var JsonParser )=
+proc load*(value: var string, parser: var JsonParser )=
   if parser.kind != jsonString: raiseParseErr(parser,"string")
   value = parser.str
   parser.next
@@ -71,15 +71,31 @@ proc load*(value: var bool,parser: var JsonParser )=
     else: raiseParseErr(parser,"true or false")
   parser.next
 
-# proc load*[T](table: var Table[string,T],parser: var JsonParser )=
-#   if parser.kind != jsonObjectStart: raiseParseErr(parser,"object start")
-#   parser.next
-#   while true:
-#     case parser.kind:
-#       of jsonObjectEnd:
-#         parser.next
-#         return
-#       of jsonString:
-#         let key = parser.str
-#         parser.next
-#         load(table[key],parser)
+proc load*[T](table: var Table[string,T],parser: var JsonParser )=
+  if parser.kind != jsonObjectStart: raiseParseErr(parser,"object start")
+  parser.next
+  while true:
+    case parser.kind:
+      of jsonObjectEnd:
+        parser.next
+        return
+      of jsonString:
+        let key = parser.str
+        parser.next
+        var item: T
+        load(item, parser)
+        table[key] = item
+      else: raiseParseErr(parser,"string not " & $(parser.kind))
+
+proc load*[T](sequence: var seq[T],parser: var JsonParser )=
+  if parser.kind != jsonArrayStart: raiseParseErr(parser,"array start")
+  parser.next
+  while true:
+    case parser.kind:
+      of jsonArrayEnd:
+        parser.next
+        return
+      else:
+        var item: T
+        load(item, parser)
+        sequence.add(item)
