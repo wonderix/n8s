@@ -1,6 +1,7 @@
 import ../client
 import ../base_types
 import parsejson
+import streams
 import io_k8s_apimachinery_pkg_apis_meta_v1
 import asyncdispatch
 import io_k8s_api_core_v1
@@ -29,6 +30,28 @@ proc load*(self: var VolumeAttachmentSource, parser: var JsonParser) =
             load(self.`inlineVolumeSpec`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
+proc dump*(self: VolumeAttachmentSource, s: Stream) =
+  s.write("{")
+  var firstIteration = true
+  if not self.`persistentVolumeName`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"persistentVolumeName\":")
+    self.`persistentVolumeName`.dump(s)
+  if not self.`inlineVolumeSpec`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"inlineVolumeSpec\":")
+    self.`inlineVolumeSpec`.dump(s)
+  s.write("}")
+
+proc isEmpty*(self: VolumeAttachmentSource): bool =
+  if not self.`persistentVolumeName`.isEmpty: return false
+  if not self.`inlineVolumeSpec`.isEmpty: return false
+  true
+
 type
   VolumeAttachmentSpec* = object
     `nodeName`*: string
@@ -55,6 +78,35 @@ proc load*(self: var VolumeAttachmentSpec, parser: var JsonParser) =
             load(self.`source`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
+proc dump*(self: VolumeAttachmentSpec, s: Stream) =
+  s.write("{")
+  var firstIteration = true
+  if not self.`nodeName`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"nodeName\":")
+    self.`nodeName`.dump(s)
+  if not self.`attacher`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"attacher\":")
+    self.`attacher`.dump(s)
+  if not self.`source`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"source\":")
+    self.`source`.dump(s)
+  s.write("}")
+
+proc isEmpty*(self: VolumeAttachmentSpec): bool =
+  if not self.`nodeName`.isEmpty: return false
+  if not self.`attacher`.isEmpty: return false
+  if not self.`source`.isEmpty: return false
+  true
+
 type
   VolumeError* = object
     `message`*: string
@@ -77,6 +129,28 @@ proc load*(self: var VolumeError, parser: var JsonParser) =
           of "time":
             load(self.`time`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
+
+proc dump*(self: VolumeError, s: Stream) =
+  s.write("{")
+  var firstIteration = true
+  if not self.`message`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"message\":")
+    self.`message`.dump(s)
+  if not self.`time`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"time\":")
+    self.`time`.dump(s)
+  s.write("}")
+
+proc isEmpty*(self: VolumeError): bool =
+  if not self.`message`.isEmpty: return false
+  if not self.`time`.isEmpty: return false
+  true
 
 type
   VolumeAttachmentStatus* = object
@@ -106,6 +180,42 @@ proc load*(self: var VolumeAttachmentStatus, parser: var JsonParser) =
           of "attachmentMetadata":
             load(self.`attachmentMetadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
+
+proc dump*(self: VolumeAttachmentStatus, s: Stream) =
+  s.write("{")
+  var firstIteration = true
+  if not self.`attached`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"attached\":")
+    self.`attached`.dump(s)
+  if not self.`detachError`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"detachError\":")
+    self.`detachError`.dump(s)
+  if not self.`attachError`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"attachError\":")
+    self.`attachError`.dump(s)
+  if not self.`attachmentMetadata`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"attachmentMetadata\":")
+    self.`attachmentMetadata`.dump(s)
+  s.write("}")
+
+proc isEmpty*(self: VolumeAttachmentStatus): bool =
+  if not self.`attached`.isEmpty: return false
+  if not self.`detachError`.isEmpty: return false
+  if not self.`attachError`.isEmpty: return false
+  if not self.`attachmentMetadata`.isEmpty: return false
+  true
 
 type
   VolumeAttachment* = object
@@ -139,12 +249,56 @@ proc load*(self: var VolumeAttachment, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
+proc dump*(self: VolumeAttachment, s: Stream) =
+  s.write("{")
+  var firstIteration = true
+  if not self.`apiVersion`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"apiVersion\":")
+    self.`apiVersion`.dump(s)
+  if not self.`spec`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"spec\":")
+    self.`spec`.dump(s)
+  if not self.`status`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"status\":")
+    self.`status`.dump(s)
+  if not self.`kind`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"kind\":")
+    self.`kind`.dump(s)
+  if not self.`metadata`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"metadata\":")
+    self.`metadata`.dump(s)
+  s.write("}")
+
+proc isEmpty*(self: VolumeAttachment): bool =
+  if not self.`apiVersion`.isEmpty: return false
+  if not self.`spec`.isEmpty: return false
+  if not self.`status`.isEmpty: return false
+  if not self.`kind`.isEmpty: return false
+  if not self.`metadata`.isEmpty: return false
+  true
+
+proc loadVolumeAttachment(parser: var JsonParser):VolumeAttachment = 
+  var ret: VolumeAttachment
+  load(ret,parser)
+  return ret 
+
 proc get*(client: Client, t: typedesc[VolumeAttachment], name: string, namespace = "default"): Future[VolumeAttachment] {.async.}=
-  proc unmarshal(parser: var JsonParser):VolumeAttachment = 
-    var ret: VolumeAttachment
-    load(ret,parser)
-    return ret 
-  return await client.get("/apis/storage.k8s.io/v1beta1",t,name,namespace, unmarshal)
+  return await client.get("/apis/storage.k8s.io/v1beta1",t,name,namespace, loadVolumeAttachment)
 
 type
   VolumeAttachmentList* = object
@@ -175,12 +329,49 @@ proc load*(self: var VolumeAttachmentList, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc get*(client: Client, t: typedesc[VolumeAttachmentList], name: string, namespace = "default"): Future[VolumeAttachmentList] {.async.}=
-  proc unmarshal(parser: var JsonParser):VolumeAttachmentList = 
-    var ret: VolumeAttachmentList
-    load(ret,parser)
-    return ret 
-  return await client.get("/apis/storage.k8s.io/v1beta1",t,name,namespace, unmarshal)
+proc dump*(self: VolumeAttachmentList, s: Stream) =
+  s.write("{")
+  var firstIteration = true
+  if not self.`apiVersion`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"apiVersion\":")
+    self.`apiVersion`.dump(s)
+  if not self.`items`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"items\":")
+    self.`items`.dump(s)
+  if not self.`kind`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"kind\":")
+    self.`kind`.dump(s)
+  if not self.`metadata`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"metadata\":")
+    self.`metadata`.dump(s)
+  s.write("}")
+
+proc isEmpty*(self: VolumeAttachmentList): bool =
+  if not self.`apiVersion`.isEmpty: return false
+  if not self.`items`.isEmpty: return false
+  if not self.`kind`.isEmpty: return false
+  if not self.`metadata`.isEmpty: return false
+  true
+
+proc loadVolumeAttachmentList(parser: var JsonParser):VolumeAttachmentList = 
+  var ret: VolumeAttachmentList
+  load(ret,parser)
+  return ret 
+
+proc list*(client: Client, t: typedesc[VolumeAttachment], namespace = "default"): Future[seq[VolumeAttachment]] {.async.}=
+  return (await client.list("/apis/storage.k8s.io/v1beta1",VolumeAttachmentList,namespace, loadVolumeAttachmentList)).items
 
 type
   VolumeNodeResources* = object
@@ -201,6 +392,21 @@ proc load*(self: var VolumeNodeResources, parser: var JsonParser) =
           of "count":
             load(self.`count`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
+
+proc dump*(self: VolumeNodeResources, s: Stream) =
+  s.write("{")
+  var firstIteration = true
+  if not self.`count`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"count\":")
+    self.`count`.dump(s)
+  s.write("}")
+
+proc isEmpty*(self: VolumeNodeResources): bool =
+  if not self.`count`.isEmpty: return false
+  true
 
 type
   CSINodeDriver* = object
@@ -231,6 +437,42 @@ proc load*(self: var CSINodeDriver, parser: var JsonParser) =
             load(self.`name`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
+proc dump*(self: CSINodeDriver, s: Stream) =
+  s.write("{")
+  var firstIteration = true
+  if not self.`allocatable`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"allocatable\":")
+    self.`allocatable`.dump(s)
+  if not self.`nodeID`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"nodeID\":")
+    self.`nodeID`.dump(s)
+  if not self.`topologyKeys`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"topologyKeys\":")
+    self.`topologyKeys`.dump(s)
+  if not self.`name`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"name\":")
+    self.`name`.dump(s)
+  s.write("}")
+
+proc isEmpty*(self: CSINodeDriver): bool =
+  if not self.`allocatable`.isEmpty: return false
+  if not self.`nodeID`.isEmpty: return false
+  if not self.`topologyKeys`.isEmpty: return false
+  if not self.`name`.isEmpty: return false
+  true
+
 type
   CSINodeSpec* = object
     `drivers`*: seq[CSINodeDriver]
@@ -250,6 +492,21 @@ proc load*(self: var CSINodeSpec, parser: var JsonParser) =
           of "drivers":
             load(self.`drivers`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
+
+proc dump*(self: CSINodeSpec, s: Stream) =
+  s.write("{")
+  var firstIteration = true
+  if not self.`drivers`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"drivers\":")
+    self.`drivers`.dump(s)
+  s.write("}")
+
+proc isEmpty*(self: CSINodeSpec): bool =
+  if not self.`drivers`.isEmpty: return false
+  true
 
 type
   CSINode* = object
@@ -280,12 +537,49 @@ proc load*(self: var CSINode, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
+proc dump*(self: CSINode, s: Stream) =
+  s.write("{")
+  var firstIteration = true
+  if not self.`apiVersion`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"apiVersion\":")
+    self.`apiVersion`.dump(s)
+  if not self.`spec`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"spec\":")
+    self.`spec`.dump(s)
+  if not self.`kind`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"kind\":")
+    self.`kind`.dump(s)
+  if not self.`metadata`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"metadata\":")
+    self.`metadata`.dump(s)
+  s.write("}")
+
+proc isEmpty*(self: CSINode): bool =
+  if not self.`apiVersion`.isEmpty: return false
+  if not self.`spec`.isEmpty: return false
+  if not self.`kind`.isEmpty: return false
+  if not self.`metadata`.isEmpty: return false
+  true
+
+proc loadCSINode(parser: var JsonParser):CSINode = 
+  var ret: CSINode
+  load(ret,parser)
+  return ret 
+
 proc get*(client: Client, t: typedesc[CSINode], name: string, namespace = "default"): Future[CSINode] {.async.}=
-  proc unmarshal(parser: var JsonParser):CSINode = 
-    var ret: CSINode
-    load(ret,parser)
-    return ret 
-  return await client.get("/apis/storage.k8s.io/v1beta1",t,name,namespace, unmarshal)
+  return await client.get("/apis/storage.k8s.io/v1beta1",t,name,namespace, loadCSINode)
 
 type
   CSIDriverSpec* = object
@@ -312,6 +606,35 @@ proc load*(self: var CSIDriverSpec, parser: var JsonParser) =
           of "volumeLifecycleModes":
             load(self.`volumeLifecycleModes`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
+
+proc dump*(self: CSIDriverSpec, s: Stream) =
+  s.write("{")
+  var firstIteration = true
+  if not self.`attachRequired`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"attachRequired\":")
+    self.`attachRequired`.dump(s)
+  if not self.`podInfoOnMount`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"podInfoOnMount\":")
+    self.`podInfoOnMount`.dump(s)
+  if not self.`volumeLifecycleModes`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"volumeLifecycleModes\":")
+    self.`volumeLifecycleModes`.dump(s)
+  s.write("}")
+
+proc isEmpty*(self: CSIDriverSpec): bool =
+  if not self.`attachRequired`.isEmpty: return false
+  if not self.`podInfoOnMount`.isEmpty: return false
+  if not self.`volumeLifecycleModes`.isEmpty: return false
+  true
 
 type
   CSIDriver* = object
@@ -342,12 +665,49 @@ proc load*(self: var CSIDriver, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
+proc dump*(self: CSIDriver, s: Stream) =
+  s.write("{")
+  var firstIteration = true
+  if not self.`apiVersion`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"apiVersion\":")
+    self.`apiVersion`.dump(s)
+  if not self.`spec`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"spec\":")
+    self.`spec`.dump(s)
+  if not self.`kind`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"kind\":")
+    self.`kind`.dump(s)
+  if not self.`metadata`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"metadata\":")
+    self.`metadata`.dump(s)
+  s.write("}")
+
+proc isEmpty*(self: CSIDriver): bool =
+  if not self.`apiVersion`.isEmpty: return false
+  if not self.`spec`.isEmpty: return false
+  if not self.`kind`.isEmpty: return false
+  if not self.`metadata`.isEmpty: return false
+  true
+
+proc loadCSIDriver(parser: var JsonParser):CSIDriver = 
+  var ret: CSIDriver
+  load(ret,parser)
+  return ret 
+
 proc get*(client: Client, t: typedesc[CSIDriver], name: string, namespace = "default"): Future[CSIDriver] {.async.}=
-  proc unmarshal(parser: var JsonParser):CSIDriver = 
-    var ret: CSIDriver
-    load(ret,parser)
-    return ret 
-  return await client.get("/apis/storage.k8s.io/v1beta1",t,name,namespace, unmarshal)
+  return await client.get("/apis/storage.k8s.io/v1beta1",t,name,namespace, loadCSIDriver)
 
 type
   CSIDriverList* = object
@@ -378,12 +738,49 @@ proc load*(self: var CSIDriverList, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc get*(client: Client, t: typedesc[CSIDriverList], name: string, namespace = "default"): Future[CSIDriverList] {.async.}=
-  proc unmarshal(parser: var JsonParser):CSIDriverList = 
-    var ret: CSIDriverList
-    load(ret,parser)
-    return ret 
-  return await client.get("/apis/storage.k8s.io/v1beta1",t,name,namespace, unmarshal)
+proc dump*(self: CSIDriverList, s: Stream) =
+  s.write("{")
+  var firstIteration = true
+  if not self.`apiVersion`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"apiVersion\":")
+    self.`apiVersion`.dump(s)
+  if not self.`items`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"items\":")
+    self.`items`.dump(s)
+  if not self.`kind`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"kind\":")
+    self.`kind`.dump(s)
+  if not self.`metadata`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"metadata\":")
+    self.`metadata`.dump(s)
+  s.write("}")
+
+proc isEmpty*(self: CSIDriverList): bool =
+  if not self.`apiVersion`.isEmpty: return false
+  if not self.`items`.isEmpty: return false
+  if not self.`kind`.isEmpty: return false
+  if not self.`metadata`.isEmpty: return false
+  true
+
+proc loadCSIDriverList(parser: var JsonParser):CSIDriverList = 
+  var ret: CSIDriverList
+  load(ret,parser)
+  return ret 
+
+proc list*(client: Client, t: typedesc[CSIDriver], namespace = "default"): Future[seq[CSIDriver]] {.async.}=
+  return (await client.list("/apis/storage.k8s.io/v1beta1",CSIDriverList,namespace, loadCSIDriverList)).items
 
 type
   CSINodeList* = object
@@ -414,12 +811,49 @@ proc load*(self: var CSINodeList, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc get*(client: Client, t: typedesc[CSINodeList], name: string, namespace = "default"): Future[CSINodeList] {.async.}=
-  proc unmarshal(parser: var JsonParser):CSINodeList = 
-    var ret: CSINodeList
-    load(ret,parser)
-    return ret 
-  return await client.get("/apis/storage.k8s.io/v1beta1",t,name,namespace, unmarshal)
+proc dump*(self: CSINodeList, s: Stream) =
+  s.write("{")
+  var firstIteration = true
+  if not self.`apiVersion`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"apiVersion\":")
+    self.`apiVersion`.dump(s)
+  if not self.`items`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"items\":")
+    self.`items`.dump(s)
+  if not self.`kind`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"kind\":")
+    self.`kind`.dump(s)
+  if not self.`metadata`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"metadata\":")
+    self.`metadata`.dump(s)
+  s.write("}")
+
+proc isEmpty*(self: CSINodeList): bool =
+  if not self.`apiVersion`.isEmpty: return false
+  if not self.`items`.isEmpty: return false
+  if not self.`kind`.isEmpty: return false
+  if not self.`metadata`.isEmpty: return false
+  true
+
+proc loadCSINodeList(parser: var JsonParser):CSINodeList = 
+  var ret: CSINodeList
+  load(ret,parser)
+  return ret 
+
+proc list*(client: Client, t: typedesc[CSINode], namespace = "default"): Future[seq[CSINode]] {.async.}=
+  return (await client.list("/apis/storage.k8s.io/v1beta1",CSINodeList,namespace, loadCSINodeList)).items
 
 type
   StorageClass* = object
@@ -468,12 +902,91 @@ proc load*(self: var StorageClass, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
+proc dump*(self: StorageClass, s: Stream) =
+  s.write("{")
+  var firstIteration = true
+  if not self.`reclaimPolicy`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"reclaimPolicy\":")
+    self.`reclaimPolicy`.dump(s)
+  if not self.`allowedTopologies`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"allowedTopologies\":")
+    self.`allowedTopologies`.dump(s)
+  if not self.`apiVersion`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"apiVersion\":")
+    self.`apiVersion`.dump(s)
+  if not self.`parameters`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"parameters\":")
+    self.`parameters`.dump(s)
+  if not self.`provisioner`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"provisioner\":")
+    self.`provisioner`.dump(s)
+  if not self.`volumeBindingMode`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"volumeBindingMode\":")
+    self.`volumeBindingMode`.dump(s)
+  if not self.`mountOptions`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"mountOptions\":")
+    self.`mountOptions`.dump(s)
+  if not self.`kind`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"kind\":")
+    self.`kind`.dump(s)
+  if not self.`allowVolumeExpansion`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"allowVolumeExpansion\":")
+    self.`allowVolumeExpansion`.dump(s)
+  if not self.`metadata`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"metadata\":")
+    self.`metadata`.dump(s)
+  s.write("}")
+
+proc isEmpty*(self: StorageClass): bool =
+  if not self.`reclaimPolicy`.isEmpty: return false
+  if not self.`allowedTopologies`.isEmpty: return false
+  if not self.`apiVersion`.isEmpty: return false
+  if not self.`parameters`.isEmpty: return false
+  if not self.`provisioner`.isEmpty: return false
+  if not self.`volumeBindingMode`.isEmpty: return false
+  if not self.`mountOptions`.isEmpty: return false
+  if not self.`kind`.isEmpty: return false
+  if not self.`allowVolumeExpansion`.isEmpty: return false
+  if not self.`metadata`.isEmpty: return false
+  true
+
+proc loadStorageClass(parser: var JsonParser):StorageClass = 
+  var ret: StorageClass
+  load(ret,parser)
+  return ret 
+
 proc get*(client: Client, t: typedesc[StorageClass], name: string, namespace = "default"): Future[StorageClass] {.async.}=
-  proc unmarshal(parser: var JsonParser):StorageClass = 
-    var ret: StorageClass
-    load(ret,parser)
-    return ret 
-  return await client.get("/apis/storage.k8s.io/v1beta1",t,name,namespace, unmarshal)
+  return await client.get("/apis/storage.k8s.io/v1beta1",t,name,namespace, loadStorageClass)
 
 type
   StorageClassList* = object
@@ -504,9 +1017,46 @@ proc load*(self: var StorageClassList, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc get*(client: Client, t: typedesc[StorageClassList], name: string, namespace = "default"): Future[StorageClassList] {.async.}=
-  proc unmarshal(parser: var JsonParser):StorageClassList = 
-    var ret: StorageClassList
-    load(ret,parser)
-    return ret 
-  return await client.get("/apis/storage.k8s.io/v1beta1",t,name,namespace, unmarshal)
+proc dump*(self: StorageClassList, s: Stream) =
+  s.write("{")
+  var firstIteration = true
+  if not self.`apiVersion`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"apiVersion\":")
+    self.`apiVersion`.dump(s)
+  if not self.`items`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"items\":")
+    self.`items`.dump(s)
+  if not self.`kind`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"kind\":")
+    self.`kind`.dump(s)
+  if not self.`metadata`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"metadata\":")
+    self.`metadata`.dump(s)
+  s.write("}")
+
+proc isEmpty*(self: StorageClassList): bool =
+  if not self.`apiVersion`.isEmpty: return false
+  if not self.`items`.isEmpty: return false
+  if not self.`kind`.isEmpty: return false
+  if not self.`metadata`.isEmpty: return false
+  true
+
+proc loadStorageClassList(parser: var JsonParser):StorageClassList = 
+  var ret: StorageClassList
+  load(ret,parser)
+  return ret 
+
+proc list*(client: Client, t: typedesc[StorageClass], namespace = "default"): Future[seq[StorageClass]] {.async.}=
+  return (await client.list("/apis/storage.k8s.io/v1beta1",StorageClassList,namespace, loadStorageClassList)).items

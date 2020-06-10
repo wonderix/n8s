@@ -1,6 +1,7 @@
 import ../client
 import ../base_types
 import parsejson
+import streams
 import io_k8s_apimachinery_pkg_apis_meta_v1
 import asyncdispatch
 
@@ -42,12 +43,70 @@ proc load*(self: var PriorityClass, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
+proc dump*(self: PriorityClass, s: Stream) =
+  s.write("{")
+  var firstIteration = true
+  if not self.`globalDefault`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"globalDefault\":")
+    self.`globalDefault`.dump(s)
+  if not self.`apiVersion`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"apiVersion\":")
+    self.`apiVersion`.dump(s)
+  if not self.`description`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"description\":")
+    self.`description`.dump(s)
+  if not self.`value`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"value\":")
+    self.`value`.dump(s)
+  if not self.`preemptionPolicy`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"preemptionPolicy\":")
+    self.`preemptionPolicy`.dump(s)
+  if not self.`kind`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"kind\":")
+    self.`kind`.dump(s)
+  if not self.`metadata`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"metadata\":")
+    self.`metadata`.dump(s)
+  s.write("}")
+
+proc isEmpty*(self: PriorityClass): bool =
+  if not self.`globalDefault`.isEmpty: return false
+  if not self.`apiVersion`.isEmpty: return false
+  if not self.`description`.isEmpty: return false
+  if not self.`value`.isEmpty: return false
+  if not self.`preemptionPolicy`.isEmpty: return false
+  if not self.`kind`.isEmpty: return false
+  if not self.`metadata`.isEmpty: return false
+  true
+
+proc loadPriorityClass(parser: var JsonParser):PriorityClass = 
+  var ret: PriorityClass
+  load(ret,parser)
+  return ret 
+
 proc get*(client: Client, t: typedesc[PriorityClass], name: string, namespace = "default"): Future[PriorityClass] {.async.}=
-  proc unmarshal(parser: var JsonParser):PriorityClass = 
-    var ret: PriorityClass
-    load(ret,parser)
-    return ret 
-  return await client.get("/apis/scheduling.k8s.io/v1beta1",t,name,namespace, unmarshal)
+  return await client.get("/apis/scheduling.k8s.io/v1beta1",t,name,namespace, loadPriorityClass)
 
 type
   PriorityClassList* = object
@@ -78,9 +137,46 @@ proc load*(self: var PriorityClassList, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc get*(client: Client, t: typedesc[PriorityClassList], name: string, namespace = "default"): Future[PriorityClassList] {.async.}=
-  proc unmarshal(parser: var JsonParser):PriorityClassList = 
-    var ret: PriorityClassList
-    load(ret,parser)
-    return ret 
-  return await client.get("/apis/scheduling.k8s.io/v1beta1",t,name,namespace, unmarshal)
+proc dump*(self: PriorityClassList, s: Stream) =
+  s.write("{")
+  var firstIteration = true
+  if not self.`apiVersion`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"apiVersion\":")
+    self.`apiVersion`.dump(s)
+  if not self.`items`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"items\":")
+    self.`items`.dump(s)
+  if not self.`kind`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"kind\":")
+    self.`kind`.dump(s)
+  if not self.`metadata`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"metadata\":")
+    self.`metadata`.dump(s)
+  s.write("}")
+
+proc isEmpty*(self: PriorityClassList): bool =
+  if not self.`apiVersion`.isEmpty: return false
+  if not self.`items`.isEmpty: return false
+  if not self.`kind`.isEmpty: return false
+  if not self.`metadata`.isEmpty: return false
+  true
+
+proc loadPriorityClassList(parser: var JsonParser):PriorityClassList = 
+  var ret: PriorityClassList
+  load(ret,parser)
+  return ret 
+
+proc list*(client: Client, t: typedesc[PriorityClass], namespace = "default"): Future[seq[PriorityClass]] {.async.}=
+  return (await client.list("/apis/scheduling.k8s.io/v1beta1",PriorityClassList,namespace, loadPriorityClassList)).items

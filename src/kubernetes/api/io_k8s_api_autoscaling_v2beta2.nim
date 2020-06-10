@@ -1,6 +1,7 @@
 import ../client
 import ../base_types
 import parsejson
+import streams
 import io_k8s_apimachinery_pkg_api_resource
 import io_k8s_apimachinery_pkg_apis_meta_v1
 import asyncdispatch
@@ -31,6 +32,35 @@ proc load*(self: var CrossVersionObjectReference, parser: var JsonParser) =
             load(self.`kind`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
+proc dump*(self: CrossVersionObjectReference, s: Stream) =
+  s.write("{")
+  var firstIteration = true
+  if not self.`apiVersion`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"apiVersion\":")
+    self.`apiVersion`.dump(s)
+  if not self.`name`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"name\":")
+    self.`name`.dump(s)
+  if not self.`kind`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"kind\":")
+    self.`kind`.dump(s)
+  s.write("}")
+
+proc isEmpty*(self: CrossVersionObjectReference): bool =
+  if not self.`apiVersion`.isEmpty: return false
+  if not self.`name`.isEmpty: return false
+  if not self.`kind`.isEmpty: return false
+  true
+
 type
   MetricValueStatus* = object
     `averageValue`*: io_k8s_apimachinery_pkg_api_resource.Quantity
@@ -57,6 +87,35 @@ proc load*(self: var MetricValueStatus, parser: var JsonParser) =
             load(self.`averageUtilization`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
+proc dump*(self: MetricValueStatus, s: Stream) =
+  s.write("{")
+  var firstIteration = true
+  if not self.`averageValue`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"averageValue\":")
+    self.`averageValue`.dump(s)
+  if not self.`value`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"value\":")
+    self.`value`.dump(s)
+  if not self.`averageUtilization`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"averageUtilization\":")
+    self.`averageUtilization`.dump(s)
+  s.write("}")
+
+proc isEmpty*(self: MetricValueStatus): bool =
+  if not self.`averageValue`.isEmpty: return false
+  if not self.`value`.isEmpty: return false
+  if not self.`averageUtilization`.isEmpty: return false
+  true
+
 type
   MetricIdentifier* = object
     `selector`*: io_k8s_apimachinery_pkg_apis_meta_v1.LabelSelector
@@ -79,6 +138,28 @@ proc load*(self: var MetricIdentifier, parser: var JsonParser) =
           of "name":
             load(self.`name`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
+
+proc dump*(self: MetricIdentifier, s: Stream) =
+  s.write("{")
+  var firstIteration = true
+  if not self.`selector`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"selector\":")
+    self.`selector`.dump(s)
+  if not self.`name`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"name\":")
+    self.`name`.dump(s)
+  s.write("}")
+
+proc isEmpty*(self: MetricIdentifier): bool =
+  if not self.`selector`.isEmpty: return false
+  if not self.`name`.isEmpty: return false
+  true
 
 type
   ObjectMetricStatus* = object
@@ -106,6 +187,35 @@ proc load*(self: var ObjectMetricStatus, parser: var JsonParser) =
             load(self.`metric`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
+proc dump*(self: ObjectMetricStatus, s: Stream) =
+  s.write("{")
+  var firstIteration = true
+  if not self.`describedObject`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"describedObject\":")
+    self.`describedObject`.dump(s)
+  if not self.`current`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"current\":")
+    self.`current`.dump(s)
+  if not self.`metric`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"metric\":")
+    self.`metric`.dump(s)
+  s.write("}")
+
+proc isEmpty*(self: ObjectMetricStatus): bool =
+  if not self.`describedObject`.isEmpty: return false
+  if not self.`current`.isEmpty: return false
+  if not self.`metric`.isEmpty: return false
+  true
+
 type
   ExternalMetricStatus* = object
     `current`*: MetricValueStatus
@@ -128,6 +238,28 @@ proc load*(self: var ExternalMetricStatus, parser: var JsonParser) =
           of "metric":
             load(self.`metric`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
+
+proc dump*(self: ExternalMetricStatus, s: Stream) =
+  s.write("{")
+  var firstIteration = true
+  if not self.`current`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"current\":")
+    self.`current`.dump(s)
+  if not self.`metric`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"metric\":")
+    self.`metric`.dump(s)
+  s.write("}")
+
+proc isEmpty*(self: ExternalMetricStatus): bool =
+  if not self.`current`.isEmpty: return false
+  if not self.`metric`.isEmpty: return false
+  true
 
 type
   ResourceMetricStatus* = object
@@ -152,6 +284,28 @@ proc load*(self: var ResourceMetricStatus, parser: var JsonParser) =
             load(self.`name`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
+proc dump*(self: ResourceMetricStatus, s: Stream) =
+  s.write("{")
+  var firstIteration = true
+  if not self.`current`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"current\":")
+    self.`current`.dump(s)
+  if not self.`name`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"name\":")
+    self.`name`.dump(s)
+  s.write("}")
+
+proc isEmpty*(self: ResourceMetricStatus): bool =
+  if not self.`current`.isEmpty: return false
+  if not self.`name`.isEmpty: return false
+  true
+
 type
   PodsMetricStatus* = object
     `current`*: MetricValueStatus
@@ -174,6 +328,28 @@ proc load*(self: var PodsMetricStatus, parser: var JsonParser) =
           of "metric":
             load(self.`metric`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
+
+proc dump*(self: PodsMetricStatus, s: Stream) =
+  s.write("{")
+  var firstIteration = true
+  if not self.`current`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"current\":")
+    self.`current`.dump(s)
+  if not self.`metric`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"metric\":")
+    self.`metric`.dump(s)
+  s.write("}")
+
+proc isEmpty*(self: PodsMetricStatus): bool =
+  if not self.`current`.isEmpty: return false
+  if not self.`metric`.isEmpty: return false
+  true
 
 type
   MetricStatus* = object
@@ -207,6 +383,49 @@ proc load*(self: var MetricStatus, parser: var JsonParser) =
             load(self.`pods`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
+proc dump*(self: MetricStatus, s: Stream) =
+  s.write("{")
+  var firstIteration = true
+  if not self.`type`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"type\":")
+    self.`type`.dump(s)
+  if not self.`external`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"external\":")
+    self.`external`.dump(s)
+  if not self.`resource`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"resource\":")
+    self.`resource`.dump(s)
+  if not self.`object`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"object\":")
+    self.`object`.dump(s)
+  if not self.`pods`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"pods\":")
+    self.`pods`.dump(s)
+  s.write("}")
+
+proc isEmpty*(self: MetricStatus): bool =
+  if not self.`type`.isEmpty: return false
+  if not self.`external`.isEmpty: return false
+  if not self.`resource`.isEmpty: return false
+  if not self.`object`.isEmpty: return false
+  if not self.`pods`.isEmpty: return false
+  true
+
 type
   HorizontalPodAutoscalerCondition* = object
     `lastTransitionTime`*: io_k8s_apimachinery_pkg_apis_meta_v1.Time
@@ -238,6 +457,49 @@ proc load*(self: var HorizontalPodAutoscalerCondition, parser: var JsonParser) =
           of "status":
             load(self.`status`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
+
+proc dump*(self: HorizontalPodAutoscalerCondition, s: Stream) =
+  s.write("{")
+  var firstIteration = true
+  if not self.`lastTransitionTime`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"lastTransitionTime\":")
+    self.`lastTransitionTime`.dump(s)
+  if not self.`type`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"type\":")
+    self.`type`.dump(s)
+  if not self.`message`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"message\":")
+    self.`message`.dump(s)
+  if not self.`reason`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"reason\":")
+    self.`reason`.dump(s)
+  if not self.`status`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"status\":")
+    self.`status`.dump(s)
+  s.write("}")
+
+proc isEmpty*(self: HorizontalPodAutoscalerCondition): bool =
+  if not self.`lastTransitionTime`.isEmpty: return false
+  if not self.`type`.isEmpty: return false
+  if not self.`message`.isEmpty: return false
+  if not self.`reason`.isEmpty: return false
+  if not self.`status`.isEmpty: return false
+  true
 
 type
   HorizontalPodAutoscalerStatus* = object
@@ -274,6 +536,56 @@ proc load*(self: var HorizontalPodAutoscalerStatus, parser: var JsonParser) =
             load(self.`currentReplicas`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
+proc dump*(self: HorizontalPodAutoscalerStatus, s: Stream) =
+  s.write("{")
+  var firstIteration = true
+  if not self.`desiredReplicas`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"desiredReplicas\":")
+    self.`desiredReplicas`.dump(s)
+  if not self.`observedGeneration`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"observedGeneration\":")
+    self.`observedGeneration`.dump(s)
+  if not self.`currentMetrics`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"currentMetrics\":")
+    self.`currentMetrics`.dump(s)
+  if not self.`lastScaleTime`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"lastScaleTime\":")
+    self.`lastScaleTime`.dump(s)
+  if not self.`conditions`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"conditions\":")
+    self.`conditions`.dump(s)
+  if not self.`currentReplicas`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"currentReplicas\":")
+    self.`currentReplicas`.dump(s)
+  s.write("}")
+
+proc isEmpty*(self: HorizontalPodAutoscalerStatus): bool =
+  if not self.`desiredReplicas`.isEmpty: return false
+  if not self.`observedGeneration`.isEmpty: return false
+  if not self.`currentMetrics`.isEmpty: return false
+  if not self.`lastScaleTime`.isEmpty: return false
+  if not self.`conditions`.isEmpty: return false
+  if not self.`currentReplicas`.isEmpty: return false
+  true
+
 type
   MetricTarget* = object
     `type`*: string
@@ -303,6 +615,42 @@ proc load*(self: var MetricTarget, parser: var JsonParser) =
             load(self.`averageUtilization`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
+proc dump*(self: MetricTarget, s: Stream) =
+  s.write("{")
+  var firstIteration = true
+  if not self.`type`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"type\":")
+    self.`type`.dump(s)
+  if not self.`averageValue`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"averageValue\":")
+    self.`averageValue`.dump(s)
+  if not self.`value`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"value\":")
+    self.`value`.dump(s)
+  if not self.`averageUtilization`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"averageUtilization\":")
+    self.`averageUtilization`.dump(s)
+  s.write("}")
+
+proc isEmpty*(self: MetricTarget): bool =
+  if not self.`type`.isEmpty: return false
+  if not self.`averageValue`.isEmpty: return false
+  if not self.`value`.isEmpty: return false
+  if not self.`averageUtilization`.isEmpty: return false
+  true
+
 type
   ExternalMetricSource* = object
     `target`*: MetricTarget
@@ -326,6 +674,28 @@ proc load*(self: var ExternalMetricSource, parser: var JsonParser) =
             load(self.`metric`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
+proc dump*(self: ExternalMetricSource, s: Stream) =
+  s.write("{")
+  var firstIteration = true
+  if not self.`target`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"target\":")
+    self.`target`.dump(s)
+  if not self.`metric`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"metric\":")
+    self.`metric`.dump(s)
+  s.write("}")
+
+proc isEmpty*(self: ExternalMetricSource): bool =
+  if not self.`target`.isEmpty: return false
+  if not self.`metric`.isEmpty: return false
+  true
+
 type
   ResourceMetricSource* = object
     `target`*: MetricTarget
@@ -348,6 +718,28 @@ proc load*(self: var ResourceMetricSource, parser: var JsonParser) =
           of "name":
             load(self.`name`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
+
+proc dump*(self: ResourceMetricSource, s: Stream) =
+  s.write("{")
+  var firstIteration = true
+  if not self.`target`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"target\":")
+    self.`target`.dump(s)
+  if not self.`name`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"name\":")
+    self.`name`.dump(s)
+  s.write("}")
+
+proc isEmpty*(self: ResourceMetricSource): bool =
+  if not self.`target`.isEmpty: return false
+  if not self.`name`.isEmpty: return false
+  true
 
 type
   ObjectMetricSource* = object
@@ -375,6 +767,35 @@ proc load*(self: var ObjectMetricSource, parser: var JsonParser) =
             load(self.`metric`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
+proc dump*(self: ObjectMetricSource, s: Stream) =
+  s.write("{")
+  var firstIteration = true
+  if not self.`target`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"target\":")
+    self.`target`.dump(s)
+  if not self.`describedObject`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"describedObject\":")
+    self.`describedObject`.dump(s)
+  if not self.`metric`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"metric\":")
+    self.`metric`.dump(s)
+  s.write("}")
+
+proc isEmpty*(self: ObjectMetricSource): bool =
+  if not self.`target`.isEmpty: return false
+  if not self.`describedObject`.isEmpty: return false
+  if not self.`metric`.isEmpty: return false
+  true
+
 type
   PodsMetricSource* = object
     `target`*: MetricTarget
@@ -397,6 +818,28 @@ proc load*(self: var PodsMetricSource, parser: var JsonParser) =
           of "metric":
             load(self.`metric`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
+
+proc dump*(self: PodsMetricSource, s: Stream) =
+  s.write("{")
+  var firstIteration = true
+  if not self.`target`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"target\":")
+    self.`target`.dump(s)
+  if not self.`metric`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"metric\":")
+    self.`metric`.dump(s)
+  s.write("}")
+
+proc isEmpty*(self: PodsMetricSource): bool =
+  if not self.`target`.isEmpty: return false
+  if not self.`metric`.isEmpty: return false
+  true
 
 type
   MetricSpec* = object
@@ -430,6 +873,49 @@ proc load*(self: var MetricSpec, parser: var JsonParser) =
             load(self.`pods`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
+proc dump*(self: MetricSpec, s: Stream) =
+  s.write("{")
+  var firstIteration = true
+  if not self.`type`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"type\":")
+    self.`type`.dump(s)
+  if not self.`external`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"external\":")
+    self.`external`.dump(s)
+  if not self.`resource`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"resource\":")
+    self.`resource`.dump(s)
+  if not self.`object`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"object\":")
+    self.`object`.dump(s)
+  if not self.`pods`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"pods\":")
+    self.`pods`.dump(s)
+  s.write("}")
+
+proc isEmpty*(self: MetricSpec): bool =
+  if not self.`type`.isEmpty: return false
+  if not self.`external`.isEmpty: return false
+  if not self.`resource`.isEmpty: return false
+  if not self.`object`.isEmpty: return false
+  if not self.`pods`.isEmpty: return false
+  true
+
 type
   HorizontalPodAutoscalerSpec* = object
     `metrics`*: seq[MetricSpec]
@@ -458,6 +944,42 @@ proc load*(self: var HorizontalPodAutoscalerSpec, parser: var JsonParser) =
           of "minReplicas":
             load(self.`minReplicas`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
+
+proc dump*(self: HorizontalPodAutoscalerSpec, s: Stream) =
+  s.write("{")
+  var firstIteration = true
+  if not self.`metrics`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"metrics\":")
+    self.`metrics`.dump(s)
+  if not self.`maxReplicas`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"maxReplicas\":")
+    self.`maxReplicas`.dump(s)
+  if not self.`scaleTargetRef`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"scaleTargetRef\":")
+    self.`scaleTargetRef`.dump(s)
+  if not self.`minReplicas`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"minReplicas\":")
+    self.`minReplicas`.dump(s)
+  s.write("}")
+
+proc isEmpty*(self: HorizontalPodAutoscalerSpec): bool =
+  if not self.`metrics`.isEmpty: return false
+  if not self.`maxReplicas`.isEmpty: return false
+  if not self.`scaleTargetRef`.isEmpty: return false
+  if not self.`minReplicas`.isEmpty: return false
+  true
 
 type
   HorizontalPodAutoscaler* = object
@@ -491,12 +1013,56 @@ proc load*(self: var HorizontalPodAutoscaler, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
+proc dump*(self: HorizontalPodAutoscaler, s: Stream) =
+  s.write("{")
+  var firstIteration = true
+  if not self.`apiVersion`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"apiVersion\":")
+    self.`apiVersion`.dump(s)
+  if not self.`spec`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"spec\":")
+    self.`spec`.dump(s)
+  if not self.`status`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"status\":")
+    self.`status`.dump(s)
+  if not self.`kind`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"kind\":")
+    self.`kind`.dump(s)
+  if not self.`metadata`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"metadata\":")
+    self.`metadata`.dump(s)
+  s.write("}")
+
+proc isEmpty*(self: HorizontalPodAutoscaler): bool =
+  if not self.`apiVersion`.isEmpty: return false
+  if not self.`spec`.isEmpty: return false
+  if not self.`status`.isEmpty: return false
+  if not self.`kind`.isEmpty: return false
+  if not self.`metadata`.isEmpty: return false
+  true
+
+proc loadHorizontalPodAutoscaler(parser: var JsonParser):HorizontalPodAutoscaler = 
+  var ret: HorizontalPodAutoscaler
+  load(ret,parser)
+  return ret 
+
 proc get*(client: Client, t: typedesc[HorizontalPodAutoscaler], name: string, namespace = "default"): Future[HorizontalPodAutoscaler] {.async.}=
-  proc unmarshal(parser: var JsonParser):HorizontalPodAutoscaler = 
-    var ret: HorizontalPodAutoscaler
-    load(ret,parser)
-    return ret 
-  return await client.get("/apis/autoscaling/v2beta2",t,name,namespace, unmarshal)
+  return await client.get("/apis/autoscaling/v2beta2",t,name,namespace, loadHorizontalPodAutoscaler)
 
 type
   HorizontalPodAutoscalerList* = object
@@ -527,9 +1093,46 @@ proc load*(self: var HorizontalPodAutoscalerList, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc get*(client: Client, t: typedesc[HorizontalPodAutoscalerList], name: string, namespace = "default"): Future[HorizontalPodAutoscalerList] {.async.}=
-  proc unmarshal(parser: var JsonParser):HorizontalPodAutoscalerList = 
-    var ret: HorizontalPodAutoscalerList
-    load(ret,parser)
-    return ret 
-  return await client.get("/apis/autoscaling/v2beta2",t,name,namespace, unmarshal)
+proc dump*(self: HorizontalPodAutoscalerList, s: Stream) =
+  s.write("{")
+  var firstIteration = true
+  if not self.`apiVersion`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"apiVersion\":")
+    self.`apiVersion`.dump(s)
+  if not self.`items`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"items\":")
+    self.`items`.dump(s)
+  if not self.`kind`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"kind\":")
+    self.`kind`.dump(s)
+  if not self.`metadata`.isEmpty:
+    if not firstIteration:
+      s.write(",")
+    firstIteration = false
+    s.write("\"metadata\":")
+    self.`metadata`.dump(s)
+  s.write("}")
+
+proc isEmpty*(self: HorizontalPodAutoscalerList): bool =
+  if not self.`apiVersion`.isEmpty: return false
+  if not self.`items`.isEmpty: return false
+  if not self.`kind`.isEmpty: return false
+  if not self.`metadata`.isEmpty: return false
+  true
+
+proc loadHorizontalPodAutoscalerList(parser: var JsonParser):HorizontalPodAutoscalerList = 
+  var ret: HorizontalPodAutoscalerList
+  load(ret,parser)
+  return ret 
+
+proc list*(client: Client, t: typedesc[HorizontalPodAutoscaler], namespace = "default"): Future[seq[HorizontalPodAutoscaler]] {.async.}=
+  return (await client.list("/apis/autoscaling/v2beta2",HorizontalPodAutoscalerList,namespace, loadHorizontalPodAutoscalerList)).items

@@ -23,21 +23,30 @@ proc newClient*(kubeconfig: string = ""): Client =
   result.client = newAsyncHttpClient(sslContext= result.account.sslContext)
 
 
-proc get*(client: Client, groupVersion: string, kind: string, name: string, namespace: string): Future[Stream] {.async.}=
-  let response = await client.client.request(client.config.server & groupVersion & "/namespaces/" & namespace & "/" & kind & "/" & name, httpMethod = HttpGet, headers= client.account.authHeaders)
+proc get*(client: Client, path: string): Future[Stream] {.async.}=
+  let response = await client.client.request(client.config.server & path, httpMethod = HttpGet, headers= client.account.authHeaders)
   let body = await response.body
   if not response.code.is2xx:
-      raise newException(HttpRequestError,$parseJson(body)["message"].getStr)
+    raise newException(HttpRequestError,$parseJson(body)["message"].getStr & ": " & path)
   return newStringStream(body)
 
-proc get*[T](client: Client, groupVersion: string, t: typedesc[T], name: string, namespace: string, unmarshal: proc(parser: var JsonParser): T): Future[T] {.async.}=
+proc get*[T](client: Client, path: string, load: proc(parser: var JsonParser): T): Future[T] {.async.}=
   var parser: JsonParser
+  let stream = await client.get(path)
   try:
-    parser.open(await client.get(groupVersion,($t).toLowerAscii() & "s",name,namespace),"http")
+    parser.open(stream,path)
     parser.next
-    return unmarshal(parser)
+    return load(parser)
   finally:
     parser.close
+
+proc get*[T](client: Client, groupVersion: string, t: typedesc[T], name: string, namespace: string, load: proc(parser: var JsonParser): T): Future[T] {.async.}=
+  let path = groupVersion & "/namespaces/" & namespace & "/" & ($t).toLowerAscii() & "s/" & name
+  return await client.get(path,load)
+
+proc list*[T](client: Client, groupVersion: string, t: typedesc[T], namespace: string, load: proc(parser: var JsonParser): T): Future[T] {.async.}=
+  let path = groupVersion & "/namespaces/" & namespace & "/" & ($t).toLowerAscii()[0..^5] & "s"
+  return await client.get(path,load)
 
 proc apiResources*(client: Client): Future[seq[APIResource]] {.async.}=
   let response = await client.client.request(client.config.server & "/api/v1", httpMethod = HttpGet, headers= client.account.authHeaders)
