@@ -1,4 +1,6 @@
+{.push warnings: off.}
 import ../client, ../base_types, sets, tables, options, times, asyncdispatch, parsejson, strutils, streams
+{.pop.}
 
 type
   DecoratorController* = distinct Table[string,string]

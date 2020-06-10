@@ -1,4 +1,6 @@
+{.push warnings: off.}
 import ../client, ../base_types, sets, tables, options, times, asyncdispatch, parsejson, strutils, streams
+{.pop.}
 import io_k8s_apimachinery_pkg_apis_meta_v1
 
 type

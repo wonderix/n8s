@@ -1,7 +1,11 @@
-import ../client, ../base_types, sets, tables, options, times, asyncdispatch, parsejson, strutils, streams
+import ../client
+import ../base_types
+import parsejson
 import io_k8s_apimachinery_pkg_apis_meta_v1
-import io_k8s_apimachinery_pkg_util_intstr
+import tables
 import io_k8s_apimachinery_pkg_api_resource
+import io_k8s_apimachinery_pkg_util_intstr
+import asyncdispatch
 
 type
   NodeCondition* = object

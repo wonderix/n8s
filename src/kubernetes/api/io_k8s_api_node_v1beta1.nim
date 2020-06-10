@@ -1,6 +1,11 @@
-import ../client, ../base_types, sets, tables, options, times, asyncdispatch, parsejson, strutils, streams
-import io_k8s_api_core_v1
+import ../client
+import ../base_types
+import parsejson
 import io_k8s_apimachinery_pkg_apis_meta_v1
+import asyncdispatch
+import io_k8s_api_core_v1
+import tables
+import io_k8s_apimachinery_pkg_api_resource
 
 type
   Scheduling* = object

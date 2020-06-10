@@ -1,4 +1,6 @@
-import ../client, ../base_types, sets, tables, options, times, asyncdispatch, parsejson, strutils, streams
+import ../client
+import ../base_types
+import parsejson
 
 type
   IntOrString* = distinct base_types.IntOrString

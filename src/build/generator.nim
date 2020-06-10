@@ -29,6 +29,13 @@ type
     additionalProperties*: Option[TypeSpec]
     items*: Option[TypeSpec]
   
+  ExtendedTypeSpec = object
+    typ: Option[string]
+    reference: Option[string]
+    format: Option[string]
+    additionalProperties*: Option[TypeSpec]
+    items*: Option[TypeSpec]
+  
   Definition* = object
     description*: Option[string]
     required*: Option[seq[string]]
@@ -44,15 +51,14 @@ type
     name*: string
     definitions*: Table[string,Definition]
 
-  IndentFile = ref object 
-    f: File
-    indent: int
+proc extendedTypeSpec(ts: TypeSpec): ExtendedTypeSpec =
+  return ExtendedTypeSpec(typ: ts.`type`, reference: ts.`$ref`, format: ts.format, additionalProperties: none(TypeSpec),items: none(TypeSpec) )
 
-proc writeLine(self: IndentFile, str: string) =
-  self.f.writeLine(str.indent(self.indent))
+proc extendedTypeSpec(ts: Property): ExtendedTypeSpec =
+  return ExtendedTypeSpec(typ: ts.`type`, reference: ts.`$ref`, format: ts.format, additionalProperties: ts.additionalProperties,items: ts.items)
 
-proc sub(self: IndentFile, indent: int): IndentFile =
-  result = IndentFile(f:self.f,indent: self.indent + indent)
+proc extendedTypeSpec(ts: Definition): ExtendedTypeSpec =
+  return ExtendedTypeSpec(typ: ts.`type`, reference: none(string), format: ts.format, additionalProperties: none(TypeSpec),items: none(TypeSpec))
 
 iterator references(definition: Definition): string =
   if definition.properties.isSome:
@@ -80,12 +86,12 @@ proc toModules(definitions: Definitions): seq[Module] =
 
   return toSeq(modules.values)
 
-proc nimType(`type`: Option[string], `$ref`: Option[string], items: Option[TypeSpec], additionalProperties: Option[TypeSpec], format: Option[string], modulename: string): string =
-  if `type`.isSome:
-    case `type`.get:
+proc nimType(ts: ExtendedTypeSpec, modulename: string): string =
+  if ts.typ.isSome:
+    case ts.typ.get:
       of "string":
-        if format.isSome:
-          case format.get:
+        if ts.format.isSome:
+          case ts.format.get:
             of "date-time":
               return "DateTime"
             of "email":
@@ -109,18 +115,18 @@ proc nimType(`type`: Option[string], `$ref`: Option[string], items: Option[TypeS
         return "bool"
       of "array":
         var subtype = "string"
-        if items.isSome:
-          let items = items.get()
-          subtype = nimType(items.`type`,items.`$ref`,none(TypeSpec),none(TypeSpec),items.format,modulename)
+        if ts.items.isSome:
+          let items = ts.items.get()
+          subtype = items.extendedTypeSpec.nimType(modulename)
         return ("seq[" & subtype & "]")
       of "object":
         var subtype = "string"
-        if additionalProperties.isSome:
-          let items = additionalProperties.get()
-          subtype = nimType(items.`type`,items.`$ref`,none(TypeSpec),none(TypeSpec),items.format,modulename)
+        if ts.additionalProperties.isSome:
+          let items = ts.additionalProperties.get()
+          subtype = items.extendedTypeSpec.nimType(modulename)
         return ("Table[string," & subtype & "]")
-  elif `$ref`.isSome:
-    let refname = `$ref`.get.split("/")[^1]
+  elif ts.reference.isSome:
+    let refname = ts.reference.get.split("/")[^1]
     if refname.modulename == modulename:
       return refname.typename
     else:
@@ -128,34 +134,35 @@ proc nimType(`type`: Option[string], `$ref`: Option[string], items: Option[TypeS
   else:
     return "string"
 
-proc nimLoad(name: string,`type`: Option[string], `$ref`: Option[string], items: Option[TypeSpec], additionalProperties: Option[TypeSpec], format: Option[string], modulename: string, f: IndentFile) =
-  if `type`.isSome:
-    case `type`.get:
+proc nimImport(ts: ExtendedTypeSpec, modulename: string, imports: var OrderedSet[string]) =
+  if ts.typ.isSome:
+    case ts.typ.get:
       of "string":
-        f.writeLine(fmt"load({name},parser)")
-      of "integer":
-        f.writeLine(fmt"load({name},parser)")
-      of "float":
-        f.writeLine(fmt"load({name},parser)")
-      of "boolean":
-        f.writeLine(fmt"load({name},parser)")
+        if ts.format.isSome:
+          case ts.format.get:
+            of "date-time":
+              imports.incl("times")
       of "array":
-        f.writeLine(fmt"load({name},parser)")
+        if ts.items.isSome:
+          let items = ts.items.get()
+          items.extendedTypeSpec.nimImport(modulename,imports)
       of "object":
-        f.writeLine(fmt"load({name},parser)")
-  elif `$ref`.isSome:
-    f.writeLine(fmt"load({name},parser)")
-  else:
-    f.writeLine(fmt"load({name},parser)")
+        imports.incl("tables")
+        if ts.additionalProperties.isSome:
+          let items = ts.additionalProperties.get()
+          items.extendedTypeSpec.nimImport(modulename,imports)
+  elif ts.reference.isSome:
+    let refname = ts.reference.get.split("/")[^1]
+    if refname.modulename != modulename:
+      imports.incl(refname.modulename)
 
 proc generate(definition: Definition, name: string, f: File) =
-  let required = definition.required.get(@[]).toOrderedSet
   f.writeLine("")
   f.writeLine("type")
   if definition.properties.isSome:
     f.writeLine("  ", name.typename, "* = object")
     for propertyName, property in definition.properties.get.pairs:
-      var t = nimType(property.`type`,property.`$ref`,property.items,property.additionalProperties,property.format,name.modulename)
+      var t = nimType(property.extendedTypeSpec,name.modulename)
       f.writeLine("    `",propertyName,"`*: ", t)
     f.writeLine("")
     f.writeLine("proc load*(self: var ", name.typename, ", parser: var JsonParser) =")
@@ -195,7 +202,7 @@ proc generate(definition: Definition, name: string, f: File) =
       f.writeLine("proc load*(self: var ", name.typename, ", parser: var JsonParser) =")
       f.writeLine("  load(base_types.IntOrString(self),parser)")
     else:
-      let subtype = nimType(definition.`type`,none(string),none(TypeSpec),none(TypeSpec),definition.format,name.modulename)
+      let subtype = definition.extendedTypeSpec.nimType(name.modulename)
       f.writeLine("  ", name.typename, "* = distinct ",subtype)
       f.writeLine("proc load*(self: var ", name.typename, ", parser: var JsonParser) =")
       f.writeLine(fmt"  load({subtype}(self),parser)")
@@ -210,6 +217,13 @@ proc fillReferences(name: string, definitions: Table[string,Definition], refs: v
     imports.incl(name.modulename)
     return
   let definition = definitions[name]
+  if definition.properties.isSome:
+    for propertyName, property in definition.properties.get.pairs:
+      property.extendedTypeSpec.nimImport(name.modulename,imports)
+  elif definition.`type`.isSome:
+    definition.extendedTypeSpec.nimImport(name.modulename,imports)
+  if definition.`x-kubernetes-group-version-kind`.isSome:
+    imports.incl("asyncdispatch")
   for reference in definition.references:
     if reference != name:
       fillReferences(reference,definitions,refs,imports)
@@ -221,10 +235,12 @@ proc generate(self: Module, output: string) =
   let f = open(output & "/" & self.name & ".nim",fmWrite)
   var refs = initOrderedSet[string]()
   var imports = initOrderedSet[string]()
+  imports.incl("../client")
+  imports.incl("../base_types")
+  imports.incl("parsejson")
   for name, definition in self.definitions.pairs:
     fillReferences(name,self.definitions,refs, imports)
 
-  f.writeLine("import ../client, ../base_types, sets, tables, options, times, asyncdispatch, parsejson, strutils, streams")
   for i in imports:
     f.writeLine("import ",i)
 

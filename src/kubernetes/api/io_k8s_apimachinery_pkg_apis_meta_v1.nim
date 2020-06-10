@@ -1,4 +1,9 @@
-import ../client, ../base_types, sets, tables, options, times, asyncdispatch, parsejson, strutils, streams
+import ../client
+import ../base_types
+import parsejson
+import asyncdispatch
+import tables
+import times
 import io_k8s_apimachinery_pkg_runtime
 
 type
@@ -86,24 +91,11 @@ proc load*(self: var Preconditions, parser: var JsonParser) =
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
 type
-  Fields* = distinct Table[string,string]
-proc load*(self: var Fields, parser: var JsonParser) =
-  load(Table[string,string](self),parser)
+  ServerAddressByClientCIDR_v2* = object
+    `serverAddress`*: string
+    `clientCIDR`*: string
 
-type
-  Time* = distinct DateTime
-proc load*(self: var Time, parser: var JsonParser) =
-  load(DateTime(self),parser)
-
-type
-  ManagedFieldsEntry_v2* = object
-    `apiVersion`*: string
-    `operation`*: string
-    `fields`*: Fields
-    `time`*: Time
-    `manager`*: string
-
-proc load*(self: var ManagedFieldsEntry_v2, parser: var JsonParser) =
+proc load*(self: var ServerAddressByClientCIDR_v2, parser: var JsonParser) =
   if parser.kind != jsonObjectStart: raiseParseErr(parser,"object start")
   parser.next
   while true:
@@ -115,21 +107,15 @@ proc load*(self: var ManagedFieldsEntry_v2, parser: var JsonParser) =
         let key = parser.str
         parser.next
         case key:
-          of "apiVersion":
-            load(self.`apiVersion`,parser)
-          of "operation":
-            load(self.`operation`,parser)
-          of "fields":
-            load(self.`fields`,parser)
-          of "time":
-            load(self.`time`,parser)
-          of "manager":
-            load(self.`manager`,parser)
+          of "serverAddress":
+            load(self.`serverAddress`,parser)
+          of "clientCIDR":
+            load(self.`clientCIDR`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
 type
-  Duration* = distinct string
-proc load*(self: var Duration, parser: var JsonParser) =
+  Patch_v2* = distinct string
+proc load*(self: var Patch_v2, parser: var JsonParser) =
   load(string(self),parser)
 
 type
@@ -153,11 +139,37 @@ proc load*(self: var Initializer, parser: var JsonParser) =
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
 type
+  StatusCause_v2* = object
+    `field`*: string
+    `message`*: string
+    `reason`*: string
+
+proc load*(self: var StatusCause_v2, parser: var JsonParser) =
+  if parser.kind != jsonObjectStart: raiseParseErr(parser,"object start")
+  parser.next
+  while true:
+    case parser.kind:
+      of jsonObjectEnd:
+        parser.next
+        return
+      of jsonString:
+        let key = parser.str
+        parser.next
+        case key:
+          of "field":
+            load(self.`field`,parser)
+          of "message":
+            load(self.`message`,parser)
+          of "reason":
+            load(self.`reason`,parser)
+      else: raiseParseErr(parser,"string not " & $(parser.kind))
+
+type
   StatusDetails_v2* = object
     `uid`*: string
     `retryAfterSeconds`*: int
     `group`*: string
-    `causes`*: seq[StatusCause]
+    `causes`*: seq[StatusCause_v2]
     `name`*: string
     `kind`*: string
 
@@ -371,6 +383,34 @@ proc load*(self: var MicroTime, parser: var JsonParser) =
   load(DateTime(self),parser)
 
 type
+  Time* = distinct DateTime
+proc load*(self: var Time, parser: var JsonParser) =
+  load(DateTime(self),parser)
+
+type
+  GroupVersionForDiscovery_v2* = object
+    `version`*: string
+    `groupVersion`*: string
+
+proc load*(self: var GroupVersionForDiscovery_v2, parser: var JsonParser) =
+  if parser.kind != jsonObjectStart: raiseParseErr(parser,"object start")
+  parser.next
+  while true:
+    case parser.kind:
+      of jsonObjectEnd:
+        parser.next
+        return
+      of jsonString:
+        let key = parser.str
+        parser.next
+        case key:
+          of "version":
+            load(self.`version`,parser)
+          of "groupVersion":
+            load(self.`groupVersion`,parser)
+      else: raiseParseErr(parser,"string not " & $(parser.kind))
+
+type
   OwnerReference_v2* = object
     `uid`*: string
     `controller`*: bool
@@ -415,7 +455,6 @@ type
     `annotations`*: Table[string,string]
     `generation`*: int
     `labels`*: Table[string,string]
-    `managedFields`*: seq[ManagedFieldsEntry_v2]
     `resourceVersion`*: string
     `selfLink`*: string
     `initializers`*: Initializers
@@ -453,8 +492,6 @@ proc load*(self: var ObjectMeta_v2, parser: var JsonParser) =
             load(self.`generation`,parser)
           of "labels":
             load(self.`labels`,parser)
-          of "managedFields":
-            load(self.`managedFields`,parser)
           of "resourceVersion":
             load(self.`resourceVersion`,parser)
           of "selfLink":
@@ -509,6 +546,36 @@ proc load*(self: var OwnerReference, parser: var JsonParser) =
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
 type
+  WatchEvent_v2* = object
+    `type`*: string
+    `object`*: io_k8s_apimachinery_pkg_runtime.RawExtension_v2
+
+proc load*(self: var WatchEvent_v2, parser: var JsonParser) =
+  if parser.kind != jsonObjectStart: raiseParseErr(parser,"object start")
+  parser.next
+  while true:
+    case parser.kind:
+      of jsonObjectEnd:
+        parser.next
+        return
+      of jsonString:
+        let key = parser.str
+        parser.next
+        case key:
+          of "type":
+            load(self.`type`,parser)
+          of "object":
+            load(self.`object`,parser)
+      else: raiseParseErr(parser,"string not " & $(parser.kind))
+
+proc get*(client: Client, t: typedesc[WatchEvent_v2], name: string, namespace = "default"): Future[WatchEvent_v2] {.async.}=
+  proc unmarshal(parser: var JsonParser):WatchEvent_v2 = 
+    var ret: WatchEvent_v2
+    load(ret,parser)
+    return ret 
+  return await client.get("/api/v1",t,name,namespace, unmarshal)
+
+type
   APIResourceList* = object
     `apiVersion`*: string
     `groupVersion`*: string
@@ -543,6 +610,26 @@ proc get*(client: Client, t: typedesc[APIResourceList], name: string, namespace 
     load(ret,parser)
     return ret 
   return await client.get("/api/v1",t,name,namespace, unmarshal)
+
+type
+  Preconditions_v2* = object
+    `uid`*: string
+
+proc load*(self: var Preconditions_v2, parser: var JsonParser) =
+  if parser.kind != jsonObjectStart: raiseParseErr(parser,"object start")
+  parser.next
+  while true:
+    case parser.kind:
+      of jsonObjectEnd:
+        parser.next
+        return
+      of jsonString:
+        let key = parser.str
+        parser.next
+        case key:
+          of "uid":
+            load(self.`uid`,parser)
+      else: raiseParseErr(parser,"string not " & $(parser.kind))
 
 type
   ServerAddressByClientCIDR* = object
@@ -745,10 +832,54 @@ proc load*(self: var LabelSelector, parser: var JsonParser) =
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
 type
+  APIResource_v2* = object
+    `version`*: string
+    `singularName`*: string
+    `shortNames`*: seq[string]
+    `categories`*: seq[string]
+    `group`*: string
+    `namespaced`*: bool
+    `name`*: string
+    `verbs`*: seq[string]
+    `kind`*: string
+
+proc load*(self: var APIResource_v2, parser: var JsonParser) =
+  if parser.kind != jsonObjectStart: raiseParseErr(parser,"object start")
+  parser.next
+  while true:
+    case parser.kind:
+      of jsonObjectEnd:
+        parser.next
+        return
+      of jsonString:
+        let key = parser.str
+        parser.next
+        case key:
+          of "version":
+            load(self.`version`,parser)
+          of "singularName":
+            load(self.`singularName`,parser)
+          of "shortNames":
+            load(self.`shortNames`,parser)
+          of "categories":
+            load(self.`categories`,parser)
+          of "group":
+            load(self.`group`,parser)
+          of "namespaced":
+            load(self.`namespaced`,parser)
+          of "name":
+            load(self.`name`,parser)
+          of "verbs":
+            load(self.`verbs`,parser)
+          of "kind":
+            load(self.`kind`,parser)
+      else: raiseParseErr(parser,"string not " & $(parser.kind))
+
+type
   APIResourceList_v2* = object
     `apiVersion`*: string
     `groupVersion`*: string
-    `resources`*: seq[APIResource]
+    `resources`*: seq[APIResource_v2]
     `kind`*: string
 
 proc load*(self: var APIResourceList_v2, parser: var JsonParser) =
@@ -824,11 +955,11 @@ proc load*(self: var Patch, parser: var JsonParser) =
 type
   APIGroup_v2* = object
     `apiVersion`*: string
-    `serverAddressByClientCIDRs`*: seq[ServerAddressByClientCIDR]
-    `versions`*: seq[GroupVersionForDiscovery]
+    `serverAddressByClientCIDRs`*: seq[ServerAddressByClientCIDR_v2]
+    `versions`*: seq[GroupVersionForDiscovery_v2]
     `name`*: string
     `kind`*: string
-    `preferredVersion`*: GroupVersionForDiscovery
+    `preferredVersion`*: GroupVersionForDiscovery_v2
 
 proc load*(self: var APIGroup_v2, parser: var JsonParser) =
   if parser.kind != jsonObjectStart: raiseParseErr(parser,"object start")
@@ -1007,6 +1138,48 @@ proc load*(self: var ObjectMeta, parser: var JsonParser) =
           of "deletionTimestamp":
             load(self.`deletionTimestamp`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
+
+type
+  DeleteOptions_v2* = object
+    `orphanDependents`*: bool
+    `apiVersion`*: string
+    `propagationPolicy`*: string
+    `gracePeriodSeconds`*: int
+    `kind`*: string
+    `preconditions`*: Preconditions_v2
+
+proc load*(self: var DeleteOptions_v2, parser: var JsonParser) =
+  if parser.kind != jsonObjectStart: raiseParseErr(parser,"object start")
+  parser.next
+  while true:
+    case parser.kind:
+      of jsonObjectEnd:
+        parser.next
+        return
+      of jsonString:
+        let key = parser.str
+        parser.next
+        case key:
+          of "orphanDependents":
+            load(self.`orphanDependents`,parser)
+          of "apiVersion":
+            load(self.`apiVersion`,parser)
+          of "propagationPolicy":
+            load(self.`propagationPolicy`,parser)
+          of "gracePeriodSeconds":
+            load(self.`gracePeriodSeconds`,parser)
+          of "kind":
+            load(self.`kind`,parser)
+          of "preconditions":
+            load(self.`preconditions`,parser)
+      else: raiseParseErr(parser,"string not " & $(parser.kind))
+
+proc get*(client: Client, t: typedesc[DeleteOptions_v2], name: string, namespace = "default"): Future[DeleteOptions_v2] {.async.}=
+  proc unmarshal(parser: var JsonParser):DeleteOptions_v2 = 
+    var ret: DeleteOptions_v2
+    load(ret,parser)
+    return ret 
+  return await client.get("/api/v1",t,name,namespace, unmarshal)
 
 type
   Status* = object
