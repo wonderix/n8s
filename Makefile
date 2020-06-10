@@ -12,5 +12,5 @@ generate:: bin/generator
 
 bin/generator: src/build/generator.nim $(wildcard src/kubernetes/*.nim)
 	mkdir -p bin
-	nim c -r -d:ssl src/build/generator.nim
+	nim c -d:ssl src/build/generator.nim
 	mv src/build/generator bin/generator
