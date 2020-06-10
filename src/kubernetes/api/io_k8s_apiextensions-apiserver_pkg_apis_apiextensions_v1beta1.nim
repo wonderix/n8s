@@ -1452,7 +1452,12 @@ proc loadCustomResourceDefinition(parser: var JsonParser):CustomResourceDefiniti
   return ret 
 
 proc get*(client: Client, t: typedesc[CustomResourceDefinition], name: string, namespace = "default"): Future[CustomResourceDefinition] {.async.}=
-  return await client.get("/apis/apiextensions.k8s.io/v1beta1",t,name,namespace, loadCustomResourceDefinition)
+  return await client.get("/apis/apiextensions.k8s.io/v1beta1", t, name, namespace, loadCustomResourceDefinition)
+
+proc create*(client: Client, t: CustomResourceDefinition, namespace = "default"): Future[CustomResourceDefinition] {.async.}=
+  t.apiVersion = "/apis/apiextensions.k8s.io/v1beta1"
+  t.kind = "CustomResourceDefinition"
+  return await client.get("/apis/apiextensions.k8s.io/v1beta1", t, name, namespace, loadCustomResourceDefinition)
 
 type
   CustomResourceDefinitionList* = object
@@ -1525,4 +1530,4 @@ proc loadCustomResourceDefinitionList(parser: var JsonParser):CustomResourceDefi
   return ret 
 
 proc list*(client: Client, t: typedesc[CustomResourceDefinition], namespace = "default"): Future[seq[CustomResourceDefinition]] {.async.}=
-  return (await client.list("/apis/apiextensions.k8s.io/v1beta1",CustomResourceDefinitionList,namespace, loadCustomResourceDefinitionList)).items
+  return (await client.list("/apis/apiextensions.k8s.io/v1beta1", CustomResourceDefinitionList, namespace, loadCustomResourceDefinitionList)).items

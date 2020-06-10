@@ -1017,7 +1017,12 @@ proc loadHorizontalPodAutoscaler(parser: var JsonParser):HorizontalPodAutoscaler
   return ret 
 
 proc get*(client: Client, t: typedesc[HorizontalPodAutoscaler], name: string, namespace = "default"): Future[HorizontalPodAutoscaler] {.async.}=
-  return await client.get("/apis/autoscaling/v2beta1",t,name,namespace, loadHorizontalPodAutoscaler)
+  return await client.get("/apis/autoscaling/v2beta1", t, name, namespace, loadHorizontalPodAutoscaler)
+
+proc create*(client: Client, t: HorizontalPodAutoscaler, namespace = "default"): Future[HorizontalPodAutoscaler] {.async.}=
+  t.apiVersion = "/apis/autoscaling/v2beta1"
+  t.kind = "HorizontalPodAutoscaler"
+  return await client.get("/apis/autoscaling/v2beta1", t, name, namespace, loadHorizontalPodAutoscaler)
 
 type
   HorizontalPodAutoscalerList* = object
@@ -1090,4 +1095,4 @@ proc loadHorizontalPodAutoscalerList(parser: var JsonParser):HorizontalPodAutosc
   return ret 
 
 proc list*(client: Client, t: typedesc[HorizontalPodAutoscaler], namespace = "default"): Future[seq[HorizontalPodAutoscaler]] {.async.}=
-  return (await client.list("/apis/autoscaling/v2beta1",HorizontalPodAutoscalerList,namespace, loadHorizontalPodAutoscalerList)).items
+  return (await client.list("/apis/autoscaling/v2beta1", HorizontalPodAutoscalerList, namespace, loadHorizontalPodAutoscalerList)).items

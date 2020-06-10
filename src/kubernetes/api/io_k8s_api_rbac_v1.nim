@@ -206,7 +206,12 @@ proc loadRoleBinding(parser: var JsonParser):RoleBinding =
   return ret 
 
 proc get*(client: Client, t: typedesc[RoleBinding], name: string, namespace = "default"): Future[RoleBinding] {.async.}=
-  return await client.get("/apis/rbac.authorization.k8s.io/v1",t,name,namespace, loadRoleBinding)
+  return await client.get("/apis/rbac.authorization.k8s.io/v1", t, name, namespace, loadRoleBinding)
+
+proc create*(client: Client, t: RoleBinding, namespace = "default"): Future[RoleBinding] {.async.}=
+  t.apiVersion = "/apis/rbac.authorization.k8s.io/v1"
+  t.kind = "RoleBinding"
+  return await client.get("/apis/rbac.authorization.k8s.io/v1", t, name, namespace, loadRoleBinding)
 
 type
   ClusterRoleBinding* = object
@@ -289,7 +294,12 @@ proc loadClusterRoleBinding(parser: var JsonParser):ClusterRoleBinding =
   return ret 
 
 proc get*(client: Client, t: typedesc[ClusterRoleBinding], name: string, namespace = "default"): Future[ClusterRoleBinding] {.async.}=
-  return await client.get("/apis/rbac.authorization.k8s.io/v1",t,name,namespace, loadClusterRoleBinding)
+  return await client.get("/apis/rbac.authorization.k8s.io/v1", t, name, namespace, loadClusterRoleBinding)
+
+proc create*(client: Client, t: ClusterRoleBinding, namespace = "default"): Future[ClusterRoleBinding] {.async.}=
+  t.apiVersion = "/apis/rbac.authorization.k8s.io/v1"
+  t.kind = "ClusterRoleBinding"
+  return await client.get("/apis/rbac.authorization.k8s.io/v1", t, name, namespace, loadClusterRoleBinding)
 
 type
   ClusterRoleBindingList* = object
@@ -362,7 +372,7 @@ proc loadClusterRoleBindingList(parser: var JsonParser):ClusterRoleBindingList =
   return ret 
 
 proc list*(client: Client, t: typedesc[ClusterRoleBinding], namespace = "default"): Future[seq[ClusterRoleBinding]] {.async.}=
-  return (await client.list("/apis/rbac.authorization.k8s.io/v1",ClusterRoleBindingList,namespace, loadClusterRoleBindingList)).items
+  return (await client.list("/apis/rbac.authorization.k8s.io/v1", ClusterRoleBindingList, namespace, loadClusterRoleBindingList)).items
 
 type
   PolicyRule* = object
@@ -510,7 +520,7 @@ proc loadRoleBindingList(parser: var JsonParser):RoleBindingList =
   return ret 
 
 proc list*(client: Client, t: typedesc[RoleBinding], namespace = "default"): Future[seq[RoleBinding]] {.async.}=
-  return (await client.list("/apis/rbac.authorization.k8s.io/v1",RoleBindingList,namespace, loadRoleBindingList)).items
+  return (await client.list("/apis/rbac.authorization.k8s.io/v1", RoleBindingList, namespace, loadRoleBindingList)).items
 
 type
   Role* = object
@@ -583,7 +593,12 @@ proc loadRole(parser: var JsonParser):Role =
   return ret 
 
 proc get*(client: Client, t: typedesc[Role], name: string, namespace = "default"): Future[Role] {.async.}=
-  return await client.get("/apis/rbac.authorization.k8s.io/v1",t,name,namespace, loadRole)
+  return await client.get("/apis/rbac.authorization.k8s.io/v1", t, name, namespace, loadRole)
+
+proc create*(client: Client, t: Role, namespace = "default"): Future[Role] {.async.}=
+  t.apiVersion = "/apis/rbac.authorization.k8s.io/v1"
+  t.kind = "Role"
+  return await client.get("/apis/rbac.authorization.k8s.io/v1", t, name, namespace, loadRole)
 
 type
   AggregationRule* = object
@@ -701,7 +716,12 @@ proc loadClusterRole(parser: var JsonParser):ClusterRole =
   return ret 
 
 proc get*(client: Client, t: typedesc[ClusterRole], name: string, namespace = "default"): Future[ClusterRole] {.async.}=
-  return await client.get("/apis/rbac.authorization.k8s.io/v1",t,name,namespace, loadClusterRole)
+  return await client.get("/apis/rbac.authorization.k8s.io/v1", t, name, namespace, loadClusterRole)
+
+proc create*(client: Client, t: ClusterRole, namespace = "default"): Future[ClusterRole] {.async.}=
+  t.apiVersion = "/apis/rbac.authorization.k8s.io/v1"
+  t.kind = "ClusterRole"
+  return await client.get("/apis/rbac.authorization.k8s.io/v1", t, name, namespace, loadClusterRole)
 
 type
   ClusterRoleList* = object
@@ -774,7 +794,7 @@ proc loadClusterRoleList(parser: var JsonParser):ClusterRoleList =
   return ret 
 
 proc list*(client: Client, t: typedesc[ClusterRole], namespace = "default"): Future[seq[ClusterRole]] {.async.}=
-  return (await client.list("/apis/rbac.authorization.k8s.io/v1",ClusterRoleList,namespace, loadClusterRoleList)).items
+  return (await client.list("/apis/rbac.authorization.k8s.io/v1", ClusterRoleList, namespace, loadClusterRoleList)).items
 
 type
   RoleList* = object
@@ -847,4 +867,4 @@ proc loadRoleList(parser: var JsonParser):RoleList =
   return ret 
 
 proc list*(client: Client, t: typedesc[Role], namespace = "default"): Future[seq[Role]] {.async.}=
-  return (await client.list("/apis/rbac.authorization.k8s.io/v1",RoleList,namespace, loadRoleList)).items
+  return (await client.list("/apis/rbac.authorization.k8s.io/v1", RoleList, namespace, loadRoleList)).items

@@ -346,7 +346,12 @@ proc loadAPIService(parser: var JsonParser):APIService =
   return ret 
 
 proc get*(client: Client, t: typedesc[APIService], name: string, namespace = "default"): Future[APIService] {.async.}=
-  return await client.get("/apis/apiregistration.k8s.io/v1",t,name,namespace, loadAPIService)
+  return await client.get("/apis/apiregistration.k8s.io/v1", t, name, namespace, loadAPIService)
+
+proc create*(client: Client, t: APIService, namespace = "default"): Future[APIService] {.async.}=
+  t.apiVersion = "/apis/apiregistration.k8s.io/v1"
+  t.kind = "APIService"
+  return await client.get("/apis/apiregistration.k8s.io/v1", t, name, namespace, loadAPIService)
 
 type
   APIServiceList* = object
@@ -419,4 +424,4 @@ proc loadAPIServiceList(parser: var JsonParser):APIServiceList =
   return ret 
 
 proc list*(client: Client, t: typedesc[APIService], namespace = "default"): Future[seq[APIService]] {.async.}=
-  return (await client.list("/apis/apiregistration.k8s.io/v1",APIServiceList,namespace, loadAPIServiceList)).items
+  return (await client.list("/apis/apiregistration.k8s.io/v1", APIServiceList, namespace, loadAPIServiceList)).items

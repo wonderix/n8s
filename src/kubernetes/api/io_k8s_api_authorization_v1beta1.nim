@@ -377,7 +377,12 @@ proc loadSubjectAccessReview(parser: var JsonParser):SubjectAccessReview =
   return ret 
 
 proc get*(client: Client, t: typedesc[SubjectAccessReview], name: string, namespace = "default"): Future[SubjectAccessReview] {.async.}=
-  return await client.get("/apis/authorization.k8s.io/v1beta1",t,name,namespace, loadSubjectAccessReview)
+  return await client.get("/apis/authorization.k8s.io/v1beta1", t, name, namespace, loadSubjectAccessReview)
+
+proc create*(client: Client, t: SubjectAccessReview, namespace = "default"): Future[SubjectAccessReview] {.async.}=
+  t.apiVersion = "/apis/authorization.k8s.io/v1beta1"
+  t.kind = "SubjectAccessReview"
+  return await client.get("/apis/authorization.k8s.io/v1beta1", t, name, namespace, loadSubjectAccessReview)
 
 type
   SelfSubjectAccessReviewSpec* = object
@@ -715,7 +720,12 @@ proc loadSelfSubjectRulesReview(parser: var JsonParser):SelfSubjectRulesReview =
   return ret 
 
 proc get*(client: Client, t: typedesc[SelfSubjectRulesReview], name: string, namespace = "default"): Future[SelfSubjectRulesReview] {.async.}=
-  return await client.get("/apis/authorization.k8s.io/v1beta1",t,name,namespace, loadSelfSubjectRulesReview)
+  return await client.get("/apis/authorization.k8s.io/v1beta1", t, name, namespace, loadSelfSubjectRulesReview)
+
+proc create*(client: Client, t: SelfSubjectRulesReview, namespace = "default"): Future[SelfSubjectRulesReview] {.async.}=
+  t.apiVersion = "/apis/authorization.k8s.io/v1beta1"
+  t.kind = "SelfSubjectRulesReview"
+  return await client.get("/apis/authorization.k8s.io/v1beta1", t, name, namespace, loadSelfSubjectRulesReview)
 
 type
   SelfSubjectAccessReview* = object
@@ -798,7 +808,12 @@ proc loadSelfSubjectAccessReview(parser: var JsonParser):SelfSubjectAccessReview
   return ret 
 
 proc get*(client: Client, t: typedesc[SelfSubjectAccessReview], name: string, namespace = "default"): Future[SelfSubjectAccessReview] {.async.}=
-  return await client.get("/apis/authorization.k8s.io/v1beta1",t,name,namespace, loadSelfSubjectAccessReview)
+  return await client.get("/apis/authorization.k8s.io/v1beta1", t, name, namespace, loadSelfSubjectAccessReview)
+
+proc create*(client: Client, t: SelfSubjectAccessReview, namespace = "default"): Future[SelfSubjectAccessReview] {.async.}=
+  t.apiVersion = "/apis/authorization.k8s.io/v1beta1"
+  t.kind = "SelfSubjectAccessReview"
+  return await client.get("/apis/authorization.k8s.io/v1beta1", t, name, namespace, loadSelfSubjectAccessReview)
 
 type
   LocalSubjectAccessReview* = object
@@ -881,4 +896,9 @@ proc loadLocalSubjectAccessReview(parser: var JsonParser):LocalSubjectAccessRevi
   return ret 
 
 proc get*(client: Client, t: typedesc[LocalSubjectAccessReview], name: string, namespace = "default"): Future[LocalSubjectAccessReview] {.async.}=
-  return await client.get("/apis/authorization.k8s.io/v1beta1",t,name,namespace, loadLocalSubjectAccessReview)
+  return await client.get("/apis/authorization.k8s.io/v1beta1", t, name, namespace, loadLocalSubjectAccessReview)
+
+proc create*(client: Client, t: LocalSubjectAccessReview, namespace = "default"): Future[LocalSubjectAccessReview] {.async.}=
+  t.apiVersion = "/apis/authorization.k8s.io/v1beta1"
+  t.kind = "LocalSubjectAccessReview"
+  return await client.get("/apis/authorization.k8s.io/v1beta1", t, name, namespace, loadLocalSubjectAccessReview)

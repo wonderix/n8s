@@ -262,7 +262,12 @@ proc loadEvent(parser: var JsonParser):Event =
   return ret 
 
 proc get*(client: Client, t: typedesc[Event], name: string, namespace = "default"): Future[Event] {.async.}=
-  return await client.get("/apis/events.k8s.io/v1beta1",t,name,namespace, loadEvent)
+  return await client.get("/apis/events.k8s.io/v1beta1", t, name, namespace, loadEvent)
+
+proc create*(client: Client, t: Event, namespace = "default"): Future[Event] {.async.}=
+  t.apiVersion = "/apis/events.k8s.io/v1beta1"
+  t.kind = "Event"
+  return await client.get("/apis/events.k8s.io/v1beta1", t, name, namespace, loadEvent)
 
 type
   EventList* = object
@@ -335,4 +340,4 @@ proc loadEventList(parser: var JsonParser):EventList =
   return ret 
 
 proc list*(client: Client, t: typedesc[Event], namespace = "default"): Future[seq[Event]] {.async.}=
-  return (await client.list("/apis/events.k8s.io/v1beta1",EventList,namespace, loadEventList)).items
+  return (await client.list("/apis/events.k8s.io/v1beta1", EventList, namespace, loadEventList)).items

@@ -106,7 +106,12 @@ proc loadPriorityClass(parser: var JsonParser):PriorityClass =
   return ret 
 
 proc get*(client: Client, t: typedesc[PriorityClass], name: string, namespace = "default"): Future[PriorityClass] {.async.}=
-  return await client.get("/apis/scheduling.k8s.io/v1",t,name,namespace, loadPriorityClass)
+  return await client.get("/apis/scheduling.k8s.io/v1", t, name, namespace, loadPriorityClass)
+
+proc create*(client: Client, t: PriorityClass, namespace = "default"): Future[PriorityClass] {.async.}=
+  t.apiVersion = "/apis/scheduling.k8s.io/v1"
+  t.kind = "PriorityClass"
+  return await client.get("/apis/scheduling.k8s.io/v1", t, name, namespace, loadPriorityClass)
 
 type
   PriorityClassList* = object
@@ -179,4 +184,4 @@ proc loadPriorityClassList(parser: var JsonParser):PriorityClassList =
   return ret 
 
 proc list*(client: Client, t: typedesc[PriorityClass], namespace = "default"): Future[seq[PriorityClass]] {.async.}=
-  return (await client.list("/apis/scheduling.k8s.io/v1",PriorityClassList,namespace, loadPriorityClassList)).items
+  return (await client.list("/apis/scheduling.k8s.io/v1", PriorityClassList, namespace, loadPriorityClassList)).items

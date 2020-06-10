@@ -377,7 +377,12 @@ proc loadNetworkPolicy(parser: var JsonParser):NetworkPolicy =
   return ret 
 
 proc get*(client: Client, t: typedesc[NetworkPolicy], name: string, namespace = "default"): Future[NetworkPolicy] {.async.}=
-  return await client.get("/apis/networking.k8s.io/v1",t,name,namespace, loadNetworkPolicy)
+  return await client.get("/apis/networking.k8s.io/v1", t, name, namespace, loadNetworkPolicy)
+
+proc create*(client: Client, t: NetworkPolicy, namespace = "default"): Future[NetworkPolicy] {.async.}=
+  t.apiVersion = "/apis/networking.k8s.io/v1"
+  t.kind = "NetworkPolicy"
+  return await client.get("/apis/networking.k8s.io/v1", t, name, namespace, loadNetworkPolicy)
 
 type
   NetworkPolicyList* = object
@@ -450,4 +455,4 @@ proc loadNetworkPolicyList(parser: var JsonParser):NetworkPolicyList =
   return ret 
 
 proc list*(client: Client, t: typedesc[NetworkPolicy], namespace = "default"): Future[seq[NetworkPolicy]] {.async.}=
-  return (await client.list("/apis/networking.k8s.io/v1",NetworkPolicyList,namespace, loadNetworkPolicyList)).items
+  return (await client.list("/apis/networking.k8s.io/v1", NetworkPolicyList, namespace, loadNetworkPolicyList)).items

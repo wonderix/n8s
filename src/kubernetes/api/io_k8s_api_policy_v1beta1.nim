@@ -874,7 +874,12 @@ proc loadPodSecurityPolicy(parser: var JsonParser):PodSecurityPolicy =
   return ret 
 
 proc get*(client: Client, t: typedesc[PodSecurityPolicy], name: string, namespace = "default"): Future[PodSecurityPolicy] {.async.}=
-  return await client.get("/apis/policy/v1beta1",t,name,namespace, loadPodSecurityPolicy)
+  return await client.get("/apis/policy/v1beta1", t, name, namespace, loadPodSecurityPolicy)
+
+proc create*(client: Client, t: PodSecurityPolicy, namespace = "default"): Future[PodSecurityPolicy] {.async.}=
+  t.apiVersion = "/apis/policy/v1beta1"
+  t.kind = "PodSecurityPolicy"
+  return await client.get("/apis/policy/v1beta1", t, name, namespace, loadPodSecurityPolicy)
 
 type
   PodDisruptionBudgetStatus* = object
@@ -1042,7 +1047,12 @@ proc loadPodDisruptionBudget(parser: var JsonParser):PodDisruptionBudget =
   return ret 
 
 proc get*(client: Client, t: typedesc[PodDisruptionBudget], name: string, namespace = "default"): Future[PodDisruptionBudget] {.async.}=
-  return await client.get("/apis/policy/v1beta1",t,name,namespace, loadPodDisruptionBudget)
+  return await client.get("/apis/policy/v1beta1", t, name, namespace, loadPodDisruptionBudget)
+
+proc create*(client: Client, t: PodDisruptionBudget, namespace = "default"): Future[PodDisruptionBudget] {.async.}=
+  t.apiVersion = "/apis/policy/v1beta1"
+  t.kind = "PodDisruptionBudget"
+  return await client.get("/apis/policy/v1beta1", t, name, namespace, loadPodDisruptionBudget)
 
 type
   Eviction* = object
@@ -1115,7 +1125,12 @@ proc loadEviction(parser: var JsonParser):Eviction =
   return ret 
 
 proc get*(client: Client, t: typedesc[Eviction], name: string, namespace = "default"): Future[Eviction] {.async.}=
-  return await client.get("/apis/policy/v1beta1",t,name,namespace, loadEviction)
+  return await client.get("/apis/policy/v1beta1", t, name, namespace, loadEviction)
+
+proc create*(client: Client, t: Eviction, namespace = "default"): Future[Eviction] {.async.}=
+  t.apiVersion = "/apis/policy/v1beta1"
+  t.kind = "Eviction"
+  return await client.get("/apis/policy/v1beta1", t, name, namespace, loadEviction)
 
 type
   PodDisruptionBudgetList* = object
@@ -1188,7 +1203,7 @@ proc loadPodDisruptionBudgetList(parser: var JsonParser):PodDisruptionBudgetList
   return ret 
 
 proc list*(client: Client, t: typedesc[PodDisruptionBudget], namespace = "default"): Future[seq[PodDisruptionBudget]] {.async.}=
-  return (await client.list("/apis/policy/v1beta1",PodDisruptionBudgetList,namespace, loadPodDisruptionBudgetList)).items
+  return (await client.list("/apis/policy/v1beta1", PodDisruptionBudgetList, namespace, loadPodDisruptionBudgetList)).items
 
 type
   PodSecurityPolicyList* = object
@@ -1261,4 +1276,4 @@ proc loadPodSecurityPolicyList(parser: var JsonParser):PodSecurityPolicyList =
   return ret 
 
 proc list*(client: Client, t: typedesc[PodSecurityPolicy], namespace = "default"): Future[seq[PodSecurityPolicy]] {.async.}=
-  return (await client.list("/apis/policy/v1beta1",PodSecurityPolicyList,namespace, loadPodSecurityPolicyList)).items
+  return (await client.list("/apis/policy/v1beta1", PodSecurityPolicyList, namespace, loadPodSecurityPolicyList)).items

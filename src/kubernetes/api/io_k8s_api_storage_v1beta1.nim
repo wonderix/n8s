@@ -298,7 +298,12 @@ proc loadVolumeAttachment(parser: var JsonParser):VolumeAttachment =
   return ret 
 
 proc get*(client: Client, t: typedesc[VolumeAttachment], name: string, namespace = "default"): Future[VolumeAttachment] {.async.}=
-  return await client.get("/apis/storage.k8s.io/v1beta1",t,name,namespace, loadVolumeAttachment)
+  return await client.get("/apis/storage.k8s.io/v1beta1", t, name, namespace, loadVolumeAttachment)
+
+proc create*(client: Client, t: VolumeAttachment, namespace = "default"): Future[VolumeAttachment] {.async.}=
+  t.apiVersion = "/apis/storage.k8s.io/v1beta1"
+  t.kind = "VolumeAttachment"
+  return await client.get("/apis/storage.k8s.io/v1beta1", t, name, namespace, loadVolumeAttachment)
 
 type
   VolumeAttachmentList* = object
@@ -371,7 +376,7 @@ proc loadVolumeAttachmentList(parser: var JsonParser):VolumeAttachmentList =
   return ret 
 
 proc list*(client: Client, t: typedesc[VolumeAttachment], namespace = "default"): Future[seq[VolumeAttachment]] {.async.}=
-  return (await client.list("/apis/storage.k8s.io/v1beta1",VolumeAttachmentList,namespace, loadVolumeAttachmentList)).items
+  return (await client.list("/apis/storage.k8s.io/v1beta1", VolumeAttachmentList, namespace, loadVolumeAttachmentList)).items
 
 type
   VolumeNodeResources* = object
@@ -579,7 +584,12 @@ proc loadCSINode(parser: var JsonParser):CSINode =
   return ret 
 
 proc get*(client: Client, t: typedesc[CSINode], name: string, namespace = "default"): Future[CSINode] {.async.}=
-  return await client.get("/apis/storage.k8s.io/v1beta1",t,name,namespace, loadCSINode)
+  return await client.get("/apis/storage.k8s.io/v1beta1", t, name, namespace, loadCSINode)
+
+proc create*(client: Client, t: CSINode, namespace = "default"): Future[CSINode] {.async.}=
+  t.apiVersion = "/apis/storage.k8s.io/v1beta1"
+  t.kind = "CSINode"
+  return await client.get("/apis/storage.k8s.io/v1beta1", t, name, namespace, loadCSINode)
 
 type
   CSIDriverSpec* = object
@@ -707,7 +717,12 @@ proc loadCSIDriver(parser: var JsonParser):CSIDriver =
   return ret 
 
 proc get*(client: Client, t: typedesc[CSIDriver], name: string, namespace = "default"): Future[CSIDriver] {.async.}=
-  return await client.get("/apis/storage.k8s.io/v1beta1",t,name,namespace, loadCSIDriver)
+  return await client.get("/apis/storage.k8s.io/v1beta1", t, name, namespace, loadCSIDriver)
+
+proc create*(client: Client, t: CSIDriver, namespace = "default"): Future[CSIDriver] {.async.}=
+  t.apiVersion = "/apis/storage.k8s.io/v1beta1"
+  t.kind = "CSIDriver"
+  return await client.get("/apis/storage.k8s.io/v1beta1", t, name, namespace, loadCSIDriver)
 
 type
   CSIDriverList* = object
@@ -780,7 +795,7 @@ proc loadCSIDriverList(parser: var JsonParser):CSIDriverList =
   return ret 
 
 proc list*(client: Client, t: typedesc[CSIDriver], namespace = "default"): Future[seq[CSIDriver]] {.async.}=
-  return (await client.list("/apis/storage.k8s.io/v1beta1",CSIDriverList,namespace, loadCSIDriverList)).items
+  return (await client.list("/apis/storage.k8s.io/v1beta1", CSIDriverList, namespace, loadCSIDriverList)).items
 
 type
   CSINodeList* = object
@@ -853,7 +868,7 @@ proc loadCSINodeList(parser: var JsonParser):CSINodeList =
   return ret 
 
 proc list*(client: Client, t: typedesc[CSINode], namespace = "default"): Future[seq[CSINode]] {.async.}=
-  return (await client.list("/apis/storage.k8s.io/v1beta1",CSINodeList,namespace, loadCSINodeList)).items
+  return (await client.list("/apis/storage.k8s.io/v1beta1", CSINodeList, namespace, loadCSINodeList)).items
 
 type
   StorageClass* = object
@@ -986,7 +1001,12 @@ proc loadStorageClass(parser: var JsonParser):StorageClass =
   return ret 
 
 proc get*(client: Client, t: typedesc[StorageClass], name: string, namespace = "default"): Future[StorageClass] {.async.}=
-  return await client.get("/apis/storage.k8s.io/v1beta1",t,name,namespace, loadStorageClass)
+  return await client.get("/apis/storage.k8s.io/v1beta1", t, name, namespace, loadStorageClass)
+
+proc create*(client: Client, t: StorageClass, namespace = "default"): Future[StorageClass] {.async.}=
+  t.apiVersion = "/apis/storage.k8s.io/v1beta1"
+  t.kind = "StorageClass"
+  return await client.get("/apis/storage.k8s.io/v1beta1", t, name, namespace, loadStorageClass)
 
 type
   StorageClassList* = object
@@ -1059,4 +1079,4 @@ proc loadStorageClassList(parser: var JsonParser):StorageClassList =
   return ret 
 
 proc list*(client: Client, t: typedesc[StorageClass], namespace = "default"): Future[seq[StorageClass]] {.async.}=
-  return (await client.list("/apis/storage.k8s.io/v1beta1",StorageClassList,namespace, loadStorageClassList)).items
+  return (await client.list("/apis/storage.k8s.io/v1beta1", StorageClassList, namespace, loadStorageClassList)).items

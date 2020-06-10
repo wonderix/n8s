@@ -138,7 +138,12 @@ proc loadStorageClass(parser: var JsonParser):StorageClass =
   return ret 
 
 proc get*(client: Client, t: typedesc[StorageClass], name: string, namespace = "default"): Future[StorageClass] {.async.}=
-  return await client.get("/apis/storage.k8s.io/v1",t,name,namespace, loadStorageClass)
+  return await client.get("/apis/storage.k8s.io/v1", t, name, namespace, loadStorageClass)
+
+proc create*(client: Client, t: StorageClass, namespace = "default"): Future[StorageClass] {.async.}=
+  t.apiVersion = "/apis/storage.k8s.io/v1"
+  t.kind = "StorageClass"
+  return await client.get("/apis/storage.k8s.io/v1", t, name, namespace, loadStorageClass)
 
 type
   StorageClassList* = object
@@ -211,7 +216,7 @@ proc loadStorageClassList(parser: var JsonParser):StorageClassList =
   return ret 
 
 proc list*(client: Client, t: typedesc[StorageClass], namespace = "default"): Future[seq[StorageClass]] {.async.}=
-  return (await client.list("/apis/storage.k8s.io/v1",StorageClassList,namespace, loadStorageClassList)).items
+  return (await client.list("/apis/storage.k8s.io/v1", StorageClassList, namespace, loadStorageClassList)).items
 
 type
   VolumeAttachmentSource* = object
@@ -504,7 +509,12 @@ proc loadVolumeAttachment(parser: var JsonParser):VolumeAttachment =
   return ret 
 
 proc get*(client: Client, t: typedesc[VolumeAttachment], name: string, namespace = "default"): Future[VolumeAttachment] {.async.}=
-  return await client.get("/apis/storage.k8s.io/v1",t,name,namespace, loadVolumeAttachment)
+  return await client.get("/apis/storage.k8s.io/v1", t, name, namespace, loadVolumeAttachment)
+
+proc create*(client: Client, t: VolumeAttachment, namespace = "default"): Future[VolumeAttachment] {.async.}=
+  t.apiVersion = "/apis/storage.k8s.io/v1"
+  t.kind = "VolumeAttachment"
+  return await client.get("/apis/storage.k8s.io/v1", t, name, namespace, loadVolumeAttachment)
 
 type
   VolumeAttachmentList* = object
@@ -577,4 +587,4 @@ proc loadVolumeAttachmentList(parser: var JsonParser):VolumeAttachmentList =
   return ret 
 
 proc list*(client: Client, t: typedesc[VolumeAttachment], namespace = "default"): Future[seq[VolumeAttachment]] {.async.}=
-  return (await client.list("/apis/storage.k8s.io/v1",VolumeAttachmentList,namespace, loadVolumeAttachmentList)).items
+  return (await client.list("/apis/storage.k8s.io/v1", VolumeAttachmentList, namespace, loadVolumeAttachmentList)).items

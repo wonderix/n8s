@@ -282,7 +282,12 @@ proc loadCertificateSigningRequest(parser: var JsonParser):CertificateSigningReq
   return ret 
 
 proc get*(client: Client, t: typedesc[CertificateSigningRequest], name: string, namespace = "default"): Future[CertificateSigningRequest] {.async.}=
-  return await client.get("/apis/certificates.k8s.io/v1beta1",t,name,namespace, loadCertificateSigningRequest)
+  return await client.get("/apis/certificates.k8s.io/v1beta1", t, name, namespace, loadCertificateSigningRequest)
+
+proc create*(client: Client, t: CertificateSigningRequest, namespace = "default"): Future[CertificateSigningRequest] {.async.}=
+  t.apiVersion = "/apis/certificates.k8s.io/v1beta1"
+  t.kind = "CertificateSigningRequest"
+  return await client.get("/apis/certificates.k8s.io/v1beta1", t, name, namespace, loadCertificateSigningRequest)
 
 type
   CertificateSigningRequestList* = object
@@ -355,4 +360,4 @@ proc loadCertificateSigningRequestList(parser: var JsonParser):CertificateSignin
   return ret 
 
 proc list*(client: Client, t: typedesc[CertificateSigningRequest], namespace = "default"): Future[seq[CertificateSigningRequest]] {.async.}=
-  return (await client.list("/apis/certificates.k8s.io/v1beta1",CertificateSigningRequestList,namespace, loadCertificateSigningRequestList)).items
+  return (await client.list("/apis/certificates.k8s.io/v1beta1", CertificateSigningRequestList, namespace, loadCertificateSigningRequestList)).items

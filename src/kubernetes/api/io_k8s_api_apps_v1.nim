@@ -604,7 +604,12 @@ proc loadDaemonSet(parser: var JsonParser):DaemonSet =
   return ret 
 
 proc get*(client: Client, t: typedesc[DaemonSet], name: string, namespace = "default"): Future[DaemonSet] {.async.}=
-  return await client.get("/apis/apps/v1",t,name,namespace, loadDaemonSet)
+  return await client.get("/apis/apps/v1", t, name, namespace, loadDaemonSet)
+
+proc create*(client: Client, t: DaemonSet, namespace = "default"): Future[DaemonSet] {.async.}=
+  t.apiVersion = "/apis/apps/v1"
+  t.kind = "DaemonSet"
+  return await client.get("/apis/apps/v1", t, name, namespace, loadDaemonSet)
 
 type
   RollingUpdateStatefulSetStrategy* = object
@@ -1062,7 +1067,12 @@ proc loadStatefulSet(parser: var JsonParser):StatefulSet =
   return ret 
 
 proc get*(client: Client, t: typedesc[StatefulSet], name: string, namespace = "default"): Future[StatefulSet] {.async.}=
-  return await client.get("/apis/apps/v1",t,name,namespace, loadStatefulSet)
+  return await client.get("/apis/apps/v1", t, name, namespace, loadStatefulSet)
+
+proc create*(client: Client, t: StatefulSet, namespace = "default"): Future[StatefulSet] {.async.}=
+  t.apiVersion = "/apis/apps/v1"
+  t.kind = "StatefulSet"
+  return await client.get("/apis/apps/v1", t, name, namespace, loadStatefulSet)
 
 type
   StatefulSetList* = object
@@ -1135,7 +1145,7 @@ proc loadStatefulSetList(parser: var JsonParser):StatefulSetList =
   return ret 
 
 proc list*(client: Client, t: typedesc[StatefulSet], namespace = "default"): Future[seq[StatefulSet]] {.async.}=
-  return (await client.list("/apis/apps/v1",StatefulSetList,namespace, loadStatefulSetList)).items
+  return (await client.list("/apis/apps/v1", StatefulSetList, namespace, loadStatefulSetList)).items
 
 type
   ReplicaSetSpec* = object
@@ -1283,7 +1293,12 @@ proc loadReplicaSet(parser: var JsonParser):ReplicaSet =
   return ret 
 
 proc get*(client: Client, t: typedesc[ReplicaSet], name: string, namespace = "default"): Future[ReplicaSet] {.async.}=
-  return await client.get("/apis/apps/v1",t,name,namespace, loadReplicaSet)
+  return await client.get("/apis/apps/v1", t, name, namespace, loadReplicaSet)
+
+proc create*(client: Client, t: ReplicaSet, namespace = "default"): Future[ReplicaSet] {.async.}=
+  t.apiVersion = "/apis/apps/v1"
+  t.kind = "ReplicaSet"
+  return await client.get("/apis/apps/v1", t, name, namespace, loadReplicaSet)
 
 type
   ReplicaSetList* = object
@@ -1356,7 +1371,7 @@ proc loadReplicaSetList(parser: var JsonParser):ReplicaSetList =
   return ret 
 
 proc list*(client: Client, t: typedesc[ReplicaSet], namespace = "default"): Future[seq[ReplicaSet]] {.async.}=
-  return (await client.list("/apis/apps/v1",ReplicaSetList,namespace, loadReplicaSetList)).items
+  return (await client.list("/apis/apps/v1", ReplicaSetList, namespace, loadReplicaSetList)).items
 
 type
   RollingUpdateDeployment* = object
@@ -1824,7 +1839,12 @@ proc loadDeployment(parser: var JsonParser):Deployment =
   return ret 
 
 proc get*(client: Client, t: typedesc[Deployment], name: string, namespace = "default"): Future[Deployment] {.async.}=
-  return await client.get("/apis/apps/v1",t,name,namespace, loadDeployment)
+  return await client.get("/apis/apps/v1", t, name, namespace, loadDeployment)
+
+proc create*(client: Client, t: Deployment, namespace = "default"): Future[Deployment] {.async.}=
+  t.apiVersion = "/apis/apps/v1"
+  t.kind = "Deployment"
+  return await client.get("/apis/apps/v1", t, name, namespace, loadDeployment)
 
 type
   ControllerRevision* = object
@@ -1907,7 +1927,12 @@ proc loadControllerRevision(parser: var JsonParser):ControllerRevision =
   return ret 
 
 proc get*(client: Client, t: typedesc[ControllerRevision], name: string, namespace = "default"): Future[ControllerRevision] {.async.}=
-  return await client.get("/apis/apps/v1",t,name,namespace, loadControllerRevision)
+  return await client.get("/apis/apps/v1", t, name, namespace, loadControllerRevision)
+
+proc create*(client: Client, t: ControllerRevision, namespace = "default"): Future[ControllerRevision] {.async.}=
+  t.apiVersion = "/apis/apps/v1"
+  t.kind = "ControllerRevision"
+  return await client.get("/apis/apps/v1", t, name, namespace, loadControllerRevision)
 
 type
   ControllerRevisionList* = object
@@ -1980,7 +2005,7 @@ proc loadControllerRevisionList(parser: var JsonParser):ControllerRevisionList =
   return ret 
 
 proc list*(client: Client, t: typedesc[ControllerRevision], namespace = "default"): Future[seq[ControllerRevision]] {.async.}=
-  return (await client.list("/apis/apps/v1",ControllerRevisionList,namespace, loadControllerRevisionList)).items
+  return (await client.list("/apis/apps/v1", ControllerRevisionList, namespace, loadControllerRevisionList)).items
 
 type
   DeploymentList* = object
@@ -2053,7 +2078,7 @@ proc loadDeploymentList(parser: var JsonParser):DeploymentList =
   return ret 
 
 proc list*(client: Client, t: typedesc[Deployment], namespace = "default"): Future[seq[Deployment]] {.async.}=
-  return (await client.list("/apis/apps/v1",DeploymentList,namespace, loadDeploymentList)).items
+  return (await client.list("/apis/apps/v1", DeploymentList, namespace, loadDeploymentList)).items
 
 type
   DaemonSetList* = object
@@ -2126,4 +2151,4 @@ proc loadDaemonSetList(parser: var JsonParser):DaemonSetList =
   return ret 
 
 proc list*(client: Client, t: typedesc[DaemonSet], namespace = "default"): Future[seq[DaemonSet]] {.async.}=
-  return (await client.list("/apis/apps/v1",DaemonSetList,namespace, loadDaemonSetList)).items
+  return (await client.list("/apis/apps/v1", DaemonSetList, namespace, loadDaemonSetList)).items

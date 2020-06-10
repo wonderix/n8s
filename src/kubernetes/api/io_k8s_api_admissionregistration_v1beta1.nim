@@ -396,7 +396,12 @@ proc loadValidatingWebhookConfiguration(parser: var JsonParser):ValidatingWebhoo
   return ret 
 
 proc get*(client: Client, t: typedesc[ValidatingWebhookConfiguration], name: string, namespace = "default"): Future[ValidatingWebhookConfiguration] {.async.}=
-  return await client.get("/apis/admissionregistration.k8s.io/v1beta1",t,name,namespace, loadValidatingWebhookConfiguration)
+  return await client.get("/apis/admissionregistration.k8s.io/v1beta1", t, name, namespace, loadValidatingWebhookConfiguration)
+
+proc create*(client: Client, t: ValidatingWebhookConfiguration, namespace = "default"): Future[ValidatingWebhookConfiguration] {.async.}=
+  t.apiVersion = "/apis/admissionregistration.k8s.io/v1beta1"
+  t.kind = "ValidatingWebhookConfiguration"
+  return await client.get("/apis/admissionregistration.k8s.io/v1beta1", t, name, namespace, loadValidatingWebhookConfiguration)
 
 type
   ValidatingWebhookConfigurationList* = object
@@ -469,7 +474,7 @@ proc loadValidatingWebhookConfigurationList(parser: var JsonParser):ValidatingWe
   return ret 
 
 proc list*(client: Client, t: typedesc[ValidatingWebhookConfiguration], namespace = "default"): Future[seq[ValidatingWebhookConfiguration]] {.async.}=
-  return (await client.list("/apis/admissionregistration.k8s.io/v1beta1",ValidatingWebhookConfigurationList,namespace, loadValidatingWebhookConfigurationList)).items
+  return (await client.list("/apis/admissionregistration.k8s.io/v1beta1", ValidatingWebhookConfigurationList, namespace, loadValidatingWebhookConfigurationList)).items
 
 type
   MutatingWebhook* = object
@@ -677,7 +682,12 @@ proc loadMutatingWebhookConfiguration(parser: var JsonParser):MutatingWebhookCon
   return ret 
 
 proc get*(client: Client, t: typedesc[MutatingWebhookConfiguration], name: string, namespace = "default"): Future[MutatingWebhookConfiguration] {.async.}=
-  return await client.get("/apis/admissionregistration.k8s.io/v1beta1",t,name,namespace, loadMutatingWebhookConfiguration)
+  return await client.get("/apis/admissionregistration.k8s.io/v1beta1", t, name, namespace, loadMutatingWebhookConfiguration)
+
+proc create*(client: Client, t: MutatingWebhookConfiguration, namespace = "default"): Future[MutatingWebhookConfiguration] {.async.}=
+  t.apiVersion = "/apis/admissionregistration.k8s.io/v1beta1"
+  t.kind = "MutatingWebhookConfiguration"
+  return await client.get("/apis/admissionregistration.k8s.io/v1beta1", t, name, namespace, loadMutatingWebhookConfiguration)
 
 type
   MutatingWebhookConfigurationList* = object
@@ -750,4 +760,4 @@ proc loadMutatingWebhookConfigurationList(parser: var JsonParser):MutatingWebhoo
   return ret 
 
 proc list*(client: Client, t: typedesc[MutatingWebhookConfiguration], namespace = "default"): Future[seq[MutatingWebhookConfiguration]] {.async.}=
-  return (await client.list("/apis/admissionregistration.k8s.io/v1beta1",MutatingWebhookConfigurationList,namespace, loadMutatingWebhookConfigurationList)).items
+  return (await client.list("/apis/admissionregistration.k8s.io/v1beta1", MutatingWebhookConfigurationList, namespace, loadMutatingWebhookConfigurationList)).items

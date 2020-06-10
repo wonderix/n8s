@@ -179,7 +179,12 @@ proc loadRuntimeClass(parser: var JsonParser):RuntimeClass =
   return ret 
 
 proc get*(client: Client, t: typedesc[RuntimeClass], name: string, namespace = "default"): Future[RuntimeClass] {.async.}=
-  return await client.get("/apis/node.k8s.io/v1beta1",t,name,namespace, loadRuntimeClass)
+  return await client.get("/apis/node.k8s.io/v1beta1", t, name, namespace, loadRuntimeClass)
+
+proc create*(client: Client, t: RuntimeClass, namespace = "default"): Future[RuntimeClass] {.async.}=
+  t.apiVersion = "/apis/node.k8s.io/v1beta1"
+  t.kind = "RuntimeClass"
+  return await client.get("/apis/node.k8s.io/v1beta1", t, name, namespace, loadRuntimeClass)
 
 type
   RuntimeClassList* = object
@@ -252,4 +257,4 @@ proc loadRuntimeClassList(parser: var JsonParser):RuntimeClassList =
   return ret 
 
 proc list*(client: Client, t: typedesc[RuntimeClass], namespace = "default"): Future[seq[RuntimeClass]] {.async.}=
-  return (await client.list("/apis/node.k8s.io/v1beta1",RuntimeClassList,namespace, loadRuntimeClassList)).items
+  return (await client.list("/apis/node.k8s.io/v1beta1", RuntimeClassList, namespace, loadRuntimeClassList)).items

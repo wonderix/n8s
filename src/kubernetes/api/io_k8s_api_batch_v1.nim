@@ -362,7 +362,12 @@ proc loadJob(parser: var JsonParser):Job =
   return ret 
 
 proc get*(client: Client, t: typedesc[Job], name: string, namespace = "default"): Future[Job] {.async.}=
-  return await client.get("/apis/batch/v1",t,name,namespace, loadJob)
+  return await client.get("/apis/batch/v1", t, name, namespace, loadJob)
+
+proc create*(client: Client, t: Job, namespace = "default"): Future[Job] {.async.}=
+  t.apiVersion = "/apis/batch/v1"
+  t.kind = "Job"
+  return await client.get("/apis/batch/v1", t, name, namespace, loadJob)
 
 type
   JobList* = object
@@ -435,4 +440,4 @@ proc loadJobList(parser: var JsonParser):JobList =
   return ret 
 
 proc list*(client: Client, t: typedesc[Job], namespace = "default"): Future[seq[Job]] {.async.}=
-  return (await client.list("/apis/batch/v1",JobList,namespace, loadJobList)).items
+  return (await client.list("/apis/batch/v1", JobList, namespace, loadJobList)).items

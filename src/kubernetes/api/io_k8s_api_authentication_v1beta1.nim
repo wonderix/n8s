@@ -262,4 +262,9 @@ proc loadTokenReview(parser: var JsonParser):TokenReview =
   return ret 
 
 proc get*(client: Client, t: typedesc[TokenReview], name: string, namespace = "default"): Future[TokenReview] {.async.}=
-  return await client.get("/apis/authentication.k8s.io/v1beta1",t,name,namespace, loadTokenReview)
+  return await client.get("/apis/authentication.k8s.io/v1beta1", t, name, namespace, loadTokenReview)
+
+proc create*(client: Client, t: TokenReview, namespace = "default"): Future[TokenReview] {.async.}=
+  t.apiVersion = "/apis/authentication.k8s.io/v1beta1"
+  t.kind = "TokenReview"
+  return await client.get("/apis/authentication.k8s.io/v1beta1", t, name, namespace, loadTokenReview)

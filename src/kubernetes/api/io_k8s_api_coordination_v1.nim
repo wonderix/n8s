@@ -151,7 +151,12 @@ proc loadLease(parser: var JsonParser):Lease =
   return ret 
 
 proc get*(client: Client, t: typedesc[Lease], name: string, namespace = "default"): Future[Lease] {.async.}=
-  return await client.get("/apis/coordination.k8s.io/v1",t,name,namespace, loadLease)
+  return await client.get("/apis/coordination.k8s.io/v1", t, name, namespace, loadLease)
+
+proc create*(client: Client, t: Lease, namespace = "default"): Future[Lease] {.async.}=
+  t.apiVersion = "/apis/coordination.k8s.io/v1"
+  t.kind = "Lease"
+  return await client.get("/apis/coordination.k8s.io/v1", t, name, namespace, loadLease)
 
 type
   LeaseList* = object
@@ -224,4 +229,4 @@ proc loadLeaseList(parser: var JsonParser):LeaseList =
   return ret 
 
 proc list*(client: Client, t: typedesc[Lease], namespace = "default"): Future[seq[Lease]] {.async.}=
-  return (await client.list("/apis/coordination.k8s.io/v1",LeaseList,namespace, loadLeaseList)).items
+  return (await client.list("/apis/coordination.k8s.io/v1", LeaseList, namespace, loadLeaseList)).items

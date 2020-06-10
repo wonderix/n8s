@@ -211,14 +211,20 @@ proc generate(definition: Definition, name: string, f: File) =
       f.writeLine("  var ret: ", name.typename, "")
       f.writeLine("  load(ret,parser)")
       f.writeLine("  return ret ")
-      f.writeLine("")
       if name.endsWith("List"):
         let itemName = name.typename[0..^5]
+        f.writeLine("")
         f.writeLine("proc list*(client: Client, t: typedesc[", itemName, "], namespace = \"default\"): Future[seq[", itemName, "]] {.async.}=")
-        f.writeLine("  return (await client.list(\"" & groupVersion & "\",", name.typename, ",namespace, load", name.typename, ")).items")
+        f.writeLine("  return (await client.list(\"" & groupVersion & "\", ", name.typename, ", namespace, load", name.typename, ")).items")
       else:
+        f.writeLine("")
         f.writeLine("proc get*(client: Client, t: typedesc[", name.typename, "], name: string, namespace = \"default\"): Future[", name.typename, "] {.async.}=")
-        f.writeLine("  return await client.get(\"" & groupVersion & "\",t,name,namespace, load", name.typename, ")")
+        f.writeLine("  return await client.get(\"" & groupVersion & "\", t, name, namespace, load", name.typename, ")")
+        f.writeLine("")
+        f.writeLine("proc create*(client: Client, t: ", name.typename, ", namespace = \"default\"): Future[", name.typename, "] {.async.}=")
+        f.writeLine("  t.apiVersion = \"" & groupVersion & "\"")
+        f.writeLine("  t.kind = \"" & name.typename & "\"")
+        f.writeLine("  return await client.get(\"" & groupVersion & "\", t, name, namespace, load", name.typename, ")")
   else:
     if name.typename == "IntOrString":
       f.writeLine("  ", name.typename, "* = distinct base_types.IntOrString")

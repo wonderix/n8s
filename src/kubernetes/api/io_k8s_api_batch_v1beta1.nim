@@ -273,7 +273,12 @@ proc loadCronJob(parser: var JsonParser):CronJob =
   return ret 
 
 proc get*(client: Client, t: typedesc[CronJob], name: string, namespace = "default"): Future[CronJob] {.async.}=
-  return await client.get("/apis/batch/v1beta1",t,name,namespace, loadCronJob)
+  return await client.get("/apis/batch/v1beta1", t, name, namespace, loadCronJob)
+
+proc create*(client: Client, t: CronJob, namespace = "default"): Future[CronJob] {.async.}=
+  t.apiVersion = "/apis/batch/v1beta1"
+  t.kind = "CronJob"
+  return await client.get("/apis/batch/v1beta1", t, name, namespace, loadCronJob)
 
 type
   CronJobList* = object
@@ -346,4 +351,4 @@ proc loadCronJobList(parser: var JsonParser):CronJobList =
   return ret 
 
 proc list*(client: Client, t: typedesc[CronJob], namespace = "default"): Future[seq[CronJob]] {.async.}=
-  return (await client.list("/apis/batch/v1beta1",CronJobList,namespace, loadCronJobList)).items
+  return (await client.list("/apis/batch/v1beta1", CronJobList, namespace, loadCronJobList)).items

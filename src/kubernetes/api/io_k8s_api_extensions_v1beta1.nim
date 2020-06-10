@@ -393,7 +393,12 @@ proc loadIngress(parser: var JsonParser):Ingress =
   return ret 
 
 proc get*(client: Client, t: typedesc[Ingress], name: string, namespace = "default"): Future[Ingress] {.async.}=
-  return await client.get("/apis/extensions/v1beta1",t,name,namespace, loadIngress)
+  return await client.get("/apis/extensions/v1beta1", t, name, namespace, loadIngress)
+
+proc create*(client: Client, t: Ingress, namespace = "default"): Future[Ingress] {.async.}=
+  t.apiVersion = "/apis/extensions/v1beta1"
+  t.kind = "Ingress"
+  return await client.get("/apis/extensions/v1beta1", t, name, namespace, loadIngress)
 
 type
   IngressList* = object
@@ -466,4 +471,4 @@ proc loadIngressList(parser: var JsonParser):IngressList =
   return ret 
 
 proc list*(client: Client, t: typedesc[Ingress], namespace = "default"): Future[seq[Ingress]] {.async.}=
-  return (await client.list("/apis/extensions/v1beta1",IngressList,namespace, loadIngressList)).items
+  return (await client.list("/apis/extensions/v1beta1", IngressList, namespace, loadIngressList)).items

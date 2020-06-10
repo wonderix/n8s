@@ -7459,7 +7459,12 @@ proc loadPod(parser: var JsonParser):Pod =
   return ret 
 
 proc get*(client: Client, t: typedesc[Pod], name: string, namespace = "default"): Future[Pod] {.async.}=
-  return await client.get("/api/v1",t,name,namespace, loadPod)
+  return await client.get("/api/v1", t, name, namespace, loadPod)
+
+proc create*(client: Client, t: Pod, namespace = "default"): Future[Pod] {.async.}=
+  t.apiVersion = "/api/v1"
+  t.kind = "Pod"
+  return await client.get("/api/v1", t, name, namespace, loadPod)
 
 type
   ObjectReference* = object
@@ -7802,7 +7807,12 @@ proc loadEndpoints(parser: var JsonParser):Endpoints =
   return ret 
 
 proc get*(client: Client, t: typedesc[Endpoints], name: string, namespace = "default"): Future[Endpoints] {.async.}=
-  return await client.get("/api/v1",t,name,namespace, loadEndpoints)
+  return await client.get("/api/v1", t, name, namespace, loadEndpoints)
+
+proc create*(client: Client, t: Endpoints, namespace = "default"): Future[Endpoints] {.async.}=
+  t.apiVersion = "/api/v1"
+  t.kind = "Endpoints"
+  return await client.get("/api/v1", t, name, namespace, loadEndpoints)
 
 type
   ScopedResourceSelectorRequirement* = object
@@ -8480,7 +8490,12 @@ proc loadReplicationController(parser: var JsonParser):ReplicationController =
   return ret 
 
 proc get*(client: Client, t: typedesc[ReplicationController], name: string, namespace = "default"): Future[ReplicationController] {.async.}=
-  return await client.get("/api/v1",t,name,namespace, loadReplicationController)
+  return await client.get("/api/v1", t, name, namespace, loadReplicationController)
+
+proc create*(client: Client, t: ReplicationController, namespace = "default"): Future[ReplicationController] {.async.}=
+  t.apiVersion = "/api/v1"
+  t.kind = "ReplicationController"
+  return await client.get("/api/v1", t, name, namespace, loadReplicationController)
 
 type
   LimitRangeItem* = object
@@ -8673,7 +8688,12 @@ proc loadLimitRange(parser: var JsonParser):LimitRange =
   return ret 
 
 proc get*(client: Client, t: typedesc[LimitRange], name: string, namespace = "default"): Future[LimitRange] {.async.}=
-  return await client.get("/api/v1",t,name,namespace, loadLimitRange)
+  return await client.get("/api/v1", t, name, namespace, loadLimitRange)
+
+proc create*(client: Client, t: LimitRange, namespace = "default"): Future[LimitRange] {.async.}=
+  t.apiVersion = "/api/v1"
+  t.kind = "LimitRange"
+  return await client.get("/api/v1", t, name, namespace, loadLimitRange)
 
 type
   LimitRangeList* = object
@@ -8746,7 +8766,7 @@ proc loadLimitRangeList(parser: var JsonParser):LimitRangeList =
   return ret 
 
 proc list*(client: Client, t: typedesc[LimitRange], namespace = "default"): Future[seq[LimitRange]] {.async.}=
-  return (await client.list("/api/v1",LimitRangeList,namespace, loadLimitRangeList)).items
+  return (await client.list("/api/v1", LimitRangeList, namespace, loadLimitRangeList)).items
 
 type
   Node* = object
@@ -8829,7 +8849,12 @@ proc loadNode(parser: var JsonParser):Node =
   return ret 
 
 proc get*(client: Client, t: typedesc[Node], name: string, namespace = "default"): Future[Node] {.async.}=
-  return await client.get("/api/v1",t,name,namespace, loadNode)
+  return await client.get("/api/v1", t, name, namespace, loadNode)
+
+proc create*(client: Client, t: Node, namespace = "default"): Future[Node] {.async.}=
+  t.apiVersion = "/api/v1"
+  t.kind = "Node"
+  return await client.get("/api/v1", t, name, namespace, loadNode)
 
 type
   NodeList* = object
@@ -8902,7 +8927,7 @@ proc loadNodeList(parser: var JsonParser):NodeList =
   return ret 
 
 proc list*(client: Client, t: typedesc[Node], namespace = "default"): Future[seq[Node]] {.async.}=
-  return (await client.list("/api/v1",NodeList,namespace, loadNodeList)).items
+  return (await client.list("/api/v1", NodeList, namespace, loadNodeList)).items
 
 type
   ServicePort* = object
@@ -9170,7 +9195,12 @@ proc loadConfigMap(parser: var JsonParser):ConfigMap =
   return ret 
 
 proc get*(client: Client, t: typedesc[ConfigMap], name: string, namespace = "default"): Future[ConfigMap] {.async.}=
-  return await client.get("/api/v1",t,name,namespace, loadConfigMap)
+  return await client.get("/api/v1", t, name, namespace, loadConfigMap)
+
+proc create*(client: Client, t: ConfigMap, namespace = "default"): Future[ConfigMap] {.async.}=
+  t.apiVersion = "/api/v1"
+  t.kind = "ConfigMap"
+  return await client.get("/api/v1", t, name, namespace, loadConfigMap)
 
 type
   ConfigMapList* = object
@@ -9243,7 +9273,7 @@ proc loadConfigMapList(parser: var JsonParser):ConfigMapList =
   return ret 
 
 proc list*(client: Client, t: typedesc[ConfigMap], namespace = "default"): Future[seq[ConfigMap]] {.async.}=
-  return (await client.list("/api/v1",ConfigMapList,namespace, loadConfigMapList)).items
+  return (await client.list("/api/v1", ConfigMapList, namespace, loadConfigMapList)).items
 
 type
   ClientIPConfig* = object
@@ -9676,7 +9706,12 @@ proc loadService(parser: var JsonParser):Service =
   return ret 
 
 proc get*(client: Client, t: typedesc[Service], name: string, namespace = "default"): Future[Service] {.async.}=
-  return await client.get("/api/v1",t,name,namespace, loadService)
+  return await client.get("/api/v1", t, name, namespace, loadService)
+
+proc create*(client: Client, t: Service, namespace = "default"): Future[Service] {.async.}=
+  t.apiVersion = "/api/v1"
+  t.kind = "Service"
+  return await client.get("/api/v1", t, name, namespace, loadService)
 
 type
   ServiceList* = object
@@ -9749,7 +9784,7 @@ proc loadServiceList(parser: var JsonParser):ServiceList =
   return ret 
 
 proc list*(client: Client, t: typedesc[Service], namespace = "default"): Future[seq[Service]] {.async.}=
-  return (await client.list("/api/v1",ServiceList,namespace, loadServiceList)).items
+  return (await client.list("/api/v1", ServiceList, namespace, loadServiceList)).items
 
 type
   NamespaceCondition* = object
@@ -10197,7 +10232,12 @@ proc loadResourceQuota(parser: var JsonParser):ResourceQuota =
   return ret 
 
 proc get*(client: Client, t: typedesc[ResourceQuota], name: string, namespace = "default"): Future[ResourceQuota] {.async.}=
-  return await client.get("/api/v1",t,name,namespace, loadResourceQuota)
+  return await client.get("/api/v1", t, name, namespace, loadResourceQuota)
+
+proc create*(client: Client, t: ResourceQuota, namespace = "default"): Future[ResourceQuota] {.async.}=
+  t.apiVersion = "/api/v1"
+  t.kind = "ResourceQuota"
+  return await client.get("/api/v1", t, name, namespace, loadResourceQuota)
 
 type
   ISCSIPersistentVolumeSource* = object
@@ -11650,7 +11690,12 @@ proc loadEvent(parser: var JsonParser):Event =
   return ret 
 
 proc get*(client: Client, t: typedesc[Event], name: string, namespace = "default"): Future[Event] {.async.}=
-  return await client.get("/api/v1",t,name,namespace, loadEvent)
+  return await client.get("/api/v1", t, name, namespace, loadEvent)
+
+proc create*(client: Client, t: Event, namespace = "default"): Future[Event] {.async.}=
+  t.apiVersion = "/api/v1"
+  t.kind = "Event"
+  return await client.get("/api/v1", t, name, namespace, loadEvent)
 
 type
   EventList* = object
@@ -11723,7 +11768,7 @@ proc loadEventList(parser: var JsonParser):EventList =
   return ret 
 
 proc list*(client: Client, t: typedesc[Event], namespace = "default"): Future[seq[Event]] {.async.}=
-  return (await client.list("/api/v1",EventList,namespace, loadEventList)).items
+  return (await client.list("/api/v1", EventList, namespace, loadEventList)).items
 
 type
   PersistentVolume* = object
@@ -11806,7 +11851,12 @@ proc loadPersistentVolume(parser: var JsonParser):PersistentVolume =
   return ret 
 
 proc get*(client: Client, t: typedesc[PersistentVolume], name: string, namespace = "default"): Future[PersistentVolume] {.async.}=
-  return await client.get("/api/v1",t,name,namespace, loadPersistentVolume)
+  return await client.get("/api/v1", t, name, namespace, loadPersistentVolume)
+
+proc create*(client: Client, t: PersistentVolume, namespace = "default"): Future[PersistentVolume] {.async.}=
+  t.apiVersion = "/api/v1"
+  t.kind = "PersistentVolume"
+  return await client.get("/api/v1", t, name, namespace, loadPersistentVolume)
 
 type
   TypedLocalObjectReference* = object
@@ -11934,7 +11984,12 @@ proc loadPodTemplate(parser: var JsonParser):PodTemplate =
   return ret 
 
 proc get*(client: Client, t: typedesc[PodTemplate], name: string, namespace = "default"): Future[PodTemplate] {.async.}=
-  return await client.get("/api/v1",t,name,namespace, loadPodTemplate)
+  return await client.get("/api/v1", t, name, namespace, loadPodTemplate)
+
+proc create*(client: Client, t: PodTemplate, namespace = "default"): Future[PodTemplate] {.async.}=
+  t.apiVersion = "/api/v1"
+  t.kind = "PodTemplate"
+  return await client.get("/api/v1", t, name, namespace, loadPodTemplate)
 
 type
   PodTemplateList* = object
@@ -12007,7 +12062,7 @@ proc loadPodTemplateList(parser: var JsonParser):PodTemplateList =
   return ret 
 
 proc list*(client: Client, t: typedesc[PodTemplate], namespace = "default"): Future[seq[PodTemplate]] {.async.}=
-  return (await client.list("/api/v1",PodTemplateList,namespace, loadPodTemplateList)).items
+  return (await client.list("/api/v1", PodTemplateList, namespace, loadPodTemplateList)).items
 
 type
   ComponentCondition* = object
@@ -12145,7 +12200,12 @@ proc loadComponentStatus(parser: var JsonParser):ComponentStatus =
   return ret 
 
 proc get*(client: Client, t: typedesc[ComponentStatus], name: string, namespace = "default"): Future[ComponentStatus] {.async.}=
-  return await client.get("/api/v1",t,name,namespace, loadComponentStatus)
+  return await client.get("/api/v1", t, name, namespace, loadComponentStatus)
+
+proc create*(client: Client, t: ComponentStatus, namespace = "default"): Future[ComponentStatus] {.async.}=
+  t.apiVersion = "/api/v1"
+  t.kind = "ComponentStatus"
+  return await client.get("/api/v1", t, name, namespace, loadComponentStatus)
 
 type
   ComponentStatusList* = object
@@ -12218,7 +12278,7 @@ proc loadComponentStatusList(parser: var JsonParser):ComponentStatusList =
   return ret 
 
 proc list*(client: Client, t: typedesc[ComponentStatus], namespace = "default"): Future[seq[ComponentStatus]] {.async.}=
-  return (await client.list("/api/v1",ComponentStatusList,namespace, loadComponentStatusList)).items
+  return (await client.list("/api/v1", ComponentStatusList, namespace, loadComponentStatusList)).items
 
 type
   PersistentVolumeClaimSpec* = object
@@ -12396,7 +12456,12 @@ proc loadPersistentVolumeClaim(parser: var JsonParser):PersistentVolumeClaim =
   return ret 
 
 proc get*(client: Client, t: typedesc[PersistentVolumeClaim], name: string, namespace = "default"): Future[PersistentVolumeClaim] {.async.}=
-  return await client.get("/api/v1",t,name,namespace, loadPersistentVolumeClaim)
+  return await client.get("/api/v1", t, name, namespace, loadPersistentVolumeClaim)
+
+proc create*(client: Client, t: PersistentVolumeClaim, namespace = "default"): Future[PersistentVolumeClaim] {.async.}=
+  t.apiVersion = "/api/v1"
+  t.kind = "PersistentVolumeClaim"
+  return await client.get("/api/v1", t, name, namespace, loadPersistentVolumeClaim)
 
 type
   PersistentVolumeList* = object
@@ -12469,7 +12534,7 @@ proc loadPersistentVolumeList(parser: var JsonParser):PersistentVolumeList =
   return ret 
 
 proc list*(client: Client, t: typedesc[PersistentVolume], namespace = "default"): Future[seq[PersistentVolume]] {.async.}=
-  return (await client.list("/api/v1",PersistentVolumeList,namespace, loadPersistentVolumeList)).items
+  return (await client.list("/api/v1", PersistentVolumeList, namespace, loadPersistentVolumeList)).items
 
 type
   Binding* = object
@@ -12542,7 +12607,12 @@ proc loadBinding(parser: var JsonParser):Binding =
   return ret 
 
 proc get*(client: Client, t: typedesc[Binding], name: string, namespace = "default"): Future[Binding] {.async.}=
-  return await client.get("/api/v1",t,name,namespace, loadBinding)
+  return await client.get("/api/v1", t, name, namespace, loadBinding)
+
+proc create*(client: Client, t: Binding, namespace = "default"): Future[Binding] {.async.}=
+  t.apiVersion = "/api/v1"
+  t.kind = "Binding"
+  return await client.get("/api/v1", t, name, namespace, loadBinding)
 
 type
   NamespaceSpec* = object
@@ -12660,7 +12730,12 @@ proc loadNamespace(parser: var JsonParser):Namespace =
   return ret 
 
 proc get*(client: Client, t: typedesc[Namespace], name: string, namespace = "default"): Future[Namespace] {.async.}=
-  return await client.get("/api/v1",t,name,namespace, loadNamespace)
+  return await client.get("/api/v1", t, name, namespace, loadNamespace)
+
+proc create*(client: Client, t: Namespace, namespace = "default"): Future[Namespace] {.async.}=
+  t.apiVersion = "/api/v1"
+  t.kind = "Namespace"
+  return await client.get("/api/v1", t, name, namespace, loadNamespace)
 
 type
   ResourceQuotaList* = object
@@ -12733,7 +12808,7 @@ proc loadResourceQuotaList(parser: var JsonParser):ResourceQuotaList =
   return ret 
 
 proc list*(client: Client, t: typedesc[ResourceQuota], namespace = "default"): Future[seq[ResourceQuota]] {.async.}=
-  return (await client.list("/api/v1",ResourceQuotaList,namespace, loadResourceQuotaList)).items
+  return (await client.list("/api/v1", ResourceQuotaList, namespace, loadResourceQuotaList)).items
 
 type
   PersistentVolumeClaimList* = object
@@ -12806,7 +12881,7 @@ proc loadPersistentVolumeClaimList(parser: var JsonParser):PersistentVolumeClaim
   return ret 
 
 proc list*(client: Client, t: typedesc[PersistentVolumeClaim], namespace = "default"): Future[seq[PersistentVolumeClaim]] {.async.}=
-  return (await client.list("/api/v1",PersistentVolumeClaimList,namespace, loadPersistentVolumeClaimList)).items
+  return (await client.list("/api/v1", PersistentVolumeClaimList, namespace, loadPersistentVolumeClaimList)).items
 
 type
   PodList* = object
@@ -12879,7 +12954,7 @@ proc loadPodList(parser: var JsonParser):PodList =
   return ret 
 
 proc list*(client: Client, t: typedesc[Pod], namespace = "default"): Future[seq[Pod]] {.async.}=
-  return (await client.list("/api/v1",PodList,namespace, loadPodList)).items
+  return (await client.list("/api/v1", PodList, namespace, loadPodList)).items
 
 type
   ServiceAccount* = object
@@ -12972,7 +13047,12 @@ proc loadServiceAccount(parser: var JsonParser):ServiceAccount =
   return ret 
 
 proc get*(client: Client, t: typedesc[ServiceAccount], name: string, namespace = "default"): Future[ServiceAccount] {.async.}=
-  return await client.get("/api/v1",t,name,namespace, loadServiceAccount)
+  return await client.get("/api/v1", t, name, namespace, loadServiceAccount)
+
+proc create*(client: Client, t: ServiceAccount, namespace = "default"): Future[ServiceAccount] {.async.}=
+  t.apiVersion = "/api/v1"
+  t.kind = "ServiceAccount"
+  return await client.get("/api/v1", t, name, namespace, loadServiceAccount)
 
 type
   ServiceAccountList* = object
@@ -13045,7 +13125,7 @@ proc loadServiceAccountList(parser: var JsonParser):ServiceAccountList =
   return ret 
 
 proc list*(client: Client, t: typedesc[ServiceAccount], namespace = "default"): Future[seq[ServiceAccount]] {.async.}=
-  return (await client.list("/api/v1",ServiceAccountList,namespace, loadServiceAccountList)).items
+  return (await client.list("/api/v1", ServiceAccountList, namespace, loadServiceAccountList)).items
 
 type
   ReplicationControllerList* = object
@@ -13118,7 +13198,7 @@ proc loadReplicationControllerList(parser: var JsonParser):ReplicationController
   return ret 
 
 proc list*(client: Client, t: typedesc[ReplicationController], namespace = "default"): Future[seq[ReplicationController]] {.async.}=
-  return (await client.list("/api/v1",ReplicationControllerList,namespace, loadReplicationControllerList)).items
+  return (await client.list("/api/v1", ReplicationControllerList, namespace, loadReplicationControllerList)).items
 
 type
   EndpointsList* = object
@@ -13191,7 +13271,7 @@ proc loadEndpointsList(parser: var JsonParser):EndpointsList =
   return ret 
 
 proc list*(client: Client, t: typedesc[Endpoints], namespace = "default"): Future[seq[Endpoints]] {.async.}=
-  return (await client.list("/api/v1",EndpointsList,namespace, loadEndpointsList)).items
+  return (await client.list("/api/v1", EndpointsList, namespace, loadEndpointsList)).items
 
 type
   NamespaceList* = object
@@ -13264,7 +13344,7 @@ proc loadNamespaceList(parser: var JsonParser):NamespaceList =
   return ret 
 
 proc list*(client: Client, t: typedesc[Namespace], namespace = "default"): Future[seq[Namespace]] {.async.}=
-  return (await client.list("/api/v1",NamespaceList,namespace, loadNamespaceList)).items
+  return (await client.list("/api/v1", NamespaceList, namespace, loadNamespaceList)).items
 
 type
   Secret* = object
@@ -13357,7 +13437,12 @@ proc loadSecret(parser: var JsonParser):Secret =
   return ret 
 
 proc get*(client: Client, t: typedesc[Secret], name: string, namespace = "default"): Future[Secret] {.async.}=
-  return await client.get("/api/v1",t,name,namespace, loadSecret)
+  return await client.get("/api/v1", t, name, namespace, loadSecret)
+
+proc create*(client: Client, t: Secret, namespace = "default"): Future[Secret] {.async.}=
+  t.apiVersion = "/api/v1"
+  t.kind = "Secret"
+  return await client.get("/api/v1", t, name, namespace, loadSecret)
 
 type
   SecretList* = object
@@ -13430,4 +13515,4 @@ proc loadSecretList(parser: var JsonParser):SecretList =
   return ret 
 
 proc list*(client: Client, t: typedesc[Secret], namespace = "default"): Future[seq[Secret]] {.async.}=
-  return (await client.list("/api/v1",SecretList,namespace, loadSecretList)).items
+  return (await client.list("/api/v1", SecretList, namespace, loadSecretList)).items

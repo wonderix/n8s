@@ -22,6 +22,14 @@ proc newClient*(kubeconfig: string = ""): Client =
   result.account = result.config.account
   result.client = newAsyncHttpClient(sslContext= result.account.sslContext)
 
+proc loadJson[T](stream: Stream, path: string, load: proc(parser: var JsonParser): T): T =
+  var parser: JsonParser
+  try:
+    parser.open(stream,path)
+    parser.next
+    return load(parser)
+  finally:
+    parser.close
 
 proc get*(client: Client, path: string): Future[Stream] {.async.}=
   let response = await client.client.request(client.config.server & path, httpMethod = HttpGet, headers= client.account.authHeaders)
@@ -30,23 +38,26 @@ proc get*(client: Client, path: string): Future[Stream] {.async.}=
     raise newException(HttpRequestError,$parseJson(body)["message"].getStr & ": " & path)
   return newStringStream(body)
 
-proc get*[T](client: Client, path: string, load: proc(parser: var JsonParser): T): Future[T] {.async.}=
-  var parser: JsonParser
-  let stream = await client.get(path)
-  try:
-    parser.open(stream,path)
-    parser.next
-    return load(parser)
-  finally:
-    parser.close
-
 proc get*[T](client: Client, groupVersion: string, t: typedesc[T], name: string, namespace: string, load: proc(parser: var JsonParser): T): Future[T] {.async.}=
   let path = groupVersion & "/namespaces/" & namespace & "/" & ($t).toLowerAscii() & "s/" & name
-  return await client.get(path,load)
+  return loadJson(await client.get(path),path,load)
 
 proc list*[T](client: Client, groupVersion: string, t: typedesc[T], namespace: string, load: proc(parser: var JsonParser): T): Future[T] {.async.}=
   let path = groupVersion & "/namespaces/" & namespace & "/" & ($t).toLowerAscii()[0..^5] & "s"
-  return await client.get(path,load)
+  return loadJson(await client.get(path),path,load)
+
+proc create*(client: Client, path: string, content: string): Future[Stream] {.async.}=
+  let response = await client.client.request(client.config.server & path, httpMethod = HttpPost, headers= client.account.authHeaders, body=content)
+  let body = await response.body
+  if not response.code.is2xx:
+    raise newException(HttpRequestError,$parseJson(body)["message"].getStr & ": " & path)
+  return newStringStream(body)
+
+proc create*[T](client: Client, groupVersion: string, t: T, namespace: string, load: proc(parser: var JsonParser): T): Future[T] {.async.}=
+  let path = groupVersion & "/namespaces/" & namespace & "/" & ($(typedesc[T])).toLowerAscii() & "s"
+  let stream = newStringStream()
+  t.dump(stream)
+  return loadJson(await client.create(path,stream.readAll()),path,load)
 
 proc apiResources*(client: Client): Future[seq[APIResource]] {.async.}=
   let response = await client.client.request(client.config.server & "/api/v1", httpMethod = HttpGet, headers= client.account.authHeaders)
