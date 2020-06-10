@@ -4,7 +4,7 @@
 bin/test: test.nim $(wildcard src/kubernetes/*.nim) $(wildcard test/*.nim)
 	mkdir -p bin
 	nim c -d:ssl test.nim
-	mv test.out bin/test
+	mv test bin/test
 
 generate:: bin/generator
 	mkdir -p src/kubernetes/api
