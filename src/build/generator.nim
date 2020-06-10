@@ -1,5 +1,5 @@
 import asyncdispatch
-import client
+import ../kubernetes/client
 import json
 import tables
 import options
@@ -7,6 +7,7 @@ import sets
 import strutils
 import sequtils
 import strformat
+import parseopt
 
 type
 
@@ -216,14 +217,14 @@ proc fillReferences(name: string, definitions: Table[string,Definition], refs: v
 
 
 
-proc generate(self: Module) =
-  let f = open("test/" & self.name & ".nim",fmWrite)
+proc generate(self: Module, output: string) =
+  let f = open(output & "/" & self.name & ".nim",fmWrite)
   var refs = initOrderedSet[string]()
   var imports = initOrderedSet[string]()
   for name, definition in self.definitions.pairs:
     fillReferences(name,self.definitions,refs, imports)
 
-  f.writeLine("import ../src/kubernetes/client, ../src/kubernetes/base_types, sets, tables, options, times, asyncdispatch, parsejson, strutils, streams")
+  f.writeLine("import ../client, ../base_types, sets, tables, options, times, asyncdispatch, parsejson, strutils, streams")
   for i in imports:
     f.writeLine("import ",i)
 
@@ -232,15 +233,34 @@ proc generate(self: Module) =
   f.close()
 
 when isMainModule: 
-  proc generate() {.async.} = 
-    let client = newClient()
+  proc generate(output: string, kubeconfig: string, inc: string) {.async.} = 
+    let client = newClient(kubeconfig)
 
     let json = await client.openapi()
     let definitions = json["definitions"]
-    writeFile("api.json",pretty(definitions))
+    # writeFile("api.json",pretty(definitions))
     let schema = to(definitions,Definitions)
     let modules = schema.toModules()
     for module in modules:
-      module.generate()
+      if module.name.startsWith(inc):
+        module.generate(output)
 
-  waitFor generate()
+  proc usage() = 
+    echo "Usage: generator --kubeconfig=config --output=dir  --include=startmodule"
+    quit(0)
+
+  var p = initOptParser(@[])
+  var output = "."
+  var kubeconfig = ""
+  var inc = ""
+  for kind, key, val in p.getopt():
+    case kind
+    of cmdLongOption, cmdShortOption:
+      case key
+      of "help", "h": usage()
+      of "output" : output = val
+      of "kubeconfig" : kubeconfig = val
+      of "include" : inc = val
+    of cmdEnd: assert(false) # cannot happen
+    else: usage()
+  waitFor generate(output,kubeconfig,inc)
