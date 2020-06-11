@@ -184,9 +184,8 @@ proc dump*(self: TokenReview, s: JsonStream) =
   s.objectStart()
   s.name("apiVersion"); s.value("authentication.k8s.io/v1")
   s.name("kind"); s.value("TokenReview")
-  if not self.`spec`.isEmpty:
-    s.name("spec")
-    self.`spec`.dump(s)
+  s.name("spec")
+  self.`spec`.dump(s)
   if not self.`status`.isEmpty:
     s.name("status")
     self.`status`.dump(s)
@@ -213,3 +212,6 @@ proc get*(client: Client, t: typedesc[TokenReview], name: string, namespace = "d
 
 proc create*(client: Client, t: TokenReview, namespace = "default"): Future[TokenReview] {.async.}=
   return await client.create("/apis/authentication.k8s.io/v1", t, namespace, loadTokenReview)
+
+proc delete*(client: Client, t: typedesc[TokenReview], name: string, namespace = "default") {.async.}=
+  await client.delete("/apis/authentication.k8s.io/v1", t, name, namespace)

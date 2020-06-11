@@ -94,15 +94,13 @@ proc dump*(self: CronJobSpec, s: JsonStream) =
   if not self.`concurrencyPolicy`.isEmpty:
     s.name("concurrencyPolicy")
     self.`concurrencyPolicy`.dump(s)
-  if not self.`jobTemplate`.isEmpty:
-    s.name("jobTemplate")
-    self.`jobTemplate`.dump(s)
+  s.name("jobTemplate")
+  self.`jobTemplate`.dump(s)
   if not self.`successfulJobsHistoryLimit`.isEmpty:
     s.name("successfulJobsHistoryLimit")
     self.`successfulJobsHistoryLimit`.dump(s)
-  if not self.`schedule`.isEmpty:
-    s.name("schedule")
-    self.`schedule`.dump(s)
+  s.name("schedule")
+  self.`schedule`.dump(s)
   if not self.`startingDeadlineSeconds`.isEmpty:
     s.name("startingDeadlineSeconds")
     self.`startingDeadlineSeconds`.dump(s)
@@ -222,6 +220,9 @@ proc get*(client: Client, t: typedesc[CronJob], name: string, namespace = "defau
 proc create*(client: Client, t: CronJob, namespace = "default"): Future[CronJob] {.async.}=
   return await client.create("/apis/batch/v1beta1", t, namespace, loadCronJob)
 
+proc delete*(client: Client, t: typedesc[CronJob], name: string, namespace = "default") {.async.}=
+  await client.delete("/apis/batch/v1beta1", t, name, namespace)
+
 type
   CronJobList* = object
     `apiVersion`*: string
@@ -255,9 +256,8 @@ proc dump*(self: CronJobList, s: JsonStream) =
   s.objectStart()
   s.name("apiVersion"); s.value("batch/v1beta1")
   s.name("kind"); s.value("CronJobList")
-  if not self.`items`.isEmpty:
-    s.name("items")
-    self.`items`.dump(s)
+  s.name("items")
+  self.`items`.dump(s)
   if not self.`metadata`.isEmpty:
     s.name("metadata")
     self.`metadata`.dump(s)

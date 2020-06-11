@@ -123,6 +123,9 @@ proc get*(client: Client, t: typedesc[Lease], name: string, namespace = "default
 proc create*(client: Client, t: Lease, namespace = "default"): Future[Lease] {.async.}=
   return await client.create("/apis/coordination.k8s.io/v1", t, namespace, loadLease)
 
+proc delete*(client: Client, t: typedesc[Lease], name: string, namespace = "default") {.async.}=
+  await client.delete("/apis/coordination.k8s.io/v1", t, name, namespace)
+
 type
   LeaseList* = object
     `apiVersion`*: string
@@ -156,9 +159,8 @@ proc dump*(self: LeaseList, s: JsonStream) =
   s.objectStart()
   s.name("apiVersion"); s.value("coordination.k8s.io/v1")
   s.name("kind"); s.value("LeaseList")
-  if not self.`items`.isEmpty:
-    s.name("items")
-    self.`items`.dump(s)
+  s.name("items")
+  self.`items`.dump(s)
   if not self.`metadata`.isEmpty:
     s.name("metadata")
     self.`metadata`.dump(s)

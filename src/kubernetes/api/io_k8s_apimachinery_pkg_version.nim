@@ -49,33 +49,24 @@ proc load*(self: var Info, parser: var JsonParser) =
 
 proc dump*(self: Info, s: JsonStream) =
   s.objectStart()
-  if not self.`gitTreeState`.isEmpty:
-    s.name("gitTreeState")
-    self.`gitTreeState`.dump(s)
-  if not self.`gitVersion`.isEmpty:
-    s.name("gitVersion")
-    self.`gitVersion`.dump(s)
-  if not self.`platform`.isEmpty:
-    s.name("platform")
-    self.`platform`.dump(s)
-  if not self.`buildDate`.isEmpty:
-    s.name("buildDate")
-    self.`buildDate`.dump(s)
-  if not self.`major`.isEmpty:
-    s.name("major")
-    self.`major`.dump(s)
-  if not self.`goVersion`.isEmpty:
-    s.name("goVersion")
-    self.`goVersion`.dump(s)
-  if not self.`gitCommit`.isEmpty:
-    s.name("gitCommit")
-    self.`gitCommit`.dump(s)
-  if not self.`compiler`.isEmpty:
-    s.name("compiler")
-    self.`compiler`.dump(s)
-  if not self.`minor`.isEmpty:
-    s.name("minor")
-    self.`minor`.dump(s)
+  s.name("gitTreeState")
+  self.`gitTreeState`.dump(s)
+  s.name("gitVersion")
+  self.`gitVersion`.dump(s)
+  s.name("platform")
+  self.`platform`.dump(s)
+  s.name("buildDate")
+  self.`buildDate`.dump(s)
+  s.name("major")
+  self.`major`.dump(s)
+  s.name("goVersion")
+  self.`goVersion`.dump(s)
+  s.name("gitCommit")
+  self.`gitCommit`.dump(s)
+  s.name("compiler")
+  self.`compiler`.dump(s)
+  s.name("minor")
+  self.`minor`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: Info): bool =

@@ -33,12 +33,10 @@ proc load*(self: var HostPortRange, parser: var JsonParser) =
 
 proc dump*(self: HostPortRange, s: JsonStream) =
   s.objectStart()
-  if not self.`max`.isEmpty:
-    s.name("max")
-    self.`max`.dump(s)
-  if not self.`min`.isEmpty:
-    s.name("min")
-    self.`min`.dump(s)
+  s.name("max")
+  self.`max`.dump(s)
+  s.name("min")
+  self.`min`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: HostPortRange): bool =
@@ -113,9 +111,8 @@ proc load*(self: var AllowedFlexVolume, parser: var JsonParser) =
 
 proc dump*(self: AllowedFlexVolume, s: JsonStream) =
   s.objectStart()
-  if not self.`driver`.isEmpty:
-    s.name("driver")
-    self.`driver`.dump(s)
+  s.name("driver")
+  self.`driver`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: AllowedFlexVolume): bool =
@@ -147,9 +144,8 @@ proc load*(self: var RuntimeClassStrategyOptions, parser: var JsonParser) =
 
 proc dump*(self: RuntimeClassStrategyOptions, s: JsonStream) =
   s.objectStart()
-  if not self.`allowedRuntimeClassNames`.isEmpty:
-    s.name("allowedRuntimeClassNames")
-    self.`allowedRuntimeClassNames`.dump(s)
+  s.name("allowedRuntimeClassNames")
+  self.`allowedRuntimeClassNames`.dump(s)
   if not self.`defaultRuntimeClassName`.isEmpty:
     s.name("defaultRuntimeClassName")
     self.`defaultRuntimeClassName`.dump(s)
@@ -185,12 +181,10 @@ proc load*(self: var IDRange, parser: var JsonParser) =
 
 proc dump*(self: IDRange, s: JsonStream) =
   s.objectStart()
-  if not self.`max`.isEmpty:
-    s.name("max")
-    self.`max`.dump(s)
-  if not self.`min`.isEmpty:
-    s.name("min")
-    self.`min`.dump(s)
+  s.name("max")
+  self.`max`.dump(s)
+  s.name("min")
+  self.`min`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: IDRange): bool =
@@ -299,9 +293,8 @@ proc load*(self: var SELinuxStrategyOptions, parser: var JsonParser) =
 
 proc dump*(self: SELinuxStrategyOptions, s: JsonStream) =
   s.objectStart()
-  if not self.`rule`.isEmpty:
-    s.name("rule")
-    self.`rule`.dump(s)
+  s.name("rule")
+  self.`rule`.dump(s)
   if not self.`seLinuxOptions`.isEmpty:
     s.name("seLinuxOptions")
     self.`seLinuxOptions`.dump(s)
@@ -372,9 +365,8 @@ proc load*(self: var AllowedCSIDriver, parser: var JsonParser) =
 
 proc dump*(self: AllowedCSIDriver, s: JsonStream) =
   s.objectStart()
-  if not self.`name`.isEmpty:
-    s.name("name")
-    self.`name`.dump(s)
+  s.name("name")
+  self.`name`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: AllowedCSIDriver): bool =
@@ -406,9 +398,8 @@ proc load*(self: var RunAsGroupStrategyOptions, parser: var JsonParser) =
 
 proc dump*(self: RunAsGroupStrategyOptions, s: JsonStream) =
   s.objectStart()
-  if not self.`rule`.isEmpty:
-    s.name("rule")
-    self.`rule`.dump(s)
+  s.name("rule")
+  self.`rule`.dump(s)
   if not self.`ranges`.isEmpty:
     s.name("ranges")
     self.`ranges`.dump(s)
@@ -444,9 +435,8 @@ proc load*(self: var RunAsUserStrategyOptions, parser: var JsonParser) =
 
 proc dump*(self: RunAsUserStrategyOptions, s: JsonStream) =
   s.objectStart()
-  if not self.`rule`.isEmpty:
-    s.name("rule")
-    self.`rule`.dump(s)
+  s.name("rule")
+  self.`rule`.dump(s)
   if not self.`ranges`.isEmpty:
     s.name("ranges")
     self.`ranges`.dump(s)
@@ -560,15 +550,12 @@ proc dump*(self: PodSecurityPolicySpec, s: JsonStream) =
   if not self.`readOnlyRootFilesystem`.isEmpty:
     s.name("readOnlyRootFilesystem")
     self.`readOnlyRootFilesystem`.dump(s)
-  if not self.`fsGroup`.isEmpty:
-    s.name("fsGroup")
-    self.`fsGroup`.dump(s)
-  if not self.`supplementalGroups`.isEmpty:
-    s.name("supplementalGroups")
-    self.`supplementalGroups`.dump(s)
-  if not self.`seLinux`.isEmpty:
-    s.name("seLinux")
-    self.`seLinux`.dump(s)
+  s.name("fsGroup")
+  self.`fsGroup`.dump(s)
+  s.name("supplementalGroups")
+  self.`supplementalGroups`.dump(s)
+  s.name("seLinux")
+  self.`seLinux`.dump(s)
   if not self.`defaultAddCapabilities`.isEmpty:
     s.name("defaultAddCapabilities")
     self.`defaultAddCapabilities`.dump(s)
@@ -617,9 +604,8 @@ proc dump*(self: PodSecurityPolicySpec, s: JsonStream) =
   if not self.`forbiddenSysctls`.isEmpty:
     s.name("forbiddenSysctls")
     self.`forbiddenSysctls`.dump(s)
-  if not self.`runAsUser`.isEmpty:
-    s.name("runAsUser")
-    self.`runAsUser`.dump(s)
+  s.name("runAsUser")
+  self.`runAsUser`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: PodSecurityPolicySpec): bool =
@@ -708,6 +694,9 @@ proc get*(client: Client, t: typedesc[PodSecurityPolicy], name: string, namespac
 proc create*(client: Client, t: PodSecurityPolicy, namespace = "default"): Future[PodSecurityPolicy] {.async.}=
   return await client.create("/apis/policy/v1beta1", t, namespace, loadPodSecurityPolicy)
 
+proc delete*(client: Client, t: typedesc[PodSecurityPolicy], name: string, namespace = "default") {.async.}=
+  await client.delete("/apis/policy/v1beta1", t, name, namespace)
+
 type
   PodDisruptionBudgetStatus* = object
     `expectedPods`*: int
@@ -745,24 +734,20 @@ proc load*(self: var PodDisruptionBudgetStatus, parser: var JsonParser) =
 
 proc dump*(self: PodDisruptionBudgetStatus, s: JsonStream) =
   s.objectStart()
-  if not self.`expectedPods`.isEmpty:
-    s.name("expectedPods")
-    self.`expectedPods`.dump(s)
+  s.name("expectedPods")
+  self.`expectedPods`.dump(s)
   if not self.`disruptedPods`.isEmpty:
     s.name("disruptedPods")
     self.`disruptedPods`.dump(s)
   if not self.`observedGeneration`.isEmpty:
     s.name("observedGeneration")
     self.`observedGeneration`.dump(s)
-  if not self.`currentHealthy`.isEmpty:
-    s.name("currentHealthy")
-    self.`currentHealthy`.dump(s)
-  if not self.`disruptionsAllowed`.isEmpty:
-    s.name("disruptionsAllowed")
-    self.`disruptionsAllowed`.dump(s)
-  if not self.`desiredHealthy`.isEmpty:
-    s.name("desiredHealthy")
-    self.`desiredHealthy`.dump(s)
+  s.name("currentHealthy")
+  self.`currentHealthy`.dump(s)
+  s.name("disruptionsAllowed")
+  self.`disruptionsAllowed`.dump(s)
+  s.name("desiredHealthy")
+  self.`desiredHealthy`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: PodDisruptionBudgetStatus): bool =
@@ -840,6 +825,9 @@ proc get*(client: Client, t: typedesc[PodDisruptionBudget], name: string, namesp
 proc create*(client: Client, t: PodDisruptionBudget, namespace = "default"): Future[PodDisruptionBudget] {.async.}=
   return await client.create("/apis/policy/v1beta1", t, namespace, loadPodDisruptionBudget)
 
+proc delete*(client: Client, t: typedesc[PodDisruptionBudget], name: string, namespace = "default") {.async.}=
+  await client.delete("/apis/policy/v1beta1", t, name, namespace)
+
 type
   Eviction* = object
     `apiVersion`*: string
@@ -899,6 +887,9 @@ proc get*(client: Client, t: typedesc[Eviction], name: string, namespace = "defa
 proc create*(client: Client, t: Eviction, namespace = "default"): Future[Eviction] {.async.}=
   return await client.create("/apis/policy/v1beta1", t, namespace, loadEviction)
 
+proc delete*(client: Client, t: typedesc[Eviction], name: string, namespace = "default") {.async.}=
+  await client.delete("/apis/policy/v1beta1", t, name, namespace)
+
 type
   PodDisruptionBudgetList* = object
     `apiVersion`*: string
@@ -932,9 +923,8 @@ proc dump*(self: PodDisruptionBudgetList, s: JsonStream) =
   s.objectStart()
   s.name("apiVersion"); s.value("policy/v1beta1")
   s.name("kind"); s.value("PodDisruptionBudgetList")
-  if not self.`items`.isEmpty:
-    s.name("items")
-    self.`items`.dump(s)
+  s.name("items")
+  self.`items`.dump(s)
   if not self.`metadata`.isEmpty:
     s.name("metadata")
     self.`metadata`.dump(s)
@@ -988,9 +978,8 @@ proc dump*(self: PodSecurityPolicyList, s: JsonStream) =
   s.objectStart()
   s.name("apiVersion"); s.value("policy/v1beta1")
   s.name("kind"); s.value("PodSecurityPolicyList")
-  if not self.`items`.isEmpty:
-    s.name("items")
-    self.`items`.dump(s)
+  s.name("items")
+  self.`items`.dump(s)
   if not self.`metadata`.isEmpty:
     s.name("metadata")
     self.`metadata`.dump(s)

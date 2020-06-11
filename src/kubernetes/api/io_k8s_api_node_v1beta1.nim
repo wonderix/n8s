@@ -119,9 +119,8 @@ proc dump*(self: RuntimeClass, s: JsonStream) =
   if not self.`scheduling`.isEmpty:
     s.name("scheduling")
     self.`scheduling`.dump(s)
-  if not self.`handler`.isEmpty:
-    s.name("handler")
-    self.`handler`.dump(s)
+  s.name("handler")
+  self.`handler`.dump(s)
   if not self.`overhead`.isEmpty:
     s.name("overhead")
     self.`overhead`.dump(s)
@@ -149,6 +148,9 @@ proc get*(client: Client, t: typedesc[RuntimeClass], name: string, namespace = "
 
 proc create*(client: Client, t: RuntimeClass, namespace = "default"): Future[RuntimeClass] {.async.}=
   return await client.create("/apis/node.k8s.io/v1beta1", t, namespace, loadRuntimeClass)
+
+proc delete*(client: Client, t: typedesc[RuntimeClass], name: string, namespace = "default") {.async.}=
+  await client.delete("/apis/node.k8s.io/v1beta1", t, name, namespace)
 
 type
   RuntimeClassList* = object
@@ -183,9 +185,8 @@ proc dump*(self: RuntimeClassList, s: JsonStream) =
   s.objectStart()
   s.name("apiVersion"); s.value("node.k8s.io/v1beta1")
   s.name("kind"); s.value("RuntimeClassList")
-  if not self.`items`.isEmpty:
-    s.name("items")
-    self.`items`.dump(s)
+  s.name("items")
+  self.`items`.dump(s)
   if not self.`metadata`.isEmpty:
     s.name("metadata")
     self.`metadata`.dump(s)

@@ -45,9 +45,8 @@ proc dump*(self: PolicyRule, s: JsonStream) =
   if not self.`apiGroups`.isEmpty:
     s.name("apiGroups")
     self.`apiGroups`.dump(s)
-  if not self.`verbs`.isEmpty:
-    s.name("verbs")
-    self.`verbs`.dump(s)
+  s.name("verbs")
+  self.`verbs`.dump(s)
   if not self.`nonResourceURLs`.isEmpty:
     s.name("nonResourceURLs")
     self.`nonResourceURLs`.dump(s)
@@ -123,6 +122,9 @@ proc get*(client: Client, t: typedesc[Role], name: string, namespace = "default"
 proc create*(client: Client, t: Role, namespace = "default"): Future[Role] {.async.}=
   return await client.create("/apis/rbac.authorization.k8s.io/v1beta1", t, namespace, loadRole)
 
+proc delete*(client: Client, t: typedesc[Role], name: string, namespace = "default") {.async.}=
+  await client.delete("/apis/rbac.authorization.k8s.io/v1beta1", t, name, namespace)
+
 type
   RoleList* = object
     `apiVersion`*: string
@@ -156,9 +158,8 @@ proc dump*(self: RoleList, s: JsonStream) =
   s.objectStart()
   s.name("apiVersion"); s.value("rbac.authorization.k8s.io/v1beta1")
   s.name("kind"); s.value("RoleList")
-  if not self.`items`.isEmpty:
-    s.name("items")
-    self.`items`.dump(s)
+  s.name("items")
+  self.`items`.dump(s)
   if not self.`metadata`.isEmpty:
     s.name("metadata")
     self.`metadata`.dump(s)
@@ -276,6 +277,9 @@ proc get*(client: Client, t: typedesc[ClusterRole], name: string, namespace = "d
 proc create*(client: Client, t: ClusterRole, namespace = "default"): Future[ClusterRole] {.async.}=
   return await client.create("/apis/rbac.authorization.k8s.io/v1beta1", t, namespace, loadClusterRole)
 
+proc delete*(client: Client, t: typedesc[ClusterRole], name: string, namespace = "default") {.async.}=
+  await client.delete("/apis/rbac.authorization.k8s.io/v1beta1", t, name, namespace)
+
 type
   ClusterRoleList* = object
     `apiVersion`*: string
@@ -309,9 +313,8 @@ proc dump*(self: ClusterRoleList, s: JsonStream) =
   s.objectStart()
   s.name("apiVersion"); s.value("rbac.authorization.k8s.io/v1beta1")
   s.name("kind"); s.value("ClusterRoleList")
-  if not self.`items`.isEmpty:
-    s.name("items")
-    self.`items`.dump(s)
+  s.name("items")
+  self.`items`.dump(s)
   if not self.`metadata`.isEmpty:
     s.name("metadata")
     self.`metadata`.dump(s)
@@ -360,15 +363,12 @@ proc load*(self: var RoleRef, parser: var JsonParser) =
 
 proc dump*(self: RoleRef, s: JsonStream) =
   s.objectStart()
-  if not self.`apiGroup`.isEmpty:
-    s.name("apiGroup")
-    self.`apiGroup`.dump(s)
-  if not self.`name`.isEmpty:
-    s.name("name")
-    self.`name`.dump(s)
-  if not self.`kind`.isEmpty:
-    s.name("kind")
-    self.`kind`.dump(s)
+  s.name("apiGroup")
+  self.`apiGroup`.dump(s)
+  s.name("name")
+  self.`name`.dump(s)
+  s.name("kind")
+  self.`kind`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: RoleRef): bool =
@@ -414,12 +414,10 @@ proc dump*(self: Subject, s: JsonStream) =
   if not self.`apiGroup`.isEmpty:
     s.name("apiGroup")
     self.`apiGroup`.dump(s)
-  if not self.`name`.isEmpty:
-    s.name("name")
-    self.`name`.dump(s)
-  if not self.`kind`.isEmpty:
-    s.name("kind")
-    self.`kind`.dump(s)
+  s.name("name")
+  self.`name`.dump(s)
+  s.name("kind")
+  self.`kind`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: Subject): bool =
@@ -465,9 +463,8 @@ proc dump*(self: ClusterRoleBinding, s: JsonStream) =
   s.objectStart()
   s.name("apiVersion"); s.value("rbac.authorization.k8s.io/v1beta1")
   s.name("kind"); s.value("ClusterRoleBinding")
-  if not self.`roleRef`.isEmpty:
-    s.name("roleRef")
-    self.`roleRef`.dump(s)
+  s.name("roleRef")
+  self.`roleRef`.dump(s)
   if not self.`subjects`.isEmpty:
     s.name("subjects")
     self.`subjects`.dump(s)
@@ -494,6 +491,9 @@ proc get*(client: Client, t: typedesc[ClusterRoleBinding], name: string, namespa
 
 proc create*(client: Client, t: ClusterRoleBinding, namespace = "default"): Future[ClusterRoleBinding] {.async.}=
   return await client.create("/apis/rbac.authorization.k8s.io/v1beta1", t, namespace, loadClusterRoleBinding)
+
+proc delete*(client: Client, t: typedesc[ClusterRoleBinding], name: string, namespace = "default") {.async.}=
+  await client.delete("/apis/rbac.authorization.k8s.io/v1beta1", t, name, namespace)
 
 type
   RoleBinding* = object
@@ -531,9 +531,8 @@ proc dump*(self: RoleBinding, s: JsonStream) =
   s.objectStart()
   s.name("apiVersion"); s.value("rbac.authorization.k8s.io/v1beta1")
   s.name("kind"); s.value("RoleBinding")
-  if not self.`roleRef`.isEmpty:
-    s.name("roleRef")
-    self.`roleRef`.dump(s)
+  s.name("roleRef")
+  self.`roleRef`.dump(s)
   if not self.`subjects`.isEmpty:
     s.name("subjects")
     self.`subjects`.dump(s)
@@ -560,6 +559,9 @@ proc get*(client: Client, t: typedesc[RoleBinding], name: string, namespace = "d
 
 proc create*(client: Client, t: RoleBinding, namespace = "default"): Future[RoleBinding] {.async.}=
   return await client.create("/apis/rbac.authorization.k8s.io/v1beta1", t, namespace, loadRoleBinding)
+
+proc delete*(client: Client, t: typedesc[RoleBinding], name: string, namespace = "default") {.async.}=
+  await client.delete("/apis/rbac.authorization.k8s.io/v1beta1", t, name, namespace)
 
 type
   ClusterRoleBindingList* = object
@@ -594,9 +596,8 @@ proc dump*(self: ClusterRoleBindingList, s: JsonStream) =
   s.objectStart()
   s.name("apiVersion"); s.value("rbac.authorization.k8s.io/v1beta1")
   s.name("kind"); s.value("ClusterRoleBindingList")
-  if not self.`items`.isEmpty:
-    s.name("items")
-    self.`items`.dump(s)
+  s.name("items")
+  self.`items`.dump(s)
   if not self.`metadata`.isEmpty:
     s.name("metadata")
     self.`metadata`.dump(s)
@@ -650,9 +651,8 @@ proc dump*(self: RoleBindingList, s: JsonStream) =
   s.objectStart()
   s.name("apiVersion"); s.value("rbac.authorization.k8s.io/v1beta1")
   s.name("kind"); s.value("RoleBindingList")
-  if not self.`items`.isEmpty:
-    s.name("items")
-    self.`items`.dump(s)
+  s.name("items")
+  self.`items`.dump(s)
   if not self.`metadata`.isEmpty:
     s.name("metadata")
     self.`metadata`.dump(s)

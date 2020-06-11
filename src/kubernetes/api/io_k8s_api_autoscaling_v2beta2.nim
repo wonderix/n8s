@@ -37,12 +37,10 @@ proc dump*(self: CrossVersionObjectReference, s: JsonStream) =
   if not self.`apiVersion`.isEmpty:
     s.name("apiVersion")
     self.`apiVersion`.dump(s)
-  if not self.`name`.isEmpty:
-    s.name("name")
-    self.`name`.dump(s)
-  if not self.`kind`.isEmpty:
-    s.name("kind")
-    self.`kind`.dump(s)
+  s.name("name")
+  self.`name`.dump(s)
+  s.name("kind")
+  self.`kind`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: CrossVersionObjectReference): bool =
@@ -124,9 +122,8 @@ proc dump*(self: MetricIdentifier, s: JsonStream) =
   if not self.`selector`.isEmpty:
     s.name("selector")
     self.`selector`.dump(s)
-  if not self.`name`.isEmpty:
-    s.name("name")
-    self.`name`.dump(s)
+  s.name("name")
+  self.`name`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: MetricIdentifier): bool =
@@ -162,15 +159,12 @@ proc load*(self: var ObjectMetricStatus, parser: var JsonParser) =
 
 proc dump*(self: ObjectMetricStatus, s: JsonStream) =
   s.objectStart()
-  if not self.`describedObject`.isEmpty:
-    s.name("describedObject")
-    self.`describedObject`.dump(s)
-  if not self.`current`.isEmpty:
-    s.name("current")
-    self.`current`.dump(s)
-  if not self.`metric`.isEmpty:
-    s.name("metric")
-    self.`metric`.dump(s)
+  s.name("describedObject")
+  self.`describedObject`.dump(s)
+  s.name("current")
+  self.`current`.dump(s)
+  s.name("metric")
+  self.`metric`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: ObjectMetricStatus): bool =
@@ -204,12 +198,10 @@ proc load*(self: var ExternalMetricStatus, parser: var JsonParser) =
 
 proc dump*(self: ExternalMetricStatus, s: JsonStream) =
   s.objectStart()
-  if not self.`current`.isEmpty:
-    s.name("current")
-    self.`current`.dump(s)
-  if not self.`metric`.isEmpty:
-    s.name("metric")
-    self.`metric`.dump(s)
+  s.name("current")
+  self.`current`.dump(s)
+  s.name("metric")
+  self.`metric`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: ExternalMetricStatus): bool =
@@ -242,12 +234,10 @@ proc load*(self: var ResourceMetricStatus, parser: var JsonParser) =
 
 proc dump*(self: ResourceMetricStatus, s: JsonStream) =
   s.objectStart()
-  if not self.`current`.isEmpty:
-    s.name("current")
-    self.`current`.dump(s)
-  if not self.`name`.isEmpty:
-    s.name("name")
-    self.`name`.dump(s)
+  s.name("current")
+  self.`current`.dump(s)
+  s.name("name")
+  self.`name`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: ResourceMetricStatus): bool =
@@ -280,12 +270,10 @@ proc load*(self: var PodsMetricStatus, parser: var JsonParser) =
 
 proc dump*(self: PodsMetricStatus, s: JsonStream) =
   s.objectStart()
-  if not self.`current`.isEmpty:
-    s.name("current")
-    self.`current`.dump(s)
-  if not self.`metric`.isEmpty:
-    s.name("metric")
-    self.`metric`.dump(s)
+  s.name("current")
+  self.`current`.dump(s)
+  s.name("metric")
+  self.`metric`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: PodsMetricStatus): bool =
@@ -327,9 +315,8 @@ proc load*(self: var MetricStatus, parser: var JsonParser) =
 
 proc dump*(self: MetricStatus, s: JsonStream) =
   s.objectStart()
-  if not self.`type`.isEmpty:
-    s.name("type")
-    self.`type`.dump(s)
+  s.name("type")
+  self.`type`.dump(s)
   if not self.`external`.isEmpty:
     s.name("external")
     self.`external`.dump(s)
@@ -389,18 +376,16 @@ proc dump*(self: HorizontalPodAutoscalerCondition, s: JsonStream) =
   if not self.`lastTransitionTime`.isEmpty:
     s.name("lastTransitionTime")
     self.`lastTransitionTime`.dump(s)
-  if not self.`type`.isEmpty:
-    s.name("type")
-    self.`type`.dump(s)
+  s.name("type")
+  self.`type`.dump(s)
   if not self.`message`.isEmpty:
     s.name("message")
     self.`message`.dump(s)
   if not self.`reason`.isEmpty:
     s.name("reason")
     self.`reason`.dump(s)
-  if not self.`status`.isEmpty:
-    s.name("status")
-    self.`status`.dump(s)
+  s.name("status")
+  self.`status`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: HorizontalPodAutoscalerCondition): bool =
@@ -448,9 +433,8 @@ proc load*(self: var HorizontalPodAutoscalerStatus, parser: var JsonParser) =
 
 proc dump*(self: HorizontalPodAutoscalerStatus, s: JsonStream) =
   s.objectStart()
-  if not self.`desiredReplicas`.isEmpty:
-    s.name("desiredReplicas")
-    self.`desiredReplicas`.dump(s)
+  s.name("desiredReplicas")
+  self.`desiredReplicas`.dump(s)
   if not self.`observedGeneration`.isEmpty:
     s.name("observedGeneration")
     self.`observedGeneration`.dump(s)
@@ -460,12 +444,10 @@ proc dump*(self: HorizontalPodAutoscalerStatus, s: JsonStream) =
   if not self.`lastScaleTime`.isEmpty:
     s.name("lastScaleTime")
     self.`lastScaleTime`.dump(s)
-  if not self.`conditions`.isEmpty:
-    s.name("conditions")
-    self.`conditions`.dump(s)
-  if not self.`currentReplicas`.isEmpty:
-    s.name("currentReplicas")
-    self.`currentReplicas`.dump(s)
+  s.name("conditions")
+  self.`conditions`.dump(s)
+  s.name("currentReplicas")
+  self.`currentReplicas`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: HorizontalPodAutoscalerStatus): bool =
@@ -508,9 +490,8 @@ proc load*(self: var MetricTarget, parser: var JsonParser) =
 
 proc dump*(self: MetricTarget, s: JsonStream) =
   s.objectStart()
-  if not self.`type`.isEmpty:
-    s.name("type")
-    self.`type`.dump(s)
+  s.name("type")
+  self.`type`.dump(s)
   if not self.`averageValue`.isEmpty:
     s.name("averageValue")
     self.`averageValue`.dump(s)
@@ -554,12 +535,10 @@ proc load*(self: var ExternalMetricSource, parser: var JsonParser) =
 
 proc dump*(self: ExternalMetricSource, s: JsonStream) =
   s.objectStart()
-  if not self.`target`.isEmpty:
-    s.name("target")
-    self.`target`.dump(s)
-  if not self.`metric`.isEmpty:
-    s.name("metric")
-    self.`metric`.dump(s)
+  s.name("target")
+  self.`target`.dump(s)
+  s.name("metric")
+  self.`metric`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: ExternalMetricSource): bool =
@@ -592,12 +571,10 @@ proc load*(self: var ResourceMetricSource, parser: var JsonParser) =
 
 proc dump*(self: ResourceMetricSource, s: JsonStream) =
   s.objectStart()
-  if not self.`target`.isEmpty:
-    s.name("target")
-    self.`target`.dump(s)
-  if not self.`name`.isEmpty:
-    s.name("name")
-    self.`name`.dump(s)
+  s.name("target")
+  self.`target`.dump(s)
+  s.name("name")
+  self.`name`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: ResourceMetricSource): bool =
@@ -633,15 +610,12 @@ proc load*(self: var ObjectMetricSource, parser: var JsonParser) =
 
 proc dump*(self: ObjectMetricSource, s: JsonStream) =
   s.objectStart()
-  if not self.`target`.isEmpty:
-    s.name("target")
-    self.`target`.dump(s)
-  if not self.`describedObject`.isEmpty:
-    s.name("describedObject")
-    self.`describedObject`.dump(s)
-  if not self.`metric`.isEmpty:
-    s.name("metric")
-    self.`metric`.dump(s)
+  s.name("target")
+  self.`target`.dump(s)
+  s.name("describedObject")
+  self.`describedObject`.dump(s)
+  s.name("metric")
+  self.`metric`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: ObjectMetricSource): bool =
@@ -675,12 +649,10 @@ proc load*(self: var PodsMetricSource, parser: var JsonParser) =
 
 proc dump*(self: PodsMetricSource, s: JsonStream) =
   s.objectStart()
-  if not self.`target`.isEmpty:
-    s.name("target")
-    self.`target`.dump(s)
-  if not self.`metric`.isEmpty:
-    s.name("metric")
-    self.`metric`.dump(s)
+  s.name("target")
+  self.`target`.dump(s)
+  s.name("metric")
+  self.`metric`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: PodsMetricSource): bool =
@@ -722,9 +694,8 @@ proc load*(self: var MetricSpec, parser: var JsonParser) =
 
 proc dump*(self: MetricSpec, s: JsonStream) =
   s.objectStart()
-  if not self.`type`.isEmpty:
-    s.name("type")
-    self.`type`.dump(s)
+  s.name("type")
+  self.`type`.dump(s)
   if not self.`external`.isEmpty:
     s.name("external")
     self.`external`.dump(s)
@@ -781,12 +752,10 @@ proc dump*(self: HorizontalPodAutoscalerSpec, s: JsonStream) =
   if not self.`metrics`.isEmpty:
     s.name("metrics")
     self.`metrics`.dump(s)
-  if not self.`maxReplicas`.isEmpty:
-    s.name("maxReplicas")
-    self.`maxReplicas`.dump(s)
-  if not self.`scaleTargetRef`.isEmpty:
-    s.name("scaleTargetRef")
-    self.`scaleTargetRef`.dump(s)
+  s.name("maxReplicas")
+  self.`maxReplicas`.dump(s)
+  s.name("scaleTargetRef")
+  self.`scaleTargetRef`.dump(s)
   if not self.`minReplicas`.isEmpty:
     s.name("minReplicas")
     self.`minReplicas`.dump(s)
@@ -865,6 +834,9 @@ proc get*(client: Client, t: typedesc[HorizontalPodAutoscaler], name: string, na
 proc create*(client: Client, t: HorizontalPodAutoscaler, namespace = "default"): Future[HorizontalPodAutoscaler] {.async.}=
   return await client.create("/apis/autoscaling/v2beta2", t, namespace, loadHorizontalPodAutoscaler)
 
+proc delete*(client: Client, t: typedesc[HorizontalPodAutoscaler], name: string, namespace = "default") {.async.}=
+  await client.delete("/apis/autoscaling/v2beta2", t, name, namespace)
+
 type
   HorizontalPodAutoscalerList* = object
     `apiVersion`*: string
@@ -898,9 +870,8 @@ proc dump*(self: HorizontalPodAutoscalerList, s: JsonStream) =
   s.objectStart()
   s.name("apiVersion"); s.value("autoscaling/v2beta2")
   s.name("kind"); s.value("HorizontalPodAutoscalerList")
-  if not self.`items`.isEmpty:
-    s.name("items")
-    self.`items`.dump(s)
+  s.name("items")
+  self.`items`.dump(s)
   if not self.`metadata`.isEmpty:
     s.name("metadata")
     self.`metadata`.dump(s)

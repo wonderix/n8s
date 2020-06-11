@@ -181,12 +181,10 @@ proc load*(self: var ServerAddressByClientCIDR_v2, parser: var JsonParser) =
 
 proc dump*(self: ServerAddressByClientCIDR_v2, s: JsonStream) =
   s.objectStart()
-  if not self.`serverAddress`.isEmpty:
-    s.name("serverAddress")
-    self.`serverAddress`.dump(s)
-  if not self.`clientCIDR`.isEmpty:
-    s.name("clientCIDR")
-    self.`clientCIDR`.dump(s)
+  s.name("serverAddress")
+  self.`serverAddress`.dump(s)
+  s.name("clientCIDR")
+  self.`clientCIDR`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: ServerAddressByClientCIDR_v2): bool =
@@ -227,9 +225,8 @@ proc load*(self: var Initializer, parser: var JsonParser) =
 
 proc dump*(self: Initializer, s: JsonStream) =
   s.objectStart()
-  if not self.`name`.isEmpty:
-    s.name("name")
-    self.`name`.dump(s)
+  s.name("name")
+  self.`name`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: Initializer): bool =
@@ -479,6 +476,9 @@ proc get*(client: Client, t: typedesc[Status_v2], name: string, namespace = "def
 proc create*(client: Client, t: Status_v2, namespace = "default"): Future[Status_v2] {.async.}=
   return await client.create("/api/v1", t, namespace, loadStatus_v2)
 
+proc delete*(client: Client, t: typedesc[Status_v2], name: string, namespace = "default") {.async.}=
+  await client.delete("/api/v1", t, name, namespace)
+
 type
   Initializers* = object
     `pending`*: seq[Initializer]
@@ -504,9 +504,8 @@ proc load*(self: var Initializers, parser: var JsonParser) =
 
 proc dump*(self: Initializers, s: JsonStream) =
   s.objectStart()
-  if not self.`pending`.isEmpty:
-    s.name("pending")
-    self.`pending`.dump(s)
+  s.name("pending")
+  self.`pending`.dump(s)
   if not self.`result`.isEmpty:
     s.name("result")
     self.`result`.dump(s)
@@ -569,9 +568,8 @@ proc dump*(self: APIResource, s: JsonStream) =
   if not self.`version`.isEmpty:
     s.name("version")
     self.`version`.dump(s)
-  if not self.`singularName`.isEmpty:
-    s.name("singularName")
-    self.`singularName`.dump(s)
+  s.name("singularName")
+  self.`singularName`.dump(s)
   if not self.`shortNames`.isEmpty:
     s.name("shortNames")
     self.`shortNames`.dump(s)
@@ -581,18 +579,14 @@ proc dump*(self: APIResource, s: JsonStream) =
   if not self.`group`.isEmpty:
     s.name("group")
     self.`group`.dump(s)
-  if not self.`namespaced`.isEmpty:
-    s.name("namespaced")
-    self.`namespaced`.dump(s)
-  if not self.`name`.isEmpty:
-    s.name("name")
-    self.`name`.dump(s)
-  if not self.`verbs`.isEmpty:
-    s.name("verbs")
-    self.`verbs`.dump(s)
-  if not self.`kind`.isEmpty:
-    s.name("kind")
-    self.`kind`.dump(s)
+  s.name("namespaced")
+  self.`namespaced`.dump(s)
+  s.name("name")
+  self.`name`.dump(s)
+  s.name("verbs")
+  self.`verbs`.dump(s)
+  s.name("kind")
+  self.`kind`.dump(s)
   if not self.`storageVersionHash`.isEmpty:
     s.name("storageVersionHash")
     self.`storageVersionHash`.dump(s)
@@ -721,12 +715,10 @@ proc load*(self: var GroupVersionForDiscovery_v2, parser: var JsonParser) =
 
 proc dump*(self: GroupVersionForDiscovery_v2, s: JsonStream) =
   s.objectStart()
-  if not self.`version`.isEmpty:
-    s.name("version")
-    self.`version`.dump(s)
-  if not self.`groupVersion`.isEmpty:
-    s.name("groupVersion")
-    self.`groupVersion`.dump(s)
+  s.name("version")
+  self.`version`.dump(s)
+  s.name("groupVersion")
+  self.`groupVersion`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: GroupVersionForDiscovery_v2): bool =
@@ -771,24 +763,20 @@ proc load*(self: var OwnerReference_v2, parser: var JsonParser) =
 
 proc dump*(self: OwnerReference_v2, s: JsonStream) =
   s.objectStart()
-  if not self.`uid`.isEmpty:
-    s.name("uid")
-    self.`uid`.dump(s)
+  s.name("uid")
+  self.`uid`.dump(s)
   if not self.`controller`.isEmpty:
     s.name("controller")
     self.`controller`.dump(s)
-  if not self.`apiVersion`.isEmpty:
-    s.name("apiVersion")
-    self.`apiVersion`.dump(s)
+  s.name("apiVersion")
+  self.`apiVersion`.dump(s)
   if not self.`blockOwnerDeletion`.isEmpty:
     s.name("blockOwnerDeletion")
     self.`blockOwnerDeletion`.dump(s)
-  if not self.`name`.isEmpty:
-    s.name("name")
-    self.`name`.dump(s)
-  if not self.`kind`.isEmpty:
-    s.name("kind")
-    self.`kind`.dump(s)
+  s.name("name")
+  self.`name`.dump(s)
+  s.name("kind")
+  self.`kind`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: OwnerReference_v2): bool =
@@ -973,24 +961,20 @@ proc load*(self: var OwnerReference, parser: var JsonParser) =
 
 proc dump*(self: OwnerReference, s: JsonStream) =
   s.objectStart()
-  if not self.`uid`.isEmpty:
-    s.name("uid")
-    self.`uid`.dump(s)
+  s.name("uid")
+  self.`uid`.dump(s)
   if not self.`controller`.isEmpty:
     s.name("controller")
     self.`controller`.dump(s)
-  if not self.`apiVersion`.isEmpty:
-    s.name("apiVersion")
-    self.`apiVersion`.dump(s)
+  s.name("apiVersion")
+  self.`apiVersion`.dump(s)
   if not self.`blockOwnerDeletion`.isEmpty:
     s.name("blockOwnerDeletion")
     self.`blockOwnerDeletion`.dump(s)
-  if not self.`name`.isEmpty:
-    s.name("name")
-    self.`name`.dump(s)
-  if not self.`kind`.isEmpty:
-    s.name("kind")
-    self.`kind`.dump(s)
+  s.name("name")
+  self.`name`.dump(s)
+  s.name("kind")
+  self.`kind`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: OwnerReference): bool =
@@ -1029,12 +1013,10 @@ proc dump*(self: WatchEvent_v2, s: JsonStream) =
   s.objectStart()
   s.name("apiVersion"); s.value("v1")
   s.name("kind"); s.value("WatchEvent_v2")
-  if not self.`type`.isEmpty:
-    s.name("type")
-    self.`type`.dump(s)
-  if not self.`object`.isEmpty:
-    s.name("object")
-    self.`object`.dump(s)
+  s.name("type")
+  self.`type`.dump(s)
+  s.name("object")
+  self.`object`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: WatchEvent_v2): bool =
@@ -1052,6 +1034,9 @@ proc get*(client: Client, t: typedesc[WatchEvent_v2], name: string, namespace = 
 
 proc create*(client: Client, t: WatchEvent_v2, namespace = "default"): Future[WatchEvent_v2] {.async.}=
   return await client.create("/api/v1", t, namespace, loadWatchEvent_v2)
+
+proc delete*(client: Client, t: typedesc[WatchEvent_v2], name: string, namespace = "default") {.async.}=
+  await client.delete("/api/v1", t, name, namespace)
 
 type
   APIResourceList* = object
@@ -1086,12 +1071,10 @@ proc dump*(self: APIResourceList, s: JsonStream) =
   s.objectStart()
   s.name("apiVersion"); s.value("v1")
   s.name("kind"); s.value("APIResourceList")
-  if not self.`groupVersion`.isEmpty:
-    s.name("groupVersion")
-    self.`groupVersion`.dump(s)
-  if not self.`resources`.isEmpty:
-    s.name("resources")
-    self.`resources`.dump(s)
+  s.name("groupVersion")
+  self.`groupVersion`.dump(s)
+  s.name("resources")
+  self.`resources`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: APIResourceList): bool =
@@ -1165,12 +1148,10 @@ proc load*(self: var ServerAddressByClientCIDR, parser: var JsonParser) =
 
 proc dump*(self: ServerAddressByClientCIDR, s: JsonStream) =
   s.objectStart()
-  if not self.`serverAddress`.isEmpty:
-    s.name("serverAddress")
-    self.`serverAddress`.dump(s)
-  if not self.`clientCIDR`.isEmpty:
-    s.name("clientCIDR")
-    self.`clientCIDR`.dump(s)
+  s.name("serverAddress")
+  self.`serverAddress`.dump(s)
+  s.name("clientCIDR")
+  self.`clientCIDR`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: ServerAddressByClientCIDR): bool =
@@ -1203,12 +1184,10 @@ proc load*(self: var GroupVersionForDiscovery, parser: var JsonParser) =
 
 proc dump*(self: GroupVersionForDiscovery, s: JsonStream) =
   s.objectStart()
-  if not self.`version`.isEmpty:
-    s.name("version")
-    self.`version`.dump(s)
-  if not self.`groupVersion`.isEmpty:
-    s.name("groupVersion")
-    self.`groupVersion`.dump(s)
+  s.name("version")
+  self.`version`.dump(s)
+  s.name("groupVersion")
+  self.`groupVersion`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: GroupVersionForDiscovery): bool =
@@ -1258,12 +1237,10 @@ proc dump*(self: APIGroup, s: JsonStream) =
   if not self.`serverAddressByClientCIDRs`.isEmpty:
     s.name("serverAddressByClientCIDRs")
     self.`serverAddressByClientCIDRs`.dump(s)
-  if not self.`versions`.isEmpty:
-    s.name("versions")
-    self.`versions`.dump(s)
-  if not self.`name`.isEmpty:
-    s.name("name")
-    self.`name`.dump(s)
+  s.name("versions")
+  self.`versions`.dump(s)
+  s.name("name")
+  self.`name`.dump(s)
   if not self.`preferredVersion`.isEmpty:
     s.name("preferredVersion")
     self.`preferredVersion`.dump(s)
@@ -1288,6 +1265,9 @@ proc get*(client: Client, t: typedesc[APIGroup], name: string, namespace = "defa
 
 proc create*(client: Client, t: APIGroup, namespace = "default"): Future[APIGroup] {.async.}=
   return await client.create("/api/v1", t, namespace, loadAPIGroup)
+
+proc delete*(client: Client, t: typedesc[APIGroup], name: string, namespace = "default") {.async.}=
+  await client.delete("/api/v1", t, name, namespace)
 
 type
   APIGroupList* = object
@@ -1319,9 +1299,8 @@ proc dump*(self: APIGroupList, s: JsonStream) =
   s.objectStart()
   s.name("apiVersion"); s.value("v1")
   s.name("kind"); s.value("APIGroupList")
-  if not self.`groups`.isEmpty:
-    s.name("groups")
-    self.`groups`.dump(s)
+  s.name("groups")
+  self.`groups`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: APIGroupList): bool =
@@ -1365,12 +1344,10 @@ proc dump*(self: WatchEvent, s: JsonStream) =
   s.objectStart()
   s.name("apiVersion"); s.value("v1")
   s.name("kind"); s.value("WatchEvent")
-  if not self.`type`.isEmpty:
-    s.name("type")
-    self.`type`.dump(s)
-  if not self.`object`.isEmpty:
-    s.name("object")
-    self.`object`.dump(s)
+  s.name("type")
+  self.`type`.dump(s)
+  s.name("object")
+  self.`object`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: WatchEvent): bool =
@@ -1388,6 +1365,9 @@ proc get*(client: Client, t: typedesc[WatchEvent], name: string, namespace = "de
 
 proc create*(client: Client, t: WatchEvent, namespace = "default"): Future[WatchEvent] {.async.}=
   return await client.create("/api/v1", t, namespace, loadWatchEvent)
+
+proc delete*(client: Client, t: typedesc[WatchEvent], name: string, namespace = "default") {.async.}=
+  await client.delete("/api/v1", t, name, namespace)
 
 type
   LabelSelectorRequirement* = object
@@ -1417,15 +1397,13 @@ proc load*(self: var LabelSelectorRequirement, parser: var JsonParser) =
 
 proc dump*(self: LabelSelectorRequirement, s: JsonStream) =
   s.objectStart()
-  if not self.`key`.isEmpty:
-    s.name("key")
-    self.`key`.dump(s)
+  s.name("key")
+  self.`key`.dump(s)
   if not self.`values`.isEmpty:
     s.name("values")
     self.`values`.dump(s)
-  if not self.`operator`.isEmpty:
-    s.name("operator")
-    self.`operator`.dump(s)
+  s.name("operator")
+  self.`operator`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: LabelSelectorRequirement): bool =
@@ -1521,9 +1499,8 @@ proc dump*(self: APIResource_v2, s: JsonStream) =
   if not self.`version`.isEmpty:
     s.name("version")
     self.`version`.dump(s)
-  if not self.`singularName`.isEmpty:
-    s.name("singularName")
-    self.`singularName`.dump(s)
+  s.name("singularName")
+  self.`singularName`.dump(s)
   if not self.`shortNames`.isEmpty:
     s.name("shortNames")
     self.`shortNames`.dump(s)
@@ -1533,18 +1510,14 @@ proc dump*(self: APIResource_v2, s: JsonStream) =
   if not self.`group`.isEmpty:
     s.name("group")
     self.`group`.dump(s)
-  if not self.`namespaced`.isEmpty:
-    s.name("namespaced")
-    self.`namespaced`.dump(s)
-  if not self.`name`.isEmpty:
-    s.name("name")
-    self.`name`.dump(s)
-  if not self.`verbs`.isEmpty:
-    s.name("verbs")
-    self.`verbs`.dump(s)
-  if not self.`kind`.isEmpty:
-    s.name("kind")
-    self.`kind`.dump(s)
+  s.name("namespaced")
+  self.`namespaced`.dump(s)
+  s.name("name")
+  self.`name`.dump(s)
+  s.name("verbs")
+  self.`verbs`.dump(s)
+  s.name("kind")
+  self.`kind`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: APIResource_v2): bool =
@@ -1592,12 +1565,10 @@ proc dump*(self: APIResourceList_v2, s: JsonStream) =
   s.objectStart()
   s.name("apiVersion"); s.value("v1")
   s.name("kind"); s.value("APIResourceList_v2")
-  if not self.`groupVersion`.isEmpty:
-    s.name("groupVersion")
-    self.`groupVersion`.dump(s)
-  if not self.`resources`.isEmpty:
-    s.name("resources")
-    self.`resources`.dump(s)
+  s.name("groupVersion")
+  self.`groupVersion`.dump(s)
+  s.name("resources")
+  self.`resources`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: APIResourceList_v2): bool =
@@ -1617,6 +1588,9 @@ proc get*(client: Client, t: typedesc[APIResourceList_v2], name: string, namespa
 
 proc create*(client: Client, t: APIResourceList_v2, namespace = "default"): Future[APIResourceList_v2] {.async.}=
   return await client.create("/api/v1", t, namespace, loadAPIResourceList_v2)
+
+proc delete*(client: Client, t: typedesc[APIResourceList_v2], name: string, namespace = "default") {.async.}=
+  await client.delete("/api/v1", t, name, namespace)
 
 type
   APIVersions* = object
@@ -1651,12 +1625,10 @@ proc dump*(self: APIVersions, s: JsonStream) =
   s.objectStart()
   s.name("apiVersion"); s.value("v1")
   s.name("kind"); s.value("APIVersions")
-  if not self.`serverAddressByClientCIDRs`.isEmpty:
-    s.name("serverAddressByClientCIDRs")
-    self.`serverAddressByClientCIDRs`.dump(s)
-  if not self.`versions`.isEmpty:
-    s.name("versions")
-    self.`versions`.dump(s)
+  s.name("serverAddressByClientCIDRs")
+  self.`serverAddressByClientCIDRs`.dump(s)
+  s.name("versions")
+  self.`versions`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: APIVersions): bool =
@@ -1676,6 +1648,9 @@ proc get*(client: Client, t: typedesc[APIVersions], name: string, namespace = "d
 
 proc create*(client: Client, t: APIVersions, namespace = "default"): Future[APIVersions] {.async.}=
   return await client.create("/api/v1", t, namespace, loadAPIVersions)
+
+proc delete*(client: Client, t: typedesc[APIVersions], name: string, namespace = "default") {.async.}=
+  await client.delete("/api/v1", t, name, namespace)
 
 type
   Patch* = distinct Table[string,string]
@@ -1730,12 +1705,10 @@ proc dump*(self: APIGroup_v2, s: JsonStream) =
   if not self.`serverAddressByClientCIDRs`.isEmpty:
     s.name("serverAddressByClientCIDRs")
     self.`serverAddressByClientCIDRs`.dump(s)
-  if not self.`versions`.isEmpty:
-    s.name("versions")
-    self.`versions`.dump(s)
-  if not self.`name`.isEmpty:
-    s.name("name")
-    self.`name`.dump(s)
+  s.name("versions")
+  self.`versions`.dump(s)
+  s.name("name")
+  self.`name`.dump(s)
   if not self.`preferredVersion`.isEmpty:
     s.name("preferredVersion")
     self.`preferredVersion`.dump(s)
@@ -1760,6 +1733,9 @@ proc get*(client: Client, t: typedesc[APIGroup_v2], name: string, namespace = "d
 
 proc create*(client: Client, t: APIGroup_v2, namespace = "default"): Future[APIGroup_v2] {.async.}=
   return await client.create("/api/v1", t, namespace, loadAPIGroup_v2)
+
+proc delete*(client: Client, t: typedesc[APIGroup_v2], name: string, namespace = "default") {.async.}=
+  await client.delete("/api/v1", t, name, namespace)
 
 type
   ManagedFieldsEntry* = object
@@ -1906,6 +1882,9 @@ proc get*(client: Client, t: typedesc[DeleteOptions], name: string, namespace = 
 
 proc create*(client: Client, t: DeleteOptions, namespace = "default"): Future[DeleteOptions] {.async.}=
   return await client.create("/api/v1", t, namespace, loadDeleteOptions)
+
+proc delete*(client: Client, t: typedesc[DeleteOptions], name: string, namespace = "default") {.async.}=
+  await client.delete("/api/v1", t, name, namespace)
 
 type
   ObjectMeta* = object
@@ -2116,6 +2095,9 @@ proc get*(client: Client, t: typedesc[DeleteOptions_v2], name: string, namespace
 proc create*(client: Client, t: DeleteOptions_v2, namespace = "default"): Future[DeleteOptions_v2] {.async.}=
   return await client.create("/api/v1", t, namespace, loadDeleteOptions_v2)
 
+proc delete*(client: Client, t: typedesc[DeleteOptions_v2], name: string, namespace = "default") {.async.}=
+  await client.delete("/api/v1", t, name, namespace)
+
 type
   Status* = object
     `code`*: int
@@ -2202,3 +2184,6 @@ proc get*(client: Client, t: typedesc[Status], name: string, namespace = "defaul
 
 proc create*(client: Client, t: Status, namespace = "default"): Future[Status] {.async.}=
   return await client.create("/api/v1", t, namespace, loadStatus)
+
+proc delete*(client: Client, t: typedesc[Status], name: string, namespace = "default") {.async.}=
+  await client.delete("/api/v1", t, name, namespace)

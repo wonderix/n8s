@@ -36,12 +36,10 @@ proc dump*(self: CrossVersionObjectReference, s: JsonStream) =
   if not self.`apiVersion`.isEmpty:
     s.name("apiVersion")
     self.`apiVersion`.dump(s)
-  if not self.`name`.isEmpty:
-    s.name("name")
-    self.`name`.dump(s)
-  if not self.`kind`.isEmpty:
-    s.name("kind")
-    self.`kind`.dump(s)
+  s.name("name")
+  self.`name`.dump(s)
+  s.name("kind")
+  self.`kind`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: CrossVersionObjectReference): bool =
@@ -81,15 +79,13 @@ proc load*(self: var HorizontalPodAutoscalerSpec, parser: var JsonParser) =
 
 proc dump*(self: HorizontalPodAutoscalerSpec, s: JsonStream) =
   s.objectStart()
-  if not self.`maxReplicas`.isEmpty:
-    s.name("maxReplicas")
-    self.`maxReplicas`.dump(s)
+  s.name("maxReplicas")
+  self.`maxReplicas`.dump(s)
   if not self.`targetCPUUtilizationPercentage`.isEmpty:
     s.name("targetCPUUtilizationPercentage")
     self.`targetCPUUtilizationPercentage`.dump(s)
-  if not self.`scaleTargetRef`.isEmpty:
-    s.name("scaleTargetRef")
-    self.`scaleTargetRef`.dump(s)
+  s.name("scaleTargetRef")
+  self.`scaleTargetRef`.dump(s)
   if not self.`minReplicas`.isEmpty:
     s.name("minReplicas")
     self.`minReplicas`.dump(s)
@@ -136,9 +132,8 @@ proc load*(self: var HorizontalPodAutoscalerStatus, parser: var JsonParser) =
 
 proc dump*(self: HorizontalPodAutoscalerStatus, s: JsonStream) =
   s.objectStart()
-  if not self.`desiredReplicas`.isEmpty:
-    s.name("desiredReplicas")
-    self.`desiredReplicas`.dump(s)
+  s.name("desiredReplicas")
+  self.`desiredReplicas`.dump(s)
   if not self.`observedGeneration`.isEmpty:
     s.name("observedGeneration")
     self.`observedGeneration`.dump(s)
@@ -148,9 +143,8 @@ proc dump*(self: HorizontalPodAutoscalerStatus, s: JsonStream) =
   if not self.`currentCPUUtilizationPercentage`.isEmpty:
     s.name("currentCPUUtilizationPercentage")
     self.`currentCPUUtilizationPercentage`.dump(s)
-  if not self.`currentReplicas`.isEmpty:
-    s.name("currentReplicas")
-    self.`currentReplicas`.dump(s)
+  s.name("currentReplicas")
+  self.`currentReplicas`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: HorizontalPodAutoscalerStatus): bool =
@@ -227,6 +221,9 @@ proc get*(client: Client, t: typedesc[HorizontalPodAutoscaler], name: string, na
 proc create*(client: Client, t: HorizontalPodAutoscaler, namespace = "default"): Future[HorizontalPodAutoscaler] {.async.}=
   return await client.create("/apis/autoscaling/v1", t, namespace, loadHorizontalPodAutoscaler)
 
+proc delete*(client: Client, t: typedesc[HorizontalPodAutoscaler], name: string, namespace = "default") {.async.}=
+  await client.delete("/apis/autoscaling/v1", t, name, namespace)
+
 type
   ScaleSpec* = object
     `replicas`*: int
@@ -283,9 +280,8 @@ proc load*(self: var ScaleStatus, parser: var JsonParser) =
 
 proc dump*(self: ScaleStatus, s: JsonStream) =
   s.objectStart()
-  if not self.`replicas`.isEmpty:
-    s.name("replicas")
-    self.`replicas`.dump(s)
+  s.name("replicas")
+  self.`replicas`.dump(s)
   if not self.`selector`.isEmpty:
     s.name("selector")
     self.`selector`.dump(s)
@@ -362,6 +358,9 @@ proc get*(client: Client, t: typedesc[Scale], name: string, namespace = "default
 proc create*(client: Client, t: Scale, namespace = "default"): Future[Scale] {.async.}=
   return await client.create("/apis/autoscaling/v1", t, namespace, loadScale)
 
+proc delete*(client: Client, t: typedesc[Scale], name: string, namespace = "default") {.async.}=
+  await client.delete("/apis/autoscaling/v1", t, name, namespace)
+
 type
   HorizontalPodAutoscalerList* = object
     `apiVersion`*: string
@@ -395,9 +394,8 @@ proc dump*(self: HorizontalPodAutoscalerList, s: JsonStream) =
   s.objectStart()
   s.name("apiVersion"); s.value("autoscaling/v1")
   s.name("kind"); s.value("HorizontalPodAutoscalerList")
-  if not self.`items`.isEmpty:
-    s.name("items")
-    self.`items`.dump(s)
+  s.name("items")
+  self.`items`.dump(s)
   if not self.`metadata`.isEmpty:
     s.name("metadata")
     self.`metadata`.dump(s)

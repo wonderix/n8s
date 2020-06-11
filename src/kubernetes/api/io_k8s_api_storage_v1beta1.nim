@@ -73,15 +73,12 @@ proc load*(self: var VolumeAttachmentSpec, parser: var JsonParser) =
 
 proc dump*(self: VolumeAttachmentSpec, s: JsonStream) =
   s.objectStart()
-  if not self.`nodeName`.isEmpty:
-    s.name("nodeName")
-    self.`nodeName`.dump(s)
-  if not self.`attacher`.isEmpty:
-    s.name("attacher")
-    self.`attacher`.dump(s)
-  if not self.`source`.isEmpty:
-    s.name("source")
-    self.`source`.dump(s)
+  s.name("nodeName")
+  self.`nodeName`.dump(s)
+  s.name("attacher")
+  self.`attacher`.dump(s)
+  s.name("source")
+  self.`source`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: VolumeAttachmentSpec): bool =
@@ -159,9 +156,8 @@ proc load*(self: var VolumeAttachmentStatus, parser: var JsonParser) =
 
 proc dump*(self: VolumeAttachmentStatus, s: JsonStream) =
   s.objectStart()
-  if not self.`attached`.isEmpty:
-    s.name("attached")
-    self.`attached`.dump(s)
+  s.name("attached")
+  self.`attached`.dump(s)
   if not self.`detachError`.isEmpty:
     s.name("detachError")
     self.`detachError`.dump(s)
@@ -216,9 +212,8 @@ proc dump*(self: VolumeAttachment, s: JsonStream) =
   s.objectStart()
   s.name("apiVersion"); s.value("storage.k8s.io/v1beta1")
   s.name("kind"); s.value("VolumeAttachment")
-  if not self.`spec`.isEmpty:
-    s.name("spec")
-    self.`spec`.dump(s)
+  s.name("spec")
+  self.`spec`.dump(s)
   if not self.`status`.isEmpty:
     s.name("status")
     self.`status`.dump(s)
@@ -245,6 +240,9 @@ proc get*(client: Client, t: typedesc[VolumeAttachment], name: string, namespace
 
 proc create*(client: Client, t: VolumeAttachment, namespace = "default"): Future[VolumeAttachment] {.async.}=
   return await client.create("/apis/storage.k8s.io/v1beta1", t, namespace, loadVolumeAttachment)
+
+proc delete*(client: Client, t: typedesc[VolumeAttachment], name: string, namespace = "default") {.async.}=
+  await client.delete("/apis/storage.k8s.io/v1beta1", t, name, namespace)
 
 type
   VolumeAttachmentList* = object
@@ -279,9 +277,8 @@ proc dump*(self: VolumeAttachmentList, s: JsonStream) =
   s.objectStart()
   s.name("apiVersion"); s.value("storage.k8s.io/v1beta1")
   s.name("kind"); s.value("VolumeAttachmentList")
-  if not self.`items`.isEmpty:
-    s.name("items")
-    self.`items`.dump(s)
+  s.name("items")
+  self.`items`.dump(s)
   if not self.`metadata`.isEmpty:
     s.name("metadata")
     self.`metadata`.dump(s)
@@ -367,15 +364,13 @@ proc dump*(self: CSINodeDriver, s: JsonStream) =
   if not self.`allocatable`.isEmpty:
     s.name("allocatable")
     self.`allocatable`.dump(s)
-  if not self.`nodeID`.isEmpty:
-    s.name("nodeID")
-    self.`nodeID`.dump(s)
+  s.name("nodeID")
+  self.`nodeID`.dump(s)
   if not self.`topologyKeys`.isEmpty:
     s.name("topologyKeys")
     self.`topologyKeys`.dump(s)
-  if not self.`name`.isEmpty:
-    s.name("name")
-    self.`name`.dump(s)
+  s.name("name")
+  self.`name`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: CSINodeDriver): bool =
@@ -407,9 +402,8 @@ proc load*(self: var CSINodeSpec, parser: var JsonParser) =
 
 proc dump*(self: CSINodeSpec, s: JsonStream) =
   s.objectStart()
-  if not self.`drivers`.isEmpty:
-    s.name("drivers")
-    self.`drivers`.dump(s)
+  s.name("drivers")
+  self.`drivers`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: CSINodeSpec): bool =
@@ -449,9 +443,8 @@ proc dump*(self: CSINode, s: JsonStream) =
   s.objectStart()
   s.name("apiVersion"); s.value("storage.k8s.io/v1beta1")
   s.name("kind"); s.value("CSINode")
-  if not self.`spec`.isEmpty:
-    s.name("spec")
-    self.`spec`.dump(s)
+  s.name("spec")
+  self.`spec`.dump(s)
   if not self.`metadata`.isEmpty:
     s.name("metadata")
     self.`metadata`.dump(s)
@@ -474,6 +467,9 @@ proc get*(client: Client, t: typedesc[CSINode], name: string, namespace = "defau
 
 proc create*(client: Client, t: CSINode, namespace = "default"): Future[CSINode] {.async.}=
   return await client.create("/apis/storage.k8s.io/v1beta1", t, namespace, loadCSINode)
+
+proc delete*(client: Client, t: typedesc[CSINode], name: string, namespace = "default") {.async.}=
+  await client.delete("/apis/storage.k8s.io/v1beta1", t, name, namespace)
 
 type
   CSIDriverSpec* = object
@@ -553,9 +549,8 @@ proc dump*(self: CSIDriver, s: JsonStream) =
   s.objectStart()
   s.name("apiVersion"); s.value("storage.k8s.io/v1beta1")
   s.name("kind"); s.value("CSIDriver")
-  if not self.`spec`.isEmpty:
-    s.name("spec")
-    self.`spec`.dump(s)
+  s.name("spec")
+  self.`spec`.dump(s)
   if not self.`metadata`.isEmpty:
     s.name("metadata")
     self.`metadata`.dump(s)
@@ -578,6 +573,9 @@ proc get*(client: Client, t: typedesc[CSIDriver], name: string, namespace = "def
 
 proc create*(client: Client, t: CSIDriver, namespace = "default"): Future[CSIDriver] {.async.}=
   return await client.create("/apis/storage.k8s.io/v1beta1", t, namespace, loadCSIDriver)
+
+proc delete*(client: Client, t: typedesc[CSIDriver], name: string, namespace = "default") {.async.}=
+  await client.delete("/apis/storage.k8s.io/v1beta1", t, name, namespace)
 
 type
   CSIDriverList* = object
@@ -612,9 +610,8 @@ proc dump*(self: CSIDriverList, s: JsonStream) =
   s.objectStart()
   s.name("apiVersion"); s.value("storage.k8s.io/v1beta1")
   s.name("kind"); s.value("CSIDriverList")
-  if not self.`items`.isEmpty:
-    s.name("items")
-    self.`items`.dump(s)
+  s.name("items")
+  self.`items`.dump(s)
   if not self.`metadata`.isEmpty:
     s.name("metadata")
     self.`metadata`.dump(s)
@@ -668,9 +665,8 @@ proc dump*(self: CSINodeList, s: JsonStream) =
   s.objectStart()
   s.name("apiVersion"); s.value("storage.k8s.io/v1beta1")
   s.name("kind"); s.value("CSINodeList")
-  if not self.`items`.isEmpty:
-    s.name("items")
-    self.`items`.dump(s)
+  s.name("items")
+  self.`items`.dump(s)
   if not self.`metadata`.isEmpty:
     s.name("metadata")
     self.`metadata`.dump(s)
@@ -751,9 +747,8 @@ proc dump*(self: StorageClass, s: JsonStream) =
   if not self.`parameters`.isEmpty:
     s.name("parameters")
     self.`parameters`.dump(s)
-  if not self.`provisioner`.isEmpty:
-    s.name("provisioner")
-    self.`provisioner`.dump(s)
+  s.name("provisioner")
+  self.`provisioner`.dump(s)
   if not self.`volumeBindingMode`.isEmpty:
     s.name("volumeBindingMode")
     self.`volumeBindingMode`.dump(s)
@@ -792,6 +787,9 @@ proc get*(client: Client, t: typedesc[StorageClass], name: string, namespace = "
 proc create*(client: Client, t: StorageClass, namespace = "default"): Future[StorageClass] {.async.}=
   return await client.create("/apis/storage.k8s.io/v1beta1", t, namespace, loadStorageClass)
 
+proc delete*(client: Client, t: typedesc[StorageClass], name: string, namespace = "default") {.async.}=
+  await client.delete("/apis/storage.k8s.io/v1beta1", t, name, namespace)
+
 type
   StorageClassList* = object
     `apiVersion`*: string
@@ -825,9 +823,8 @@ proc dump*(self: StorageClassList, s: JsonStream) =
   s.objectStart()
   s.name("apiVersion"); s.value("storage.k8s.io/v1beta1")
   s.name("kind"); s.value("StorageClassList")
-  if not self.`items`.isEmpty:
-    s.name("items")
-    self.`items`.dump(s)
+  s.name("items")
+  self.`items`.dump(s)
   if not self.`metadata`.isEmpty:
     s.name("metadata")
     self.`metadata`.dump(s)

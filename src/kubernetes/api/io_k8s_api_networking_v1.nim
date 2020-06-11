@@ -72,9 +72,8 @@ proc dump*(self: IPBlock, s: JsonStream) =
   if not self.`except`.isEmpty:
     s.name("except")
     self.`except`.dump(s)
-  if not self.`cidr`.isEmpty:
-    s.name("cidr")
-    self.`cidr`.dump(s)
+  s.name("cidr")
+  self.`cidr`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: IPBlock): bool =
@@ -243,9 +242,8 @@ proc dump*(self: NetworkPolicySpec, s: JsonStream) =
   if not self.`ingress`.isEmpty:
     s.name("ingress")
     self.`ingress`.dump(s)
-  if not self.`podSelector`.isEmpty:
-    s.name("podSelector")
-    self.`podSelector`.dump(s)
+  s.name("podSelector")
+  self.`podSelector`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: NetworkPolicySpec): bool =
@@ -314,6 +312,9 @@ proc get*(client: Client, t: typedesc[NetworkPolicy], name: string, namespace = 
 proc create*(client: Client, t: NetworkPolicy, namespace = "default"): Future[NetworkPolicy] {.async.}=
   return await client.create("/apis/networking.k8s.io/v1", t, namespace, loadNetworkPolicy)
 
+proc delete*(client: Client, t: typedesc[NetworkPolicy], name: string, namespace = "default") {.async.}=
+  await client.delete("/apis/networking.k8s.io/v1", t, name, namespace)
+
 type
   NetworkPolicyList* = object
     `apiVersion`*: string
@@ -347,9 +348,8 @@ proc dump*(self: NetworkPolicyList, s: JsonStream) =
   s.objectStart()
   s.name("apiVersion"); s.value("networking.k8s.io/v1")
   s.name("kind"); s.value("NetworkPolicyList")
-  if not self.`items`.isEmpty:
-    s.name("items")
-    self.`items`.dump(s)
+  s.name("items")
+  self.`items`.dump(s)
   if not self.`metadata`.isEmpty:
     s.name("metadata")
     self.`metadata`.dump(s)

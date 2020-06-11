@@ -32,12 +32,10 @@ proc load*(self: var IngressBackend, parser: var JsonParser) =
 
 proc dump*(self: IngressBackend, s: JsonStream) =
   s.objectStart()
-  if not self.`serviceName`.isEmpty:
-    s.name("serviceName")
-    self.`serviceName`.dump(s)
-  if not self.`servicePort`.isEmpty:
-    s.name("servicePort")
-    self.`servicePort`.dump(s)
+  s.name("serviceName")
+  self.`serviceName`.dump(s)
+  s.name("servicePort")
+  self.`servicePort`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: IngressBackend): bool =
@@ -73,9 +71,8 @@ proc dump*(self: HTTPIngressPath, s: JsonStream) =
   if not self.`path`.isEmpty:
     s.name("path")
     self.`path`.dump(s)
-  if not self.`backend`.isEmpty:
-    s.name("backend")
-    self.`backend`.dump(s)
+  s.name("backend")
+  self.`backend`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: HTTPIngressPath): bool =
@@ -143,9 +140,8 @@ proc load*(self: var HTTPIngressRuleValue, parser: var JsonParser) =
 
 proc dump*(self: HTTPIngressRuleValue, s: JsonStream) =
   s.objectStart()
-  if not self.`paths`.isEmpty:
-    s.name("paths")
-    self.`paths`.dump(s)
+  s.name("paths")
+  self.`paths`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: HTTPIngressRuleValue): bool =
@@ -332,6 +328,9 @@ proc get*(client: Client, t: typedesc[Ingress], name: string, namespace = "defau
 proc create*(client: Client, t: Ingress, namespace = "default"): Future[Ingress] {.async.}=
   return await client.create("/apis/extensions/v1beta1", t, namespace, loadIngress)
 
+proc delete*(client: Client, t: typedesc[Ingress], name: string, namespace = "default") {.async.}=
+  await client.delete("/apis/extensions/v1beta1", t, name, namespace)
+
 type
   IngressList* = object
     `apiVersion`*: string
@@ -365,9 +364,8 @@ proc dump*(self: IngressList, s: JsonStream) =
   s.objectStart()
   s.name("apiVersion"); s.value("extensions/v1beta1")
   s.name("kind"); s.value("IngressList")
-  if not self.`items`.isEmpty:
-    s.name("items")
-    self.`items`.dump(s)
+  s.name("items")
+  self.`items`.dump(s)
   if not self.`metadata`.isEmpty:
     s.name("metadata")
     self.`metadata`.dump(s)

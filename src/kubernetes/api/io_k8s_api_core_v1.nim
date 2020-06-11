@@ -48,18 +48,16 @@ proc dump*(self: NodeCondition, s: JsonStream) =
   if not self.`lastTransitionTime`.isEmpty:
     s.name("lastTransitionTime")
     self.`lastTransitionTime`.dump(s)
-  if not self.`type`.isEmpty:
-    s.name("type")
-    self.`type`.dump(s)
+  s.name("type")
+  self.`type`.dump(s)
   if not self.`message`.isEmpty:
     s.name("message")
     self.`message`.dump(s)
   if not self.`reason`.isEmpty:
     s.name("reason")
     self.`reason`.dump(s)
-  if not self.`status`.isEmpty:
-    s.name("status")
-    self.`status`.dump(s)
+  s.name("status")
+  self.`status`.dump(s)
   if not self.`lastHeartbeatTime`.isEmpty:
     s.name("lastHeartbeatTime")
     self.`lastHeartbeatTime`.dump(s)
@@ -99,12 +97,10 @@ proc load*(self: var NodeAddress, parser: var JsonParser) =
 
 proc dump*(self: NodeAddress, s: JsonStream) =
   s.objectStart()
-  if not self.`type`.isEmpty:
-    s.name("type")
-    self.`type`.dump(s)
-  if not self.`address`.isEmpty:
-    s.name("address")
-    self.`address`.dump(s)
+  s.name("type")
+  self.`type`.dump(s)
+  s.name("address")
+  self.`address`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: NodeAddress): bool =
@@ -149,18 +145,15 @@ proc dump*(self: ConfigMapNodeConfigSource, s: JsonStream) =
   if not self.`uid`.isEmpty:
     s.name("uid")
     self.`uid`.dump(s)
-  if not self.`kubeletConfigKey`.isEmpty:
-    s.name("kubeletConfigKey")
-    self.`kubeletConfigKey`.dump(s)
+  s.name("kubeletConfigKey")
+  self.`kubeletConfigKey`.dump(s)
   if not self.`resourceVersion`.isEmpty:
     s.name("resourceVersion")
     self.`resourceVersion`.dump(s)
-  if not self.`namespace`.isEmpty:
-    s.name("namespace")
-    self.`namespace`.dump(s)
-  if not self.`name`.isEmpty:
-    s.name("name")
-    self.`name`.dump(s)
+  s.name("namespace")
+  self.`namespace`.dump(s)
+  s.name("name")
+  self.`name`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: ConfigMapNodeConfigSource): bool =
@@ -276,9 +269,8 @@ proc load*(self: var DaemonEndpoint, parser: var JsonParser) =
 
 proc dump*(self: DaemonEndpoint, s: JsonStream) =
   s.objectStart()
-  if not self.`Port`.isEmpty:
-    s.name("Port")
-    self.`Port`.dump(s)
+  s.name("Port")
+  self.`Port`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: DaemonEndpoint): bool =
@@ -365,36 +357,26 @@ proc load*(self: var NodeSystemInfo, parser: var JsonParser) =
 
 proc dump*(self: NodeSystemInfo, s: JsonStream) =
   s.objectStart()
-  if not self.`machineID`.isEmpty:
-    s.name("machineID")
-    self.`machineID`.dump(s)
-  if not self.`kernelVersion`.isEmpty:
-    s.name("kernelVersion")
-    self.`kernelVersion`.dump(s)
-  if not self.`osImage`.isEmpty:
-    s.name("osImage")
-    self.`osImage`.dump(s)
-  if not self.`systemUUID`.isEmpty:
-    s.name("systemUUID")
-    self.`systemUUID`.dump(s)
-  if not self.`bootID`.isEmpty:
-    s.name("bootID")
-    self.`bootID`.dump(s)
-  if not self.`containerRuntimeVersion`.isEmpty:
-    s.name("containerRuntimeVersion")
-    self.`containerRuntimeVersion`.dump(s)
-  if not self.`kubeletVersion`.isEmpty:
-    s.name("kubeletVersion")
-    self.`kubeletVersion`.dump(s)
-  if not self.`kubeProxyVersion`.isEmpty:
-    s.name("kubeProxyVersion")
-    self.`kubeProxyVersion`.dump(s)
-  if not self.`architecture`.isEmpty:
-    s.name("architecture")
-    self.`architecture`.dump(s)
-  if not self.`operatingSystem`.isEmpty:
-    s.name("operatingSystem")
-    self.`operatingSystem`.dump(s)
+  s.name("machineID")
+  self.`machineID`.dump(s)
+  s.name("kernelVersion")
+  self.`kernelVersion`.dump(s)
+  s.name("osImage")
+  self.`osImage`.dump(s)
+  s.name("systemUUID")
+  self.`systemUUID`.dump(s)
+  s.name("bootID")
+  self.`bootID`.dump(s)
+  s.name("containerRuntimeVersion")
+  self.`containerRuntimeVersion`.dump(s)
+  s.name("kubeletVersion")
+  self.`kubeletVersion`.dump(s)
+  s.name("kubeProxyVersion")
+  self.`kubeProxyVersion`.dump(s)
+  s.name("architecture")
+  self.`architecture`.dump(s)
+  s.name("operatingSystem")
+  self.`operatingSystem`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: NodeSystemInfo): bool =
@@ -435,12 +417,10 @@ proc load*(self: var AttachedVolume, parser: var JsonParser) =
 
 proc dump*(self: AttachedVolume, s: JsonStream) =
   s.objectStart()
-  if not self.`devicePath`.isEmpty:
-    s.name("devicePath")
-    self.`devicePath`.dump(s)
-  if not self.`name`.isEmpty:
-    s.name("name")
-    self.`name`.dump(s)
+  s.name("devicePath")
+  self.`devicePath`.dump(s)
+  s.name("name")
+  self.`name`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: AttachedVolume): bool =
@@ -476,9 +456,8 @@ proc dump*(self: ContainerImage, s: JsonStream) =
   if not self.`sizeBytes`.isEmpty:
     s.name("sizeBytes")
     self.`sizeBytes`.dump(s)
-  if not self.`names`.isEmpty:
-    s.name("names")
-    self.`names`.dump(s)
+  s.name("names")
+  self.`names`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: ContainerImage): bool =
@@ -612,12 +591,10 @@ proc load*(self: var HTTPHeader, parser: var JsonParser) =
 
 proc dump*(self: HTTPHeader, s: JsonStream) =
   s.objectStart()
-  if not self.`value`.isEmpty:
-    s.name("value")
-    self.`value`.dump(s)
-  if not self.`name`.isEmpty:
-    s.name("name")
-    self.`name`.dump(s)
+  s.name("value")
+  self.`value`.dump(s)
+  s.name("name")
+  self.`name`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: HTTPHeader): bool =
@@ -665,9 +642,8 @@ proc dump*(self: HTTPGetAction, s: JsonStream) =
   if not self.`httpHeaders`.isEmpty:
     s.name("httpHeaders")
     self.`httpHeaders`.dump(s)
-  if not self.`port`.isEmpty:
-    s.name("port")
-    self.`port`.dump(s)
+  s.name("port")
+  self.`port`.dump(s)
   if not self.`host`.isEmpty:
     s.name("host")
     self.`host`.dump(s)
@@ -740,9 +716,8 @@ proc load*(self: var TCPSocketAction, parser: var JsonParser) =
 
 proc dump*(self: TCPSocketAction, s: JsonStream) =
   s.objectStart()
-  if not self.`port`.isEmpty:
-    s.name("port")
-    self.`port`.dump(s)
+  s.name("port")
+  self.`port`.dump(s)
   if not self.`host`.isEmpty:
     s.name("host")
     self.`host`.dump(s)
@@ -873,9 +848,8 @@ proc dump*(self: PersistentVolumeClaimCondition, s: JsonStream) =
   if not self.`lastTransitionTime`.isEmpty:
     s.name("lastTransitionTime")
     self.`lastTransitionTime`.dump(s)
-  if not self.`type`.isEmpty:
-    s.name("type")
-    self.`type`.dump(s)
+  s.name("type")
+  self.`type`.dump(s)
   if not self.`message`.isEmpty:
     s.name("message")
     self.`message`.dump(s)
@@ -885,9 +859,8 @@ proc dump*(self: PersistentVolumeClaimCondition, s: JsonStream) =
   if not self.`reason`.isEmpty:
     s.name("reason")
     self.`reason`.dump(s)
-  if not self.`status`.isEmpty:
-    s.name("status")
-    self.`status`.dump(s)
+  s.name("status")
+  self.`status`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: PersistentVolumeClaimCondition): bool =
@@ -967,9 +940,8 @@ proc dump*(self: CSIVolumeSource, s: JsonStream) =
   if not self.`volumeAttributes`.isEmpty:
     s.name("volumeAttributes")
     self.`volumeAttributes`.dump(s)
-  if not self.`driver`.isEmpty:
-    s.name("driver")
-    self.`driver`.dump(s)
+  s.name("driver")
+  self.`driver`.dump(s)
   if not self.`fsType`.isEmpty:
     s.name("fsType")
     self.`fsType`.dump(s)
@@ -1135,12 +1107,10 @@ proc load*(self: var TopologySelectorLabelRequirement, parser: var JsonParser) =
 
 proc dump*(self: TopologySelectorLabelRequirement, s: JsonStream) =
   s.objectStart()
-  if not self.`key`.isEmpty:
-    s.name("key")
-    self.`key`.dump(s)
-  if not self.`values`.isEmpty:
-    s.name("values")
-    self.`values`.dump(s)
+  s.name("key")
+  self.`key`.dump(s)
+  s.name("values")
+  self.`values`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: TopologySelectorLabelRequirement): bool =
@@ -1207,9 +1177,8 @@ proc dump*(self: ObjectFieldSelector, s: JsonStream) =
   if not self.`apiVersion`.isEmpty:
     s.name("apiVersion")
     self.`apiVersion`.dump(s)
-  if not self.`fieldPath`.isEmpty:
-    s.name("fieldPath")
-    self.`fieldPath`.dump(s)
+  s.name("fieldPath")
+  self.`fieldPath`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: ObjectFieldSelector): bool =
@@ -1251,9 +1220,8 @@ proc dump*(self: PodAffinityTerm, s: JsonStream) =
   if not self.`labelSelector`.isEmpty:
     s.name("labelSelector")
     self.`labelSelector`.dump(s)
-  if not self.`topologyKey`.isEmpty:
-    s.name("topologyKey")
-    self.`topologyKey`.dump(s)
+  s.name("topologyKey")
+  self.`topologyKey`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: PodAffinityTerm): bool =
@@ -1287,12 +1255,10 @@ proc load*(self: var WeightedPodAffinityTerm, parser: var JsonParser) =
 
 proc dump*(self: WeightedPodAffinityTerm, s: JsonStream) =
   s.objectStart()
-  if not self.`podAffinityTerm`.isEmpty:
-    s.name("podAffinityTerm")
-    self.`podAffinityTerm`.dump(s)
-  if not self.`weight`.isEmpty:
-    s.name("weight")
-    self.`weight`.dump(s)
+  s.name("podAffinityTerm")
+  self.`podAffinityTerm`.dump(s)
+  s.name("weight")
+  self.`weight`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: WeightedPodAffinityTerm): bool =
@@ -1366,15 +1332,13 @@ proc load*(self: var NodeSelectorRequirement, parser: var JsonParser) =
 
 proc dump*(self: NodeSelectorRequirement, s: JsonStream) =
   s.objectStart()
-  if not self.`key`.isEmpty:
-    s.name("key")
-    self.`key`.dump(s)
+  s.name("key")
+  self.`key`.dump(s)
   if not self.`values`.isEmpty:
     s.name("values")
     self.`values`.dump(s)
-  if not self.`operator`.isEmpty:
-    s.name("operator")
-    self.`operator`.dump(s)
+  s.name("operator")
+  self.`operator`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: NodeSelectorRequirement): bool =
@@ -1446,12 +1410,10 @@ proc load*(self: var PreferredSchedulingTerm, parser: var JsonParser) =
 
 proc dump*(self: PreferredSchedulingTerm, s: JsonStream) =
   s.objectStart()
-  if not self.`preference`.isEmpty:
-    s.name("preference")
-    self.`preference`.dump(s)
-  if not self.`weight`.isEmpty:
-    s.name("weight")
-    self.`weight`.dump(s)
+  s.name("preference")
+  self.`preference`.dump(s)
+  s.name("weight")
+  self.`weight`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: PreferredSchedulingTerm): bool =
@@ -1481,9 +1443,8 @@ proc load*(self: var NodeSelector, parser: var JsonParser) =
 
 proc dump*(self: NodeSelector, s: JsonStream) =
   s.objectStart()
-  if not self.`nodeSelectorTerms`.isEmpty:
-    s.name("nodeSelectorTerms")
-    self.`nodeSelectorTerms`.dump(s)
+  s.name("nodeSelectorTerms")
+  self.`nodeSelectorTerms`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: NodeSelector): bool =
@@ -1740,9 +1701,8 @@ proc dump*(self: ContainerPort, s: JsonStream) =
   if not self.`name`.isEmpty:
     s.name("name")
     self.`name`.dump(s)
-  if not self.`containerPort`.isEmpty:
-    s.name("containerPort")
-    self.`containerPort`.dump(s)
+  s.name("containerPort")
+  self.`containerPort`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: ContainerPort): bool =
@@ -1781,9 +1741,8 @@ proc load*(self: var ConfigMapKeySelector, parser: var JsonParser) =
 
 proc dump*(self: ConfigMapKeySelector, s: JsonStream) =
   s.objectStart()
-  if not self.`key`.isEmpty:
-    s.name("key")
-    self.`key`.dump(s)
+  s.name("key")
+  self.`key`.dump(s)
   if not self.`name`.isEmpty:
     s.name("name")
     self.`name`.dump(s)
@@ -1826,9 +1785,8 @@ proc load*(self: var SecretKeySelector, parser: var JsonParser) =
 
 proc dump*(self: SecretKeySelector, s: JsonStream) =
   s.objectStart()
-  if not self.`key`.isEmpty:
-    s.name("key")
-    self.`key`.dump(s)
+  s.name("key")
+  self.`key`.dump(s)
   if not self.`name`.isEmpty:
     s.name("name")
     self.`name`.dump(s)
@@ -1874,9 +1832,8 @@ proc dump*(self: ResourceFieldSelector, s: JsonStream) =
   if not self.`divisor`.isEmpty:
     s.name("divisor")
     self.`divisor`.dump(s)
-  if not self.`resource`.isEmpty:
-    s.name("resource")
-    self.`resource`.dump(s)
+  s.name("resource")
+  self.`resource`.dump(s)
   if not self.`containerName`.isEmpty:
     s.name("containerName")
     self.`containerName`.dump(s)
@@ -1971,9 +1928,8 @@ proc dump*(self: EnvVar, s: JsonStream) =
   if not self.`value`.isEmpty:
     s.name("value")
     self.`value`.dump(s)
-  if not self.`name`.isEmpty:
-    s.name("name")
-    self.`name`.dump(s)
+  s.name("name")
+  self.`name`.dump(s)
   if not self.`valueFrom`.isEmpty:
     s.name("valueFrom")
     self.`valueFrom`.dump(s)
@@ -2010,12 +1966,10 @@ proc load*(self: var VolumeDevice, parser: var JsonParser) =
 
 proc dump*(self: VolumeDevice, s: JsonStream) =
   s.objectStart()
-  if not self.`devicePath`.isEmpty:
-    s.name("devicePath")
-    self.`devicePath`.dump(s)
-  if not self.`name`.isEmpty:
-    s.name("name")
-    self.`name`.dump(s)
+  s.name("devicePath")
+  self.`devicePath`.dump(s)
+  s.name("name")
+  self.`name`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: VolumeDevice): bool =
@@ -2107,12 +2061,10 @@ proc dump*(self: VolumeMount, s: JsonStream) =
   if not self.`subPath`.isEmpty:
     s.name("subPath")
     self.`subPath`.dump(s)
-  if not self.`mountPath`.isEmpty:
-    s.name("mountPath")
-    self.`mountPath`.dump(s)
-  if not self.`name`.isEmpty:
-    s.name("name")
-    self.`name`.dump(s)
+  s.name("mountPath")
+  self.`mountPath`.dump(s)
+  s.name("name")
+  self.`name`.dump(s)
   if not self.`readOnly`.isEmpty:
     s.name("readOnly")
     self.`readOnly`.dump(s)
@@ -2492,9 +2444,8 @@ proc dump*(self: EphemeralContainer, s: JsonStream) =
   if not self.`workingDir`.isEmpty:
     s.name("workingDir")
     self.`workingDir`.dump(s)
-  if not self.`name`.isEmpty:
-    s.name("name")
-    self.`name`.dump(s)
+  s.name("name")
+  self.`name`.dump(s)
   if not self.`volumeMounts`.isEmpty:
     s.name("volumeMounts")
     self.`volumeMounts`.dump(s)
@@ -2795,9 +2746,8 @@ proc dump*(self: Container, s: JsonStream) =
   if not self.`workingDir`.isEmpty:
     s.name("workingDir")
     self.`workingDir`.dump(s)
-  if not self.`name`.isEmpty:
-    s.name("name")
-    self.`name`.dump(s)
+  s.name("name")
+  self.`name`.dump(s)
   if not self.`volumeMounts`.isEmpty:
     s.name("volumeMounts")
     self.`volumeMounts`.dump(s)
@@ -2921,9 +2871,8 @@ proc load*(self: var PodReadinessGate, parser: var JsonParser) =
 
 proc dump*(self: PodReadinessGate, s: JsonStream) =
   s.objectStart()
-  if not self.`conditionType`.isEmpty:
-    s.name("conditionType")
-    self.`conditionType`.dump(s)
+  s.name("conditionType")
+  self.`conditionType`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: PodReadinessGate): bool =
@@ -2955,12 +2904,10 @@ proc load*(self: var Sysctl, parser: var JsonParser) =
 
 proc dump*(self: Sysctl, s: JsonStream) =
   s.objectStart()
-  if not self.`value`.isEmpty:
-    s.name("value")
-    self.`value`.dump(s)
-  if not self.`name`.isEmpty:
-    s.name("name")
-    self.`name`.dump(s)
+  s.name("value")
+  self.`value`.dump(s)
+  s.name("name")
+  self.`name`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: Sysctl): bool =
@@ -3082,15 +3029,12 @@ proc dump*(self: TopologySpreadConstraint, s: JsonStream) =
   if not self.`labelSelector`.isEmpty:
     s.name("labelSelector")
     self.`labelSelector`.dump(s)
-  if not self.`maxSkew`.isEmpty:
-    s.name("maxSkew")
-    self.`maxSkew`.dump(s)
-  if not self.`whenUnsatisfiable`.isEmpty:
-    s.name("whenUnsatisfiable")
-    self.`whenUnsatisfiable`.dump(s)
-  if not self.`topologyKey`.isEmpty:
-    s.name("topologyKey")
-    self.`topologyKey`.dump(s)
+  s.name("maxSkew")
+  self.`maxSkew`.dump(s)
+  s.name("whenUnsatisfiable")
+  self.`whenUnsatisfiable`.dump(s)
+  s.name("topologyKey")
+  self.`topologyKey`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: TopologySpreadConstraint): bool =
@@ -3137,9 +3081,8 @@ proc dump*(self: VsphereVirtualDiskVolumeSource, s: JsonStream) =
   if not self.`storagePolicyID`.isEmpty:
     s.name("storagePolicyID")
     self.`storagePolicyID`.dump(s)
-  if not self.`volumePath`.isEmpty:
-    s.name("volumePath")
-    self.`volumePath`.dump(s)
+  s.name("volumePath")
+  self.`volumePath`.dump(s)
   if not self.`fsType`.isEmpty:
     s.name("fsType")
     self.`fsType`.dump(s)
@@ -3180,12 +3123,10 @@ proc load*(self: var AzureFileVolumeSource, parser: var JsonParser) =
 
 proc dump*(self: AzureFileVolumeSource, s: JsonStream) =
   s.objectStart()
-  if not self.`shareName`.isEmpty:
-    s.name("shareName")
-    self.`shareName`.dump(s)
-  if not self.`secretName`.isEmpty:
-    s.name("secretName")
-    self.`secretName`.dump(s)
+  s.name("shareName")
+  self.`shareName`.dump(s)
+  s.name("secretName")
+  self.`secretName`.dump(s)
   if not self.`readOnly`.isEmpty:
     s.name("readOnly")
     self.`readOnly`.dump(s)
@@ -3243,12 +3184,10 @@ proc dump*(self: RBDVolumeSource, s: JsonStream) =
   if not self.`user`.isEmpty:
     s.name("user")
     self.`user`.dump(s)
-  if not self.`monitors`.isEmpty:
-    s.name("monitors")
-    self.`monitors`.dump(s)
-  if not self.`image`.isEmpty:
-    s.name("image")
-    self.`image`.dump(s)
+  s.name("monitors")
+  self.`monitors`.dump(s)
+  s.name("image")
+  self.`image`.dump(s)
   if not self.`keyring`.isEmpty:
     s.name("keyring")
     self.`keyring`.dump(s)
@@ -3320,9 +3259,8 @@ proc dump*(self: CephFSVolumeSource, s: JsonStream) =
   if not self.`user`.isEmpty:
     s.name("user")
     self.`user`.dump(s)
-  if not self.`monitors`.isEmpty:
-    s.name("monitors")
-    self.`monitors`.dump(s)
+  s.name("monitors")
+  self.`monitors`.dump(s)
   if not self.`secretFile`.isEmpty:
     s.name("secretFile")
     self.`secretFile`.dump(s)
@@ -3374,9 +3312,8 @@ proc load*(self: var DownwardAPIVolumeFile, parser: var JsonParser) =
 
 proc dump*(self: DownwardAPIVolumeFile, s: JsonStream) =
   s.objectStart()
-  if not self.`path`.isEmpty:
-    s.name("path")
-    self.`path`.dump(s)
+  s.name("path")
+  self.`path`.dump(s)
   if not self.`fieldRef`.isEmpty:
     s.name("fieldRef")
     self.`fieldRef`.dump(s)
@@ -3454,9 +3391,8 @@ proc load*(self: var ServiceAccountTokenProjection, parser: var JsonParser) =
 
 proc dump*(self: ServiceAccountTokenProjection, s: JsonStream) =
   s.objectStart()
-  if not self.`path`.isEmpty:
-    s.name("path")
-    self.`path`.dump(s)
+  s.name("path")
+  self.`path`.dump(s)
   if not self.`expirationSeconds`.isEmpty:
     s.name("expirationSeconds")
     self.`expirationSeconds`.dump(s)
@@ -3499,12 +3435,10 @@ proc load*(self: var KeyToPath, parser: var JsonParser) =
 
 proc dump*(self: KeyToPath, s: JsonStream) =
   s.objectStart()
-  if not self.`path`.isEmpty:
-    s.name("path")
-    self.`path`.dump(s)
-  if not self.`key`.isEmpty:
-    s.name("key")
-    self.`key`.dump(s)
+  s.name("path")
+  self.`path`.dump(s)
+  s.name("key")
+  self.`key`.dump(s)
   if not self.`mode`.isEmpty:
     s.name("mode")
     self.`mode`.dump(s)
@@ -3686,9 +3620,8 @@ proc dump*(self: ProjectedVolumeSource, s: JsonStream) =
   if not self.`defaultMode`.isEmpty:
     s.name("defaultMode")
     self.`defaultMode`.dump(s)
-  if not self.`sources`.isEmpty:
-    s.name("sources")
-    self.`sources`.dump(s)
+  s.name("sources")
+  self.`sources`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: ProjectedVolumeSource): bool =
@@ -3721,9 +3654,8 @@ proc load*(self: var HostPathVolumeSource, parser: var JsonParser) =
 
 proc dump*(self: HostPathVolumeSource, s: JsonStream) =
   s.objectStart()
-  if not self.`path`.isEmpty:
-    s.name("path")
-    self.`path`.dump(s)
+  s.name("path")
+  self.`path`.dump(s)
   if not self.`type`.isEmpty:
     s.name("type")
     self.`type`.dump(s)
@@ -3762,12 +3694,10 @@ proc load*(self: var GlusterfsVolumeSource, parser: var JsonParser) =
 
 proc dump*(self: GlusterfsVolumeSource, s: JsonStream) =
   s.objectStart()
-  if not self.`path`.isEmpty:
-    s.name("path")
-    self.`path`.dump(s)
-  if not self.`endpoints`.isEmpty:
-    s.name("endpoints")
-    self.`endpoints`.dump(s)
+  s.name("path")
+  self.`path`.dump(s)
+  s.name("endpoints")
+  self.`endpoints`.dump(s)
   if not self.`readOnly`.isEmpty:
     s.name("readOnly")
     self.`readOnly`.dump(s)
@@ -3819,9 +3749,8 @@ proc dump*(self: GCEPersistentDiskVolumeSource, s: JsonStream) =
   if not self.`readOnly`.isEmpty:
     s.name("readOnly")
     self.`readOnly`.dump(s)
-  if not self.`pdName`.isEmpty:
-    s.name("pdName")
-    self.`pdName`.dump(s)
+  s.name("pdName")
+  self.`pdName`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: GCEPersistentDiskVolumeSource): bool =
@@ -3871,12 +3800,10 @@ proc dump*(self: QuobyteVolumeSource, s: JsonStream) =
   if not self.`user`.isEmpty:
     s.name("user")
     self.`user`.dump(s)
-  if not self.`registry`.isEmpty:
-    s.name("registry")
-    self.`registry`.dump(s)
-  if not self.`volume`.isEmpty:
-    s.name("volume")
-    self.`volume`.dump(s)
+  s.name("registry")
+  self.`registry`.dump(s)
+  s.name("volume")
+  self.`volume`.dump(s)
   if not self.`group`.isEmpty:
     s.name("group")
     self.`group`.dump(s)
@@ -3925,12 +3852,10 @@ proc load*(self: var NFSVolumeSource, parser: var JsonParser) =
 
 proc dump*(self: NFSVolumeSource, s: JsonStream) =
   s.objectStart()
-  if not self.`path`.isEmpty:
-    s.name("path")
-    self.`path`.dump(s)
-  if not self.`server`.isEmpty:
-    s.name("server")
-    self.`server`.dump(s)
+  s.name("path")
+  self.`path`.dump(s)
+  s.name("server")
+  self.`server`.dump(s)
   if not self.`readOnly`.isEmpty:
     s.name("readOnly")
     self.`readOnly`.dump(s)
@@ -4081,9 +4006,8 @@ proc load*(self: var PersistentVolumeClaimVolumeSource, parser: var JsonParser) 
 
 proc dump*(self: PersistentVolumeClaimVolumeSource, s: JsonStream) =
   s.objectStart()
-  if not self.`claimName`.isEmpty:
-    s.name("claimName")
-    self.`claimName`.dump(s)
+  s.name("claimName")
+  self.`claimName`.dump(s)
   if not self.`readOnly`.isEmpty:
     s.name("readOnly")
     self.`readOnly`.dump(s)
@@ -4152,21 +4076,18 @@ proc dump*(self: ScaleIOVolumeSource, s: JsonStream) =
   if not self.`storagePool`.isEmpty:
     s.name("storagePool")
     self.`storagePool`.dump(s)
-  if not self.`gateway`.isEmpty:
-    s.name("gateway")
-    self.`gateway`.dump(s)
+  s.name("gateway")
+  self.`gateway`.dump(s)
   if not self.`fsType`.isEmpty:
     s.name("fsType")
     self.`fsType`.dump(s)
   if not self.`readOnly`.isEmpty:
     s.name("readOnly")
     self.`readOnly`.dump(s)
-  if not self.`secretRef`.isEmpty:
-    s.name("secretRef")
-    self.`secretRef`.dump(s)
-  if not self.`system`.isEmpty:
-    s.name("system")
-    self.`system`.dump(s)
+  s.name("secretRef")
+  self.`secretRef`.dump(s)
+  s.name("system")
+  self.`system`.dump(s)
   if not self.`sslEnabled`.isEmpty:
     s.name("sslEnabled")
     self.`sslEnabled`.dump(s)
@@ -4222,9 +4143,8 @@ proc load*(self: var FlexVolumeSource, parser: var JsonParser) =
 
 proc dump*(self: FlexVolumeSource, s: JsonStream) =
   s.objectStart()
-  if not self.`driver`.isEmpty:
-    s.name("driver")
-    self.`driver`.dump(s)
+  s.name("driver")
+  self.`driver`.dump(s)
   if not self.`options`.isEmpty:
     s.name("options")
     self.`options`.dump(s)
@@ -4385,9 +4305,8 @@ proc dump*(self: PortworxVolumeSource, s: JsonStream) =
   if not self.`readOnly`.isEmpty:
     s.name("readOnly")
     self.`readOnly`.dump(s)
-  if not self.`volumeID`.isEmpty:
-    s.name("volumeID")
-    self.`volumeID`.dump(s)
+  s.name("volumeID")
+  self.`volumeID`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: PortworxVolumeSource): bool =
@@ -4424,9 +4343,8 @@ proc load*(self: var GitRepoVolumeSource, parser: var JsonParser) =
 
 proc dump*(self: GitRepoVolumeSource, s: JsonStream) =
   s.objectStart()
-  if not self.`repository`.isEmpty:
-    s.name("repository")
-    self.`repository`.dump(s)
+  s.name("repository")
+  self.`repository`.dump(s)
   if not self.`directory`.isEmpty:
     s.name("directory")
     self.`directory`.dump(s)
@@ -4478,9 +4396,8 @@ proc load*(self: var AzureDiskVolumeSource, parser: var JsonParser) =
 
 proc dump*(self: AzureDiskVolumeSource, s: JsonStream) =
   s.objectStart()
-  if not self.`diskURI`.isEmpty:
-    s.name("diskURI")
-    self.`diskURI`.dump(s)
+  s.name("diskURI")
+  self.`diskURI`.dump(s)
   if not self.`cachingMode`.isEmpty:
     s.name("cachingMode")
     self.`cachingMode`.dump(s)
@@ -4490,9 +4407,8 @@ proc dump*(self: AzureDiskVolumeSource, s: JsonStream) =
   if not self.`readOnly`.isEmpty:
     s.name("readOnly")
     self.`readOnly`.dump(s)
-  if not self.`diskName`.isEmpty:
-    s.name("diskName")
-    self.`diskName`.dump(s)
+  s.name("diskName")
+  self.`diskName`.dump(s)
   if not self.`kind`.isEmpty:
     s.name("kind")
     self.`kind`.dump(s)
@@ -4547,9 +4463,8 @@ proc dump*(self: CinderVolumeSource, s: JsonStream) =
   if not self.`secretRef`.isEmpty:
     s.name("secretRef")
     self.`secretRef`.dump(s)
-  if not self.`volumeID`.isEmpty:
-    s.name("volumeID")
-    self.`volumeID`.dump(s)
+  s.name("volumeID")
+  self.`volumeID`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: CinderVolumeSource): bool =
@@ -4717,9 +4632,8 @@ proc dump*(self: AWSElasticBlockStoreVolumeSource, s: JsonStream) =
   if not self.`readOnly`.isEmpty:
     s.name("readOnly")
     self.`readOnly`.dump(s)
-  if not self.`volumeID`.isEmpty:
-    s.name("volumeID")
-    self.`volumeID`.dump(s)
+  s.name("volumeID")
+  self.`volumeID`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: AWSElasticBlockStoreVolumeSource): bool =
@@ -4781,15 +4695,13 @@ proc load*(self: var ISCSIVolumeSource, parser: var JsonParser) =
 
 proc dump*(self: ISCSIVolumeSource, s: JsonStream) =
   s.objectStart()
-  if not self.`iqn`.isEmpty:
-    s.name("iqn")
-    self.`iqn`.dump(s)
+  s.name("iqn")
+  self.`iqn`.dump(s)
   if not self.`iscsiInterface`.isEmpty:
     s.name("iscsiInterface")
     self.`iscsiInterface`.dump(s)
-  if not self.`lun`.isEmpty:
-    s.name("lun")
-    self.`lun`.dump(s)
+  s.name("lun")
+  self.`lun`.dump(s)
   if not self.`fsType`.isEmpty:
     s.name("fsType")
     self.`fsType`.dump(s)
@@ -4811,9 +4723,8 @@ proc dump*(self: ISCSIVolumeSource, s: JsonStream) =
   if not self.`portals`.isEmpty:
     s.name("portals")
     self.`portals`.dump(s)
-  if not self.`targetPortal`.isEmpty:
-    s.name("targetPortal")
-    self.`targetPortal`.dump(s)
+  s.name("targetPortal")
+  self.`targetPortal`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: ISCSIVolumeSource): bool =
@@ -4855,9 +4766,8 @@ proc load*(self: var PhotonPersistentDiskVolumeSource, parser: var JsonParser) =
 
 proc dump*(self: PhotonPersistentDiskVolumeSource, s: JsonStream) =
   s.objectStart()
-  if not self.`pdID`.isEmpty:
-    s.name("pdID")
-    self.`pdID`.dump(s)
+  s.name("pdID")
+  self.`pdID`.dump(s)
   if not self.`fsType`.isEmpty:
     s.name("fsType")
     self.`fsType`.dump(s)
@@ -5046,9 +4956,8 @@ proc dump*(self: Volume, s: JsonStream) =
   if not self.`csi`.isEmpty:
     s.name("csi")
     self.`csi`.dump(s)
-  if not self.`name`.isEmpty:
-    s.name("name")
-    self.`name`.dump(s)
+  s.name("name")
+  self.`name`.dump(s)
   if not self.`storageos`.isEmpty:
     s.name("storageos")
     self.`storageos`.dump(s)
@@ -5234,9 +5143,8 @@ proc dump*(self: PodSpec, s: JsonStream) =
   if not self.`activeDeadlineSeconds`.isEmpty:
     s.name("activeDeadlineSeconds")
     self.`activeDeadlineSeconds`.dump(s)
-  if not self.`containers`.isEmpty:
-    s.name("containers")
-    self.`containers`.dump(s)
+  s.name("containers")
+  self.`containers`.dump(s)
   if not self.`priorityClassName`.isEmpty:
     s.name("priorityClassName")
     self.`priorityClassName`.dump(s)
@@ -5447,9 +5355,8 @@ proc dump*(self: ContainerStateTerminated, s: JsonStream) =
   if not self.`containerID`.isEmpty:
     s.name("containerID")
     self.`containerID`.dump(s)
-  if not self.`exitCode`.isEmpty:
-    s.name("exitCode")
-    self.`exitCode`.dump(s)
+  s.name("exitCode")
+  self.`exitCode`.dump(s)
   if not self.`finishedAt`.isEmpty:
     s.name("finishedAt")
     self.`finishedAt`.dump(s)
@@ -5590,15 +5497,12 @@ proc load*(self: var ContainerStatus, parser: var JsonParser) =
 
 proc dump*(self: ContainerStatus, s: JsonStream) =
   s.objectStart()
-  if not self.`ready`.isEmpty:
-    s.name("ready")
-    self.`ready`.dump(s)
-  if not self.`imageID`.isEmpty:
-    s.name("imageID")
-    self.`imageID`.dump(s)
-  if not self.`image`.isEmpty:
-    s.name("image")
-    self.`image`.dump(s)
+  s.name("ready")
+  self.`ready`.dump(s)
+  s.name("imageID")
+  self.`imageID`.dump(s)
+  s.name("image")
+  self.`image`.dump(s)
   if not self.`started`.isEmpty:
     s.name("started")
     self.`started`.dump(s)
@@ -5608,12 +5512,10 @@ proc dump*(self: ContainerStatus, s: JsonStream) =
   if not self.`lastState`.isEmpty:
     s.name("lastState")
     self.`lastState`.dump(s)
-  if not self.`restartCount`.isEmpty:
-    s.name("restartCount")
-    self.`restartCount`.dump(s)
-  if not self.`name`.isEmpty:
-    s.name("name")
-    self.`name`.dump(s)
+  s.name("restartCount")
+  self.`restartCount`.dump(s)
+  s.name("name")
+  self.`name`.dump(s)
   if not self.`state`.isEmpty:
     s.name("state")
     self.`state`.dump(s)
@@ -5671,9 +5573,8 @@ proc dump*(self: PodCondition, s: JsonStream) =
   if not self.`lastTransitionTime`.isEmpty:
     s.name("lastTransitionTime")
     self.`lastTransitionTime`.dump(s)
-  if not self.`type`.isEmpty:
-    s.name("type")
-    self.`type`.dump(s)
+  s.name("type")
+  self.`type`.dump(s)
   if not self.`message`.isEmpty:
     s.name("message")
     self.`message`.dump(s)
@@ -5683,9 +5584,8 @@ proc dump*(self: PodCondition, s: JsonStream) =
   if not self.`reason`.isEmpty:
     s.name("reason")
     self.`reason`.dump(s)
-  if not self.`status`.isEmpty:
-    s.name("status")
-    self.`status`.dump(s)
+  s.name("status")
+  self.`status`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: PodCondition): bool =
@@ -5909,6 +5809,9 @@ proc get*(client: Client, t: typedesc[Pod], name: string, namespace = "default")
 proc create*(client: Client, t: Pod, namespace = "default"): Future[Pod] {.async.}=
   return await client.create("/api/v1", t, namespace, loadPod)
 
+proc delete*(client: Client, t: typedesc[Pod], name: string, namespace = "default") {.async.}=
+  await client.delete("/api/v1", t, name, namespace)
+
 type
   ObjectReference* = object
     `uid`*: string
@@ -6016,9 +5919,8 @@ proc dump*(self: EndpointAddress, s: JsonStream) =
   if not self.`nodeName`.isEmpty:
     s.name("nodeName")
     self.`nodeName`.dump(s)
-  if not self.`ip`.isEmpty:
-    s.name("ip")
-    self.`ip`.dump(s)
+  s.name("ip")
+  self.`ip`.dump(s)
   if not self.`hostname`.isEmpty:
     s.name("hostname")
     self.`hostname`.dump(s)
@@ -6065,9 +5967,8 @@ proc dump*(self: EndpointPort, s: JsonStream) =
   if not self.`protocol`.isEmpty:
     s.name("protocol")
     self.`protocol`.dump(s)
-  if not self.`port`.isEmpty:
-    s.name("port")
-    self.`port`.dump(s)
+  s.name("port")
+  self.`port`.dump(s)
   if not self.`name`.isEmpty:
     s.name("name")
     self.`name`.dump(s)
@@ -6183,6 +6084,9 @@ proc get*(client: Client, t: typedesc[Endpoints], name: string, namespace = "def
 proc create*(client: Client, t: Endpoints, namespace = "default"): Future[Endpoints] {.async.}=
   return await client.create("/api/v1", t, namespace, loadEndpoints)
 
+proc delete*(client: Client, t: typedesc[Endpoints], name: string, namespace = "default") {.async.}=
+  await client.delete("/api/v1", t, name, namespace)
+
 type
   ScopedResourceSelectorRequirement* = object
     `values`*: seq[string]
@@ -6214,12 +6118,10 @@ proc dump*(self: ScopedResourceSelectorRequirement, s: JsonStream) =
   if not self.`values`.isEmpty:
     s.name("values")
     self.`values`.dump(s)
-  if not self.`scopeName`.isEmpty:
-    s.name("scopeName")
-    self.`scopeName`.dump(s)
-  if not self.`operator`.isEmpty:
-    s.name("operator")
-    self.`operator`.dump(s)
+  s.name("scopeName")
+  self.`scopeName`.dump(s)
+  s.name("operator")
+  self.`operator`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: ScopedResourceSelectorRequirement): bool =
@@ -6259,12 +6161,10 @@ proc load*(self: var Taint, parser: var JsonParser) =
 
 proc dump*(self: Taint, s: JsonStream) =
   s.objectStart()
-  if not self.`key`.isEmpty:
-    s.name("key")
-    self.`key`.dump(s)
-  if not self.`effect`.isEmpty:
-    s.name("effect")
-    self.`effect`.dump(s)
+  s.name("key")
+  self.`key`.dump(s)
+  s.name("effect")
+  self.`effect`.dump(s)
   if not self.`timeAdded`.isEmpty:
     s.name("timeAdded")
     self.`timeAdded`.dump(s)
@@ -6384,12 +6284,10 @@ proc load*(self: var AzureFilePersistentVolumeSource, parser: var JsonParser) =
 
 proc dump*(self: AzureFilePersistentVolumeSource, s: JsonStream) =
   s.objectStart()
-  if not self.`shareName`.isEmpty:
-    s.name("shareName")
-    self.`shareName`.dump(s)
-  if not self.`secretName`.isEmpty:
-    s.name("secretName")
-    self.`secretName`.dump(s)
+  s.name("shareName")
+  self.`shareName`.dump(s)
+  s.name("secretName")
+  self.`secretName`.dump(s)
   if not self.`secretNamespace`.isEmpty:
     s.name("secretNamespace")
     self.`secretNamespace`.dump(s)
@@ -6570,18 +6468,16 @@ proc dump*(self: ReplicationControllerCondition, s: JsonStream) =
   if not self.`lastTransitionTime`.isEmpty:
     s.name("lastTransitionTime")
     self.`lastTransitionTime`.dump(s)
-  if not self.`type`.isEmpty:
-    s.name("type")
-    self.`type`.dump(s)
+  s.name("type")
+  self.`type`.dump(s)
   if not self.`message`.isEmpty:
     s.name("message")
     self.`message`.dump(s)
   if not self.`reason`.isEmpty:
     s.name("reason")
     self.`reason`.dump(s)
-  if not self.`status`.isEmpty:
-    s.name("status")
-    self.`status`.dump(s)
+  s.name("status")
+  self.`status`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: ReplicationControllerCondition): bool =
@@ -6632,9 +6528,8 @@ proc dump*(self: ReplicationControllerStatus, s: JsonStream) =
   if not self.`fullyLabeledReplicas`.isEmpty:
     s.name("fullyLabeledReplicas")
     self.`fullyLabeledReplicas`.dump(s)
-  if not self.`replicas`.isEmpty:
-    s.name("replicas")
-    self.`replicas`.dump(s)
+  s.name("replicas")
+  self.`replicas`.dump(s)
   if not self.`observedGeneration`.isEmpty:
     s.name("observedGeneration")
     self.`observedGeneration`.dump(s)
@@ -6724,6 +6619,9 @@ proc get*(client: Client, t: typedesc[ReplicationController], name: string, name
 proc create*(client: Client, t: ReplicationController, namespace = "default"): Future[ReplicationController] {.async.}=
   return await client.create("/api/v1", t, namespace, loadReplicationController)
 
+proc delete*(client: Client, t: typedesc[ReplicationController], name: string, namespace = "default") {.async.}=
+  await client.delete("/api/v1", t, name, namespace)
+
 type
   LimitRangeItem* = object
     `maxLimitRequestRatio`*: Table[string,io_k8s_apimachinery_pkg_api_resource.Quantity]
@@ -6812,9 +6710,8 @@ proc load*(self: var LimitRangeSpec, parser: var JsonParser) =
 
 proc dump*(self: LimitRangeSpec, s: JsonStream) =
   s.objectStart()
-  if not self.`limits`.isEmpty:
-    s.name("limits")
-    self.`limits`.dump(s)
+  s.name("limits")
+  self.`limits`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: LimitRangeSpec): bool =
@@ -6880,6 +6777,9 @@ proc get*(client: Client, t: typedesc[LimitRange], name: string, namespace = "de
 proc create*(client: Client, t: LimitRange, namespace = "default"): Future[LimitRange] {.async.}=
   return await client.create("/api/v1", t, namespace, loadLimitRange)
 
+proc delete*(client: Client, t: typedesc[LimitRange], name: string, namespace = "default") {.async.}=
+  await client.delete("/api/v1", t, name, namespace)
+
 type
   LimitRangeList* = object
     `apiVersion`*: string
@@ -6913,9 +6813,8 @@ proc dump*(self: LimitRangeList, s: JsonStream) =
   s.objectStart()
   s.name("apiVersion"); s.value("v1")
   s.name("kind"); s.value("LimitRangeList")
-  if not self.`items`.isEmpty:
-    s.name("items")
-    self.`items`.dump(s)
+  s.name("items")
+  self.`items`.dump(s)
   if not self.`metadata`.isEmpty:
     s.name("metadata")
     self.`metadata`.dump(s)
@@ -7002,6 +6901,9 @@ proc get*(client: Client, t: typedesc[Node], name: string, namespace = "default"
 proc create*(client: Client, t: Node, namespace = "default"): Future[Node] {.async.}=
   return await client.create("/api/v1", t, namespace, loadNode)
 
+proc delete*(client: Client, t: typedesc[Node], name: string, namespace = "default") {.async.}=
+  await client.delete("/api/v1", t, name, namespace)
+
 type
   NodeList* = object
     `apiVersion`*: string
@@ -7035,9 +6937,8 @@ proc dump*(self: NodeList, s: JsonStream) =
   s.objectStart()
   s.name("apiVersion"); s.value("v1")
   s.name("kind"); s.value("NodeList")
-  if not self.`items`.isEmpty:
-    s.name("items")
-    self.`items`.dump(s)
+  s.name("items")
+  self.`items`.dump(s)
   if not self.`metadata`.isEmpty:
     s.name("metadata")
     self.`metadata`.dump(s)
@@ -7101,9 +7002,8 @@ proc dump*(self: ServicePort, s: JsonStream) =
   if not self.`protocol`.isEmpty:
     s.name("protocol")
     self.`protocol`.dump(s)
-  if not self.`port`.isEmpty:
-    s.name("port")
-    self.`port`.dump(s)
+  s.name("port")
+  self.`port`.dump(s)
   if not self.`name`.isEmpty:
     s.name("name")
     self.`name`.dump(s)
@@ -7273,6 +7173,9 @@ proc get*(client: Client, t: typedesc[ConfigMap], name: string, namespace = "def
 proc create*(client: Client, t: ConfigMap, namespace = "default"): Future[ConfigMap] {.async.}=
   return await client.create("/api/v1", t, namespace, loadConfigMap)
 
+proc delete*(client: Client, t: typedesc[ConfigMap], name: string, namespace = "default") {.async.}=
+  await client.delete("/api/v1", t, name, namespace)
+
 type
   ConfigMapList* = object
     `apiVersion`*: string
@@ -7306,9 +7209,8 @@ proc dump*(self: ConfigMapList, s: JsonStream) =
   s.objectStart()
   s.name("apiVersion"); s.value("v1")
   s.name("kind"); s.value("ConfigMapList")
-  if not self.`items`.isEmpty:
-    s.name("items")
-    self.`items`.dump(s)
+  s.name("items")
+  self.`items`.dump(s)
   if not self.`metadata`.isEmpty:
     s.name("metadata")
     self.`metadata`.dump(s)
@@ -7679,6 +7581,9 @@ proc get*(client: Client, t: typedesc[Service], name: string, namespace = "defau
 proc create*(client: Client, t: Service, namespace = "default"): Future[Service] {.async.}=
   return await client.create("/api/v1", t, namespace, loadService)
 
+proc delete*(client: Client, t: typedesc[Service], name: string, namespace = "default") {.async.}=
+  await client.delete("/api/v1", t, name, namespace)
+
 type
   ServiceList* = object
     `apiVersion`*: string
@@ -7712,9 +7617,8 @@ proc dump*(self: ServiceList, s: JsonStream) =
   s.objectStart()
   s.name("apiVersion"); s.value("v1")
   s.name("kind"); s.value("ServiceList")
-  if not self.`items`.isEmpty:
-    s.name("items")
-    self.`items`.dump(s)
+  s.name("items")
+  self.`items`.dump(s)
   if not self.`metadata`.isEmpty:
     s.name("metadata")
     self.`metadata`.dump(s)
@@ -7772,18 +7676,16 @@ proc dump*(self: NamespaceCondition, s: JsonStream) =
   if not self.`lastTransitionTime`.isEmpty:
     s.name("lastTransitionTime")
     self.`lastTransitionTime`.dump(s)
-  if not self.`type`.isEmpty:
-    s.name("type")
-    self.`type`.dump(s)
+  s.name("type")
+  self.`type`.dump(s)
   if not self.`message`.isEmpty:
     s.name("message")
     self.`message`.dump(s)
   if not self.`reason`.isEmpty:
     s.name("reason")
     self.`reason`.dump(s)
-  if not self.`status`.isEmpty:
-    s.name("status")
-    self.`status`.dump(s)
+  s.name("status")
+  self.`status`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: NamespaceCondition): bool =
@@ -7910,9 +7812,8 @@ proc dump*(self: CinderPersistentVolumeSource, s: JsonStream) =
   if not self.`secretRef`.isEmpty:
     s.name("secretRef")
     self.`secretRef`.dump(s)
-  if not self.`volumeID`.isEmpty:
-    s.name("volumeID")
-    self.`volumeID`.dump(s)
+  s.name("volumeID")
+  self.`volumeID`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: CinderPersistentVolumeSource): bool =
@@ -8102,6 +8003,9 @@ proc get*(client: Client, t: typedesc[ResourceQuota], name: string, namespace = 
 proc create*(client: Client, t: ResourceQuota, namespace = "default"): Future[ResourceQuota] {.async.}=
   return await client.create("/api/v1", t, namespace, loadResourceQuota)
 
+proc delete*(client: Client, t: typedesc[ResourceQuota], name: string, namespace = "default") {.async.}=
+  await client.delete("/api/v1", t, name, namespace)
+
 type
   ISCSIPersistentVolumeSource* = object
     `iqn`*: string
@@ -8154,15 +8058,13 @@ proc load*(self: var ISCSIPersistentVolumeSource, parser: var JsonParser) =
 
 proc dump*(self: ISCSIPersistentVolumeSource, s: JsonStream) =
   s.objectStart()
-  if not self.`iqn`.isEmpty:
-    s.name("iqn")
-    self.`iqn`.dump(s)
+  s.name("iqn")
+  self.`iqn`.dump(s)
   if not self.`iscsiInterface`.isEmpty:
     s.name("iscsiInterface")
     self.`iscsiInterface`.dump(s)
-  if not self.`lun`.isEmpty:
-    s.name("lun")
-    self.`lun`.dump(s)
+  s.name("lun")
+  self.`lun`.dump(s)
   if not self.`fsType`.isEmpty:
     s.name("fsType")
     self.`fsType`.dump(s)
@@ -8184,9 +8086,8 @@ proc dump*(self: ISCSIPersistentVolumeSource, s: JsonStream) =
   if not self.`portals`.isEmpty:
     s.name("portals")
     self.`portals`.dump(s)
-  if not self.`targetPortal`.isEmpty:
-    s.name("targetPortal")
-    self.`targetPortal`.dump(s)
+  s.name("targetPortal")
+  self.`targetPortal`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: ISCSIPersistentVolumeSource): bool =
@@ -8249,12 +8150,10 @@ proc dump*(self: RBDPersistentVolumeSource, s: JsonStream) =
   if not self.`user`.isEmpty:
     s.name("user")
     self.`user`.dump(s)
-  if not self.`monitors`.isEmpty:
-    s.name("monitors")
-    self.`monitors`.dump(s)
-  if not self.`image`.isEmpty:
-    s.name("image")
-    self.`image`.dump(s)
+  s.name("monitors")
+  self.`monitors`.dump(s)
+  s.name("image")
+  self.`image`.dump(s)
   if not self.`keyring`.isEmpty:
     s.name("keyring")
     self.`keyring`.dump(s)
@@ -8326,9 +8225,8 @@ proc dump*(self: CephFSPersistentVolumeSource, s: JsonStream) =
   if not self.`user`.isEmpty:
     s.name("user")
     self.`user`.dump(s)
-  if not self.`monitors`.isEmpty:
-    s.name("monitors")
-    self.`monitors`.dump(s)
+  s.name("monitors")
+  self.`monitors`.dump(s)
   if not self.`secretFile`.isEmpty:
     s.name("secretFile")
     self.`secretFile`.dump(s)
@@ -8380,15 +8278,13 @@ proc load*(self: var GlusterfsPersistentVolumeSource, parser: var JsonParser) =
 
 proc dump*(self: GlusterfsPersistentVolumeSource, s: JsonStream) =
   s.objectStart()
-  if not self.`path`.isEmpty:
-    s.name("path")
-    self.`path`.dump(s)
+  s.name("path")
+  self.`path`.dump(s)
   if not self.`endpointsNamespace`.isEmpty:
     s.name("endpointsNamespace")
     self.`endpointsNamespace`.dump(s)
-  if not self.`endpoints`.isEmpty:
-    s.name("endpoints")
-    self.`endpoints`.dump(s)
+  s.name("endpoints")
+  self.`endpoints`.dump(s)
   if not self.`readOnly`.isEmpty:
     s.name("readOnly")
     self.`readOnly`.dump(s)
@@ -8459,21 +8355,18 @@ proc dump*(self: ScaleIOPersistentVolumeSource, s: JsonStream) =
   if not self.`storagePool`.isEmpty:
     s.name("storagePool")
     self.`storagePool`.dump(s)
-  if not self.`gateway`.isEmpty:
-    s.name("gateway")
-    self.`gateway`.dump(s)
+  s.name("gateway")
+  self.`gateway`.dump(s)
   if not self.`fsType`.isEmpty:
     s.name("fsType")
     self.`fsType`.dump(s)
   if not self.`readOnly`.isEmpty:
     s.name("readOnly")
     self.`readOnly`.dump(s)
-  if not self.`secretRef`.isEmpty:
-    s.name("secretRef")
-    self.`secretRef`.dump(s)
-  if not self.`system`.isEmpty:
-    s.name("system")
-    self.`system`.dump(s)
+  s.name("secretRef")
+  self.`secretRef`.dump(s)
+  s.name("system")
+  self.`system`.dump(s)
   if not self.`sslEnabled`.isEmpty:
     s.name("sslEnabled")
     self.`sslEnabled`.dump(s)
@@ -8529,9 +8422,8 @@ proc load*(self: var FlexPersistentVolumeSource, parser: var JsonParser) =
 
 proc dump*(self: FlexPersistentVolumeSource, s: JsonStream) =
   s.objectStart()
-  if not self.`driver`.isEmpty:
-    s.name("driver")
-    self.`driver`.dump(s)
+  s.name("driver")
+  self.`driver`.dump(s)
   if not self.`options`.isEmpty:
     s.name("options")
     self.`options`.dump(s)
@@ -8579,9 +8471,8 @@ proc load*(self: var LocalVolumeSource, parser: var JsonParser) =
 
 proc dump*(self: LocalVolumeSource, s: JsonStream) =
   s.objectStart()
-  if not self.`path`.isEmpty:
-    s.name("path")
-    self.`path`.dump(s)
+  s.name("path")
+  self.`path`.dump(s)
   if not self.`fsType`.isEmpty:
     s.name("fsType")
     self.`fsType`.dump(s)
@@ -8644,9 +8535,8 @@ proc dump*(self: CSIPersistentVolumeSource, s: JsonStream) =
   if not self.`volumeAttributes`.isEmpty:
     s.name("volumeAttributes")
     self.`volumeAttributes`.dump(s)
-  if not self.`driver`.isEmpty:
-    s.name("driver")
-    self.`driver`.dump(s)
+  s.name("driver")
+  self.`driver`.dump(s)
   if not self.`nodeStageSecretRef`.isEmpty:
     s.name("nodeStageSecretRef")
     self.`nodeStageSecretRef`.dump(s)
@@ -8662,9 +8552,8 @@ proc dump*(self: CSIPersistentVolumeSource, s: JsonStream) =
   if not self.`readOnly`.isEmpty:
     s.name("readOnly")
     self.`readOnly`.dump(s)
-  if not self.`volumeHandle`.isEmpty:
-    s.name("volumeHandle")
-    self.`volumeHandle`.dump(s)
+  s.name("volumeHandle")
+  self.`volumeHandle`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: CSIPersistentVolumeSource): bool =
@@ -9127,9 +9016,8 @@ proc dump*(self: Event, s: JsonStream) =
   s.objectStart()
   s.name("apiVersion"); s.value("v1")
   s.name("kind"); s.value("Event")
-  if not self.`involvedObject`.isEmpty:
-    s.name("involvedObject")
-    self.`involvedObject`.dump(s)
+  s.name("involvedObject")
+  self.`involvedObject`.dump(s)
   if not self.`reportingInstance`.isEmpty:
     s.name("reportingInstance")
     self.`reportingInstance`.dump(s)
@@ -9169,9 +9057,8 @@ proc dump*(self: Event, s: JsonStream) =
   if not self.`related`.isEmpty:
     s.name("related")
     self.`related`.dump(s)
-  if not self.`metadata`.isEmpty:
-    s.name("metadata")
-    self.`metadata`.dump(s)
+  s.name("metadata")
+  self.`metadata`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: Event): bool =
@@ -9204,6 +9091,9 @@ proc get*(client: Client, t: typedesc[Event], name: string, namespace = "default
 
 proc create*(client: Client, t: Event, namespace = "default"): Future[Event] {.async.}=
   return await client.create("/api/v1", t, namespace, loadEvent)
+
+proc delete*(client: Client, t: typedesc[Event], name: string, namespace = "default") {.async.}=
+  await client.delete("/api/v1", t, name, namespace)
 
 type
   EventList* = object
@@ -9238,9 +9128,8 @@ proc dump*(self: EventList, s: JsonStream) =
   s.objectStart()
   s.name("apiVersion"); s.value("v1")
   s.name("kind"); s.value("EventList")
-  if not self.`items`.isEmpty:
-    s.name("items")
-    self.`items`.dump(s)
+  s.name("items")
+  self.`items`.dump(s)
   if not self.`metadata`.isEmpty:
     s.name("metadata")
     self.`metadata`.dump(s)
@@ -9327,6 +9216,9 @@ proc get*(client: Client, t: typedesc[PersistentVolume], name: string, namespace
 proc create*(client: Client, t: PersistentVolume, namespace = "default"): Future[PersistentVolume] {.async.}=
   return await client.create("/api/v1", t, namespace, loadPersistentVolume)
 
+proc delete*(client: Client, t: typedesc[PersistentVolume], name: string, namespace = "default") {.async.}=
+  await client.delete("/api/v1", t, name, namespace)
+
 type
   TypedLocalObjectReference* = object
     `apiGroup`*: string
@@ -9358,12 +9250,10 @@ proc dump*(self: TypedLocalObjectReference, s: JsonStream) =
   if not self.`apiGroup`.isEmpty:
     s.name("apiGroup")
     self.`apiGroup`.dump(s)
-  if not self.`name`.isEmpty:
-    s.name("name")
-    self.`name`.dump(s)
-  if not self.`kind`.isEmpty:
-    s.name("kind")
-    self.`kind`.dump(s)
+  s.name("name")
+  self.`name`.dump(s)
+  s.name("kind")
+  self.`kind`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: TypedLocalObjectReference): bool =
@@ -9431,6 +9321,9 @@ proc get*(client: Client, t: typedesc[PodTemplate], name: string, namespace = "d
 proc create*(client: Client, t: PodTemplate, namespace = "default"): Future[PodTemplate] {.async.}=
   return await client.create("/api/v1", t, namespace, loadPodTemplate)
 
+proc delete*(client: Client, t: typedesc[PodTemplate], name: string, namespace = "default") {.async.}=
+  await client.delete("/api/v1", t, name, namespace)
+
 type
   PodTemplateList* = object
     `apiVersion`*: string
@@ -9464,9 +9357,8 @@ proc dump*(self: PodTemplateList, s: JsonStream) =
   s.objectStart()
   s.name("apiVersion"); s.value("v1")
   s.name("kind"); s.value("PodTemplateList")
-  if not self.`items`.isEmpty:
-    s.name("items")
-    self.`items`.dump(s)
+  s.name("items")
+  self.`items`.dump(s)
   if not self.`metadata`.isEmpty:
     s.name("metadata")
     self.`metadata`.dump(s)
@@ -9521,15 +9413,13 @@ proc dump*(self: ComponentCondition, s: JsonStream) =
   if not self.`error`.isEmpty:
     s.name("error")
     self.`error`.dump(s)
-  if not self.`type`.isEmpty:
-    s.name("type")
-    self.`type`.dump(s)
+  s.name("type")
+  self.`type`.dump(s)
   if not self.`message`.isEmpty:
     s.name("message")
     self.`message`.dump(s)
-  if not self.`status`.isEmpty:
-    s.name("status")
-    self.`status`.dump(s)
+  s.name("status")
+  self.`status`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: ComponentCondition): bool =
@@ -9598,6 +9488,9 @@ proc get*(client: Client, t: typedesc[ComponentStatus], name: string, namespace 
 proc create*(client: Client, t: ComponentStatus, namespace = "default"): Future[ComponentStatus] {.async.}=
   return await client.create("/api/v1", t, namespace, loadComponentStatus)
 
+proc delete*(client: Client, t: typedesc[ComponentStatus], name: string, namespace = "default") {.async.}=
+  await client.delete("/api/v1", t, name, namespace)
+
 type
   ComponentStatusList* = object
     `apiVersion`*: string
@@ -9631,9 +9524,8 @@ proc dump*(self: ComponentStatusList, s: JsonStream) =
   s.objectStart()
   s.name("apiVersion"); s.value("v1")
   s.name("kind"); s.value("ComponentStatusList")
-  if not self.`items`.isEmpty:
-    s.name("items")
-    self.`items`.dump(s)
+  s.name("items")
+  self.`items`.dump(s)
   if not self.`metadata`.isEmpty:
     s.name("metadata")
     self.`metadata`.dump(s)
@@ -9793,6 +9685,9 @@ proc get*(client: Client, t: typedesc[PersistentVolumeClaim], name: string, name
 proc create*(client: Client, t: PersistentVolumeClaim, namespace = "default"): Future[PersistentVolumeClaim] {.async.}=
   return await client.create("/api/v1", t, namespace, loadPersistentVolumeClaim)
 
+proc delete*(client: Client, t: typedesc[PersistentVolumeClaim], name: string, namespace = "default") {.async.}=
+  await client.delete("/api/v1", t, name, namespace)
+
 type
   PersistentVolumeList* = object
     `apiVersion`*: string
@@ -9826,9 +9721,8 @@ proc dump*(self: PersistentVolumeList, s: JsonStream) =
   s.objectStart()
   s.name("apiVersion"); s.value("v1")
   s.name("kind"); s.value("PersistentVolumeList")
-  if not self.`items`.isEmpty:
-    s.name("items")
-    self.`items`.dump(s)
+  s.name("items")
+  self.`items`.dump(s)
   if not self.`metadata`.isEmpty:
     s.name("metadata")
     self.`metadata`.dump(s)
@@ -9882,9 +9776,8 @@ proc dump*(self: Binding, s: JsonStream) =
   s.objectStart()
   s.name("apiVersion"); s.value("v1")
   s.name("kind"); s.value("Binding")
-  if not self.`target`.isEmpty:
-    s.name("target")
-    self.`target`.dump(s)
+  s.name("target")
+  self.`target`.dump(s)
   if not self.`metadata`.isEmpty:
     s.name("metadata")
     self.`metadata`.dump(s)
@@ -9907,6 +9800,9 @@ proc get*(client: Client, t: typedesc[Binding], name: string, namespace = "defau
 
 proc create*(client: Client, t: Binding, namespace = "default"): Future[Binding] {.async.}=
   return await client.create("/api/v1", t, namespace, loadBinding)
+
+proc delete*(client: Client, t: typedesc[Binding], name: string, namespace = "default") {.async.}=
+  await client.delete("/api/v1", t, name, namespace)
 
 type
   NamespaceSpec* = object
@@ -10005,6 +9901,9 @@ proc get*(client: Client, t: typedesc[Namespace], name: string, namespace = "def
 proc create*(client: Client, t: Namespace, namespace = "default"): Future[Namespace] {.async.}=
   return await client.create("/api/v1", t, namespace, loadNamespace)
 
+proc delete*(client: Client, t: typedesc[Namespace], name: string, namespace = "default") {.async.}=
+  await client.delete("/api/v1", t, name, namespace)
+
 type
   ResourceQuotaList* = object
     `apiVersion`*: string
@@ -10038,9 +9937,8 @@ proc dump*(self: ResourceQuotaList, s: JsonStream) =
   s.objectStart()
   s.name("apiVersion"); s.value("v1")
   s.name("kind"); s.value("ResourceQuotaList")
-  if not self.`items`.isEmpty:
-    s.name("items")
-    self.`items`.dump(s)
+  s.name("items")
+  self.`items`.dump(s)
   if not self.`metadata`.isEmpty:
     s.name("metadata")
     self.`metadata`.dump(s)
@@ -10094,9 +9992,8 @@ proc dump*(self: PersistentVolumeClaimList, s: JsonStream) =
   s.objectStart()
   s.name("apiVersion"); s.value("v1")
   s.name("kind"); s.value("PersistentVolumeClaimList")
-  if not self.`items`.isEmpty:
-    s.name("items")
-    self.`items`.dump(s)
+  s.name("items")
+  self.`items`.dump(s)
   if not self.`metadata`.isEmpty:
     s.name("metadata")
     self.`metadata`.dump(s)
@@ -10150,9 +10047,8 @@ proc dump*(self: PodList, s: JsonStream) =
   s.objectStart()
   s.name("apiVersion"); s.value("v1")
   s.name("kind"); s.value("PodList")
-  if not self.`items`.isEmpty:
-    s.name("items")
-    self.`items`.dump(s)
+  s.name("items")
+  self.`items`.dump(s)
   if not self.`metadata`.isEmpty:
     s.name("metadata")
     self.`metadata`.dump(s)
@@ -10246,6 +10142,9 @@ proc get*(client: Client, t: typedesc[ServiceAccount], name: string, namespace =
 proc create*(client: Client, t: ServiceAccount, namespace = "default"): Future[ServiceAccount] {.async.}=
   return await client.create("/api/v1", t, namespace, loadServiceAccount)
 
+proc delete*(client: Client, t: typedesc[ServiceAccount], name: string, namespace = "default") {.async.}=
+  await client.delete("/api/v1", t, name, namespace)
+
 type
   ServiceAccountList* = object
     `apiVersion`*: string
@@ -10279,9 +10178,8 @@ proc dump*(self: ServiceAccountList, s: JsonStream) =
   s.objectStart()
   s.name("apiVersion"); s.value("v1")
   s.name("kind"); s.value("ServiceAccountList")
-  if not self.`items`.isEmpty:
-    s.name("items")
-    self.`items`.dump(s)
+  s.name("items")
+  self.`items`.dump(s)
   if not self.`metadata`.isEmpty:
     s.name("metadata")
     self.`metadata`.dump(s)
@@ -10335,9 +10233,8 @@ proc dump*(self: ReplicationControllerList, s: JsonStream) =
   s.objectStart()
   s.name("apiVersion"); s.value("v1")
   s.name("kind"); s.value("ReplicationControllerList")
-  if not self.`items`.isEmpty:
-    s.name("items")
-    self.`items`.dump(s)
+  s.name("items")
+  self.`items`.dump(s)
   if not self.`metadata`.isEmpty:
     s.name("metadata")
     self.`metadata`.dump(s)
@@ -10391,9 +10288,8 @@ proc dump*(self: EndpointsList, s: JsonStream) =
   s.objectStart()
   s.name("apiVersion"); s.value("v1")
   s.name("kind"); s.value("EndpointsList")
-  if not self.`items`.isEmpty:
-    s.name("items")
-    self.`items`.dump(s)
+  s.name("items")
+  self.`items`.dump(s)
   if not self.`metadata`.isEmpty:
     s.name("metadata")
     self.`metadata`.dump(s)
@@ -10447,9 +10343,8 @@ proc dump*(self: NamespaceList, s: JsonStream) =
   s.objectStart()
   s.name("apiVersion"); s.value("v1")
   s.name("kind"); s.value("NamespaceList")
-  if not self.`items`.isEmpty:
-    s.name("items")
-    self.`items`.dump(s)
+  s.name("items")
+  self.`items`.dump(s)
   if not self.`metadata`.isEmpty:
     s.name("metadata")
     self.`metadata`.dump(s)
@@ -10543,6 +10438,9 @@ proc get*(client: Client, t: typedesc[Secret], name: string, namespace = "defaul
 proc create*(client: Client, t: Secret, namespace = "default"): Future[Secret] {.async.}=
   return await client.create("/api/v1", t, namespace, loadSecret)
 
+proc delete*(client: Client, t: typedesc[Secret], name: string, namespace = "default") {.async.}=
+  await client.delete("/api/v1", t, name, namespace)
+
 type
   SecretList* = object
     `apiVersion`*: string
@@ -10576,9 +10474,8 @@ proc dump*(self: SecretList, s: JsonStream) =
   s.objectStart()
   s.name("apiVersion"); s.value("v1")
   s.name("kind"); s.value("SecretList")
-  if not self.`items`.isEmpty:
-    s.name("items")
-    self.`items`.dump(s)
+  s.name("items")
+  self.`items`.dump(s)
   if not self.`metadata`.isEmpty:
     s.name("metadata")
     self.`metadata`.dump(s)

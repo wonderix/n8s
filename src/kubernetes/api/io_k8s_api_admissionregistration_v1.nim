@@ -39,15 +39,13 @@ proc dump*(self: ServiceReference, s: JsonStream) =
   if not self.`path`.isEmpty:
     s.name("path")
     self.`path`.dump(s)
-  if not self.`namespace`.isEmpty:
-    s.name("namespace")
-    self.`namespace`.dump(s)
+  s.name("namespace")
+  self.`namespace`.dump(s)
   if not self.`port`.isEmpty:
     s.name("port")
     self.`port`.dump(s)
-  if not self.`name`.isEmpty:
-    s.name("name")
-    self.`name`.dump(s)
+  s.name("name")
+  self.`name`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: ServiceReference): bool =
@@ -216,33 +214,29 @@ proc dump*(self: MutatingWebhook, s: JsonStream) =
   if not self.`objectSelector`.isEmpty:
     s.name("objectSelector")
     self.`objectSelector`.dump(s)
-  if not self.`clientConfig`.isEmpty:
-    s.name("clientConfig")
-    self.`clientConfig`.dump(s)
+  s.name("clientConfig")
+  self.`clientConfig`.dump(s)
   if not self.`timeoutSeconds`.isEmpty:
     s.name("timeoutSeconds")
     self.`timeoutSeconds`.dump(s)
   if not self.`rules`.isEmpty:
     s.name("rules")
     self.`rules`.dump(s)
-  if not self.`admissionReviewVersions`.isEmpty:
-    s.name("admissionReviewVersions")
-    self.`admissionReviewVersions`.dump(s)
+  s.name("admissionReviewVersions")
+  self.`admissionReviewVersions`.dump(s)
   if not self.`namespaceSelector`.isEmpty:
     s.name("namespaceSelector")
     self.`namespaceSelector`.dump(s)
   if not self.`matchPolicy`.isEmpty:
     s.name("matchPolicy")
     self.`matchPolicy`.dump(s)
-  if not self.`name`.isEmpty:
-    s.name("name")
-    self.`name`.dump(s)
+  s.name("name")
+  self.`name`.dump(s)
   if not self.`failurePolicy`.isEmpty:
     s.name("failurePolicy")
     self.`failurePolicy`.dump(s)
-  if not self.`sideEffects`.isEmpty:
-    s.name("sideEffects")
-    self.`sideEffects`.dump(s)
+  s.name("sideEffects")
+  self.`sideEffects`.dump(s)
   if not self.`reinvocationPolicy`.isEmpty:
     s.name("reinvocationPolicy")
     self.`reinvocationPolicy`.dump(s)
@@ -321,6 +315,9 @@ proc get*(client: Client, t: typedesc[MutatingWebhookConfiguration], name: strin
 proc create*(client: Client, t: MutatingWebhookConfiguration, namespace = "default"): Future[MutatingWebhookConfiguration] {.async.}=
   return await client.create("/apis/admissionregistration.k8s.io/v1", t, namespace, loadMutatingWebhookConfiguration)
 
+proc delete*(client: Client, t: typedesc[MutatingWebhookConfiguration], name: string, namespace = "default") {.async.}=
+  await client.delete("/apis/admissionregistration.k8s.io/v1", t, name, namespace)
+
 type
   MutatingWebhookConfigurationList* = object
     `apiVersion`*: string
@@ -354,9 +351,8 @@ proc dump*(self: MutatingWebhookConfigurationList, s: JsonStream) =
   s.objectStart()
   s.name("apiVersion"); s.value("admissionregistration.k8s.io/v1")
   s.name("kind"); s.value("MutatingWebhookConfigurationList")
-  if not self.`items`.isEmpty:
-    s.name("items")
-    self.`items`.dump(s)
+  s.name("items")
+  self.`items`.dump(s)
   if not self.`metadata`.isEmpty:
     s.name("metadata")
     self.`metadata`.dump(s)
@@ -429,33 +425,29 @@ proc dump*(self: ValidatingWebhook, s: JsonStream) =
   if not self.`objectSelector`.isEmpty:
     s.name("objectSelector")
     self.`objectSelector`.dump(s)
-  if not self.`clientConfig`.isEmpty:
-    s.name("clientConfig")
-    self.`clientConfig`.dump(s)
+  s.name("clientConfig")
+  self.`clientConfig`.dump(s)
   if not self.`timeoutSeconds`.isEmpty:
     s.name("timeoutSeconds")
     self.`timeoutSeconds`.dump(s)
   if not self.`rules`.isEmpty:
     s.name("rules")
     self.`rules`.dump(s)
-  if not self.`admissionReviewVersions`.isEmpty:
-    s.name("admissionReviewVersions")
-    self.`admissionReviewVersions`.dump(s)
+  s.name("admissionReviewVersions")
+  self.`admissionReviewVersions`.dump(s)
   if not self.`namespaceSelector`.isEmpty:
     s.name("namespaceSelector")
     self.`namespaceSelector`.dump(s)
   if not self.`matchPolicy`.isEmpty:
     s.name("matchPolicy")
     self.`matchPolicy`.dump(s)
-  if not self.`name`.isEmpty:
-    s.name("name")
-    self.`name`.dump(s)
+  s.name("name")
+  self.`name`.dump(s)
   if not self.`failurePolicy`.isEmpty:
     s.name("failurePolicy")
     self.`failurePolicy`.dump(s)
-  if not self.`sideEffects`.isEmpty:
-    s.name("sideEffects")
-    self.`sideEffects`.dump(s)
+  s.name("sideEffects")
+  self.`sideEffects`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: ValidatingWebhook): bool =
@@ -530,6 +522,9 @@ proc get*(client: Client, t: typedesc[ValidatingWebhookConfiguration], name: str
 proc create*(client: Client, t: ValidatingWebhookConfiguration, namespace = "default"): Future[ValidatingWebhookConfiguration] {.async.}=
   return await client.create("/apis/admissionregistration.k8s.io/v1", t, namespace, loadValidatingWebhookConfiguration)
 
+proc delete*(client: Client, t: typedesc[ValidatingWebhookConfiguration], name: string, namespace = "default") {.async.}=
+  await client.delete("/apis/admissionregistration.k8s.io/v1", t, name, namespace)
+
 type
   ValidatingWebhookConfigurationList* = object
     `apiVersion`*: string
@@ -563,9 +558,8 @@ proc dump*(self: ValidatingWebhookConfigurationList, s: JsonStream) =
   s.objectStart()
   s.name("apiVersion"); s.value("admissionregistration.k8s.io/v1")
   s.name("kind"); s.value("ValidatingWebhookConfigurationList")
-  if not self.`items`.isEmpty:
-    s.name("items")
-    self.`items`.dump(s)
+  s.name("items")
+  self.`items`.dump(s)
   if not self.`metadata`.isEmpty:
     s.name("metadata")
     self.`metadata`.dump(s)

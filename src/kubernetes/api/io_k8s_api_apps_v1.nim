@@ -45,18 +45,16 @@ proc dump*(self: ReplicaSetCondition, s: JsonStream) =
   if not self.`lastTransitionTime`.isEmpty:
     s.name("lastTransitionTime")
     self.`lastTransitionTime`.dump(s)
-  if not self.`type`.isEmpty:
-    s.name("type")
-    self.`type`.dump(s)
+  s.name("type")
+  self.`type`.dump(s)
   if not self.`message`.isEmpty:
     s.name("message")
     self.`message`.dump(s)
   if not self.`reason`.isEmpty:
     s.name("reason")
     self.`reason`.dump(s)
-  if not self.`status`.isEmpty:
-    s.name("status")
-    self.`status`.dump(s)
+  s.name("status")
+  self.`status`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: ReplicaSetCondition): bool =
@@ -107,9 +105,8 @@ proc dump*(self: ReplicaSetStatus, s: JsonStream) =
   if not self.`fullyLabeledReplicas`.isEmpty:
     s.name("fullyLabeledReplicas")
     self.`fullyLabeledReplicas`.dump(s)
-  if not self.`replicas`.isEmpty:
-    s.name("replicas")
-    self.`replicas`.dump(s)
+  s.name("replicas")
+  self.`replicas`.dump(s)
   if not self.`observedGeneration`.isEmpty:
     s.name("observedGeneration")
     self.`observedGeneration`.dump(s)
@@ -239,12 +236,10 @@ proc dump*(self: DaemonSetSpec, s: JsonStream) =
   if not self.`updateStrategy`.isEmpty:
     s.name("updateStrategy")
     self.`updateStrategy`.dump(s)
-  if not self.`template`.isEmpty:
-    s.name("template")
-    self.`template`.dump(s)
-  if not self.`selector`.isEmpty:
-    s.name("selector")
-    self.`selector`.dump(s)
+  s.name("template")
+  self.`template`.dump(s)
+  s.name("selector")
+  self.`selector`.dump(s)
   if not self.`minReadySeconds`.isEmpty:
     s.name("minReadySeconds")
     self.`minReadySeconds`.dump(s)
@@ -298,18 +293,16 @@ proc dump*(self: DaemonSetCondition, s: JsonStream) =
   if not self.`lastTransitionTime`.isEmpty:
     s.name("lastTransitionTime")
     self.`lastTransitionTime`.dump(s)
-  if not self.`type`.isEmpty:
-    s.name("type")
-    self.`type`.dump(s)
+  s.name("type")
+  self.`type`.dump(s)
   if not self.`message`.isEmpty:
     s.name("message")
     self.`message`.dump(s)
   if not self.`reason`.isEmpty:
     s.name("reason")
     self.`reason`.dump(s)
-  if not self.`status`.isEmpty:
-    s.name("status")
-    self.`status`.dump(s)
+  s.name("status")
+  self.`status`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: DaemonSetCondition): bool =
@@ -369,9 +362,8 @@ proc load*(self: var DaemonSetStatus, parser: var JsonParser) =
 
 proc dump*(self: DaemonSetStatus, s: JsonStream) =
   s.objectStart()
-  if not self.`currentNumberScheduled`.isEmpty:
-    s.name("currentNumberScheduled")
-    self.`currentNumberScheduled`.dump(s)
+  s.name("currentNumberScheduled")
+  self.`currentNumberScheduled`.dump(s)
   if not self.`numberAvailable`.isEmpty:
     s.name("numberAvailable")
     self.`numberAvailable`.dump(s)
@@ -381,15 +373,12 @@ proc dump*(self: DaemonSetStatus, s: JsonStream) =
   if not self.`collisionCount`.isEmpty:
     s.name("collisionCount")
     self.`collisionCount`.dump(s)
-  if not self.`numberMisscheduled`.isEmpty:
-    s.name("numberMisscheduled")
-    self.`numberMisscheduled`.dump(s)
-  if not self.`desiredNumberScheduled`.isEmpty:
-    s.name("desiredNumberScheduled")
-    self.`desiredNumberScheduled`.dump(s)
-  if not self.`numberReady`.isEmpty:
-    s.name("numberReady")
-    self.`numberReady`.dump(s)
+  s.name("numberMisscheduled")
+  self.`numberMisscheduled`.dump(s)
+  s.name("desiredNumberScheduled")
+  self.`desiredNumberScheduled`.dump(s)
+  s.name("numberReady")
+  self.`numberReady`.dump(s)
   if not self.`updatedNumberScheduled`.isEmpty:
     s.name("updatedNumberScheduled")
     self.`updatedNumberScheduled`.dump(s)
@@ -479,6 +468,9 @@ proc get*(client: Client, t: typedesc[DaemonSet], name: string, namespace = "def
 
 proc create*(client: Client, t: DaemonSet, namespace = "default"): Future[DaemonSet] {.async.}=
   return await client.create("/apis/apps/v1", t, namespace, loadDaemonSet)
+
+proc delete*(client: Client, t: typedesc[DaemonSet], name: string, namespace = "default") {.async.}=
+  await client.delete("/apis/apps/v1", t, name, namespace)
 
 type
   RollingUpdateStatefulSetStrategy* = object
@@ -592,24 +584,21 @@ proc load*(self: var StatefulSetSpec, parser: var JsonParser) =
 
 proc dump*(self: StatefulSetSpec, s: JsonStream) =
   s.objectStart()
-  if not self.`serviceName`.isEmpty:
-    s.name("serviceName")
-    self.`serviceName`.dump(s)
+  s.name("serviceName")
+  self.`serviceName`.dump(s)
   if not self.`replicas`.isEmpty:
     s.name("replicas")
     self.`replicas`.dump(s)
   if not self.`updateStrategy`.isEmpty:
     s.name("updateStrategy")
     self.`updateStrategy`.dump(s)
-  if not self.`template`.isEmpty:
-    s.name("template")
-    self.`template`.dump(s)
+  s.name("template")
+  self.`template`.dump(s)
   if not self.`podManagementPolicy`.isEmpty:
     s.name("podManagementPolicy")
     self.`podManagementPolicy`.dump(s)
-  if not self.`selector`.isEmpty:
-    s.name("selector")
-    self.`selector`.dump(s)
+  s.name("selector")
+  self.`selector`.dump(s)
   if not self.`volumeClaimTemplates`.isEmpty:
     s.name("volumeClaimTemplates")
     self.`volumeClaimTemplates`.dump(s)
@@ -666,18 +655,16 @@ proc dump*(self: StatefulSetCondition, s: JsonStream) =
   if not self.`lastTransitionTime`.isEmpty:
     s.name("lastTransitionTime")
     self.`lastTransitionTime`.dump(s)
-  if not self.`type`.isEmpty:
-    s.name("type")
-    self.`type`.dump(s)
+  s.name("type")
+  self.`type`.dump(s)
   if not self.`message`.isEmpty:
     s.name("message")
     self.`message`.dump(s)
   if not self.`reason`.isEmpty:
     s.name("reason")
     self.`reason`.dump(s)
-  if not self.`status`.isEmpty:
-    s.name("status")
-    self.`status`.dump(s)
+  s.name("status")
+  self.`status`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: StatefulSetCondition): bool =
@@ -734,9 +721,8 @@ proc load*(self: var StatefulSetStatus, parser: var JsonParser) =
 
 proc dump*(self: StatefulSetStatus, s: JsonStream) =
   s.objectStart()
-  if not self.`replicas`.isEmpty:
-    s.name("replicas")
-    self.`replicas`.dump(s)
+  s.name("replicas")
+  self.`replicas`.dump(s)
   if not self.`currentRevision`.isEmpty:
     s.name("currentRevision")
     self.`currentRevision`.dump(s)
@@ -841,6 +827,9 @@ proc get*(client: Client, t: typedesc[StatefulSet], name: string, namespace = "d
 proc create*(client: Client, t: StatefulSet, namespace = "default"): Future[StatefulSet] {.async.}=
   return await client.create("/apis/apps/v1", t, namespace, loadStatefulSet)
 
+proc delete*(client: Client, t: typedesc[StatefulSet], name: string, namespace = "default") {.async.}=
+  await client.delete("/apis/apps/v1", t, name, namespace)
+
 type
   StatefulSetList* = object
     `apiVersion`*: string
@@ -874,9 +863,8 @@ proc dump*(self: StatefulSetList, s: JsonStream) =
   s.objectStart()
   s.name("apiVersion"); s.value("apps/v1")
   s.name("kind"); s.value("StatefulSetList")
-  if not self.`items`.isEmpty:
-    s.name("items")
-    self.`items`.dump(s)
+  s.name("items")
+  self.`items`.dump(s)
   if not self.`metadata`.isEmpty:
     s.name("metadata")
     self.`metadata`.dump(s)
@@ -934,9 +922,8 @@ proc dump*(self: ReplicaSetSpec, s: JsonStream) =
   if not self.`template`.isEmpty:
     s.name("template")
     self.`template`.dump(s)
-  if not self.`selector`.isEmpty:
-    s.name("selector")
-    self.`selector`.dump(s)
+  s.name("selector")
+  self.`selector`.dump(s)
   if not self.`minReadySeconds`.isEmpty:
     s.name("minReadySeconds")
     self.`minReadySeconds`.dump(s)
@@ -1015,6 +1002,9 @@ proc get*(client: Client, t: typedesc[ReplicaSet], name: string, namespace = "de
 proc create*(client: Client, t: ReplicaSet, namespace = "default"): Future[ReplicaSet] {.async.}=
   return await client.create("/apis/apps/v1", t, namespace, loadReplicaSet)
 
+proc delete*(client: Client, t: typedesc[ReplicaSet], name: string, namespace = "default") {.async.}=
+  await client.delete("/apis/apps/v1", t, name, namespace)
+
 type
   ReplicaSetList* = object
     `apiVersion`*: string
@@ -1048,9 +1038,8 @@ proc dump*(self: ReplicaSetList, s: JsonStream) =
   s.objectStart()
   s.name("apiVersion"); s.value("apps/v1")
   s.name("kind"); s.value("ReplicaSetList")
-  if not self.`items`.isEmpty:
-    s.name("items")
-    self.`items`.dump(s)
+  s.name("items")
+  self.`items`.dump(s)
   if not self.`metadata`.isEmpty:
     s.name("metadata")
     self.`metadata`.dump(s)
@@ -1202,12 +1191,10 @@ proc dump*(self: DeploymentSpec, s: JsonStream) =
   if not self.`progressDeadlineSeconds`.isEmpty:
     s.name("progressDeadlineSeconds")
     self.`progressDeadlineSeconds`.dump(s)
-  if not self.`template`.isEmpty:
-    s.name("template")
-    self.`template`.dump(s)
-  if not self.`selector`.isEmpty:
-    s.name("selector")
-    self.`selector`.dump(s)
+  s.name("template")
+  self.`template`.dump(s)
+  s.name("selector")
+  self.`selector`.dump(s)
   if not self.`minReadySeconds`.isEmpty:
     s.name("minReadySeconds")
     self.`minReadySeconds`.dump(s)
@@ -1267,9 +1254,8 @@ proc dump*(self: DeploymentCondition, s: JsonStream) =
   if not self.`lastTransitionTime`.isEmpty:
     s.name("lastTransitionTime")
     self.`lastTransitionTime`.dump(s)
-  if not self.`type`.isEmpty:
-    s.name("type")
-    self.`type`.dump(s)
+  s.name("type")
+  self.`type`.dump(s)
   if not self.`message`.isEmpty:
     s.name("message")
     self.`message`.dump(s)
@@ -1279,9 +1265,8 @@ proc dump*(self: DeploymentCondition, s: JsonStream) =
   if not self.`reason`.isEmpty:
     s.name("reason")
     self.`reason`.dump(s)
-  if not self.`status`.isEmpty:
-    s.name("status")
-    self.`status`.dump(s)
+  s.name("status")
+  self.`status`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: DeploymentCondition): bool =
@@ -1439,6 +1424,9 @@ proc get*(client: Client, t: typedesc[Deployment], name: string, namespace = "de
 proc create*(client: Client, t: Deployment, namespace = "default"): Future[Deployment] {.async.}=
   return await client.create("/apis/apps/v1", t, namespace, loadDeployment)
 
+proc delete*(client: Client, t: typedesc[Deployment], name: string, namespace = "default") {.async.}=
+  await client.delete("/apis/apps/v1", t, name, namespace)
+
 type
   ControllerRevision* = object
     `apiVersion`*: string
@@ -1478,9 +1466,8 @@ proc dump*(self: ControllerRevision, s: JsonStream) =
   if not self.`data`.isEmpty:
     s.name("data")
     self.`data`.dump(s)
-  if not self.`revision`.isEmpty:
-    s.name("revision")
-    self.`revision`.dump(s)
+  s.name("revision")
+  self.`revision`.dump(s)
   if not self.`metadata`.isEmpty:
     s.name("metadata")
     self.`metadata`.dump(s)
@@ -1504,6 +1491,9 @@ proc get*(client: Client, t: typedesc[ControllerRevision], name: string, namespa
 
 proc create*(client: Client, t: ControllerRevision, namespace = "default"): Future[ControllerRevision] {.async.}=
   return await client.create("/apis/apps/v1", t, namespace, loadControllerRevision)
+
+proc delete*(client: Client, t: typedesc[ControllerRevision], name: string, namespace = "default") {.async.}=
+  await client.delete("/apis/apps/v1", t, name, namespace)
 
 type
   ControllerRevisionList* = object
@@ -1538,9 +1528,8 @@ proc dump*(self: ControllerRevisionList, s: JsonStream) =
   s.objectStart()
   s.name("apiVersion"); s.value("apps/v1")
   s.name("kind"); s.value("ControllerRevisionList")
-  if not self.`items`.isEmpty:
-    s.name("items")
-    self.`items`.dump(s)
+  s.name("items")
+  self.`items`.dump(s)
   if not self.`metadata`.isEmpty:
     s.name("metadata")
     self.`metadata`.dump(s)
@@ -1594,9 +1583,8 @@ proc dump*(self: DeploymentList, s: JsonStream) =
   s.objectStart()
   s.name("apiVersion"); s.value("apps/v1")
   s.name("kind"); s.value("DeploymentList")
-  if not self.`items`.isEmpty:
-    s.name("items")
-    self.`items`.dump(s)
+  s.name("items")
+  self.`items`.dump(s)
   if not self.`metadata`.isEmpty:
     s.name("metadata")
     self.`metadata`.dump(s)
@@ -1650,9 +1638,8 @@ proc dump*(self: DaemonSetList, s: JsonStream) =
   s.objectStart()
   s.name("apiVersion"); s.value("apps/v1")
   s.name("kind"); s.value("DaemonSetList")
-  if not self.`items`.isEmpty:
-    s.name("items")
-    self.`items`.dump(s)
+  s.name("items")
+  self.`items`.dump(s)
   if not self.`metadata`.isEmpty:
     s.name("metadata")
     self.`metadata`.dump(s)

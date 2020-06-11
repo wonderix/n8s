@@ -53,9 +53,8 @@ proc dump*(self: PriorityClass, s: JsonStream) =
   if not self.`description`.isEmpty:
     s.name("description")
     self.`description`.dump(s)
-  if not self.`value`.isEmpty:
-    s.name("value")
-    self.`value`.dump(s)
+  s.name("value")
+  self.`value`.dump(s)
   if not self.`preemptionPolicy`.isEmpty:
     s.name("preemptionPolicy")
     self.`preemptionPolicy`.dump(s)
@@ -84,6 +83,9 @@ proc get*(client: Client, t: typedesc[PriorityClass], name: string, namespace = 
 
 proc create*(client: Client, t: PriorityClass, namespace = "default"): Future[PriorityClass] {.async.}=
   return await client.create("/apis/scheduling.k8s.io/v1beta1", t, namespace, loadPriorityClass)
+
+proc delete*(client: Client, t: typedesc[PriorityClass], name: string, namespace = "default") {.async.}=
+  await client.delete("/apis/scheduling.k8s.io/v1beta1", t, name, namespace)
 
 type
   PriorityClassList* = object
@@ -118,9 +120,8 @@ proc dump*(self: PriorityClassList, s: JsonStream) =
   s.objectStart()
   s.name("apiVersion"); s.value("scheduling.k8s.io/v1beta1")
   s.name("kind"); s.value("PriorityClassList")
-  if not self.`items`.isEmpty:
-    s.name("items")
-    self.`items`.dump(s)
+  s.name("items")
+  self.`items`.dump(s)
   if not self.`metadata`.isEmpty:
     s.name("metadata")
     self.`metadata`.dump(s)

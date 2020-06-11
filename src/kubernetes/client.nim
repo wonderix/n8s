@@ -7,6 +7,9 @@ type
     client: AsyncHttpClient
     account: Account
 
+  AlreadyExistsError* = object of CatchableError 
+  NotFoundError* = object of CatchableError 
+
   APIResource = object
     name: string
     singularName: string
@@ -31,11 +34,20 @@ proc loadJson[T](stream: Stream, path: string, load: proc(parser: var JsonParser
   finally:
     parser.close
 
+proc raiseError(response: AsyncResponse, body: string) =
+  let message = $parseJson(body)["message"].getStr
+  case response.code:
+    of Http404:
+      raise newException(NotFoundError,message)
+    of Http409:
+      raise newException(AlreadyExistsError,message)
+    else:
+      raise newException(HttpRequestError,message)
+
 proc get*(client: Client, path: string): Future[Stream] {.async.}=
   let response = await client.client.request(client.config.server & path, httpMethod = HttpGet, headers= client.account.authHeaders)
   let body = await response.body
-  if not response.code.is2xx:
-    raise newException(HttpRequestError,$parseJson(body)["message"].getStr & ": " & path)
+  if not response.code.is2xx: raiseError(response, body)
   return newStringStream(body)
 
 proc get*[T](client: Client, groupVersion: string, t: typedesc[T], name: string, namespace: string, load: proc(parser: var JsonParser): T): Future[T] {.async.}=
@@ -49,8 +61,7 @@ proc list*[T](client: Client, groupVersion: string, t: typedesc[T], namespace: s
 proc create*(client: Client, path: string, content: string): Future[Stream] {.async.}=
   let response = await client.client.request(client.config.server & path, httpMethod = HttpPost, headers= client.account.authHeaders, body=content)
   let body = await response.body
-  if not response.code.is2xx:
-    raise newException(HttpRequestError,$parseJson(body)["message"].getStr & ": " & path)
+  if not response.code.is2xx: raiseError(response, body)
   return newStringStream(body)
 
 proc create*[T](client: Client, groupVersion: string, t: T, namespace: string, load: proc(parser: var JsonParser): T): Future[T] {.async.}=
@@ -59,6 +70,16 @@ proc create*[T](client: Client, groupVersion: string, t: T, namespace: string, l
   t.dump(newJsonStream(stream))
   stream.setPosition(0)
   return loadJson(await client.create(path,stream.readAll()),path,load)
+
+
+proc delete*(client: Client, path: string) {.async.}=
+  let response = await client.client.request(client.config.server & path, httpMethod = HttpDelete, headers= client.account.authHeaders)
+  let body = await response.body
+  if not response.code.is2xx: raiseError(response, body)
+
+proc delete*[T](client: Client, groupVersion: string, t: typedesc[T], name: string, namespace: string) {.async.}=
+  let path = groupVersion & "/namespaces/" & namespace & "/" & ($t).toLowerAscii() & "s/" & name
+  await client.delete(path)
 
 proc apiResources*(client: Client): Future[seq[APIResource]] {.async.}=
   let response = await client.client.request(client.config.server & "/api/v1", httpMethod = HttpGet, headers= client.account.authHeaders)

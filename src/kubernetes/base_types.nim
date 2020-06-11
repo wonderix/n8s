@@ -14,7 +14,6 @@ type
         of iosInt:
             ivalue: int
 
-
 setTagUri(ByteArray, "!string")
 
 proc constructObject*( s: var YamlStream, c: ConstructionContext, result: var ByteArray)

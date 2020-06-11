@@ -34,15 +34,12 @@ proc load*(self: var EventSeries, parser: var JsonParser) =
 
 proc dump*(self: EventSeries, s: JsonStream) =
   s.objectStart()
-  if not self.`count`.isEmpty:
-    s.name("count")
-    self.`count`.dump(s)
-  if not self.`lastObservedTime`.isEmpty:
-    s.name("lastObservedTime")
-    self.`lastObservedTime`.dump(s)
-  if not self.`state`.isEmpty:
-    s.name("state")
-    self.`state`.dump(s)
+  s.name("count")
+  self.`count`.dump(s)
+  s.name("lastObservedTime")
+  self.`lastObservedTime`.dump(s)
+  s.name("state")
+  self.`state`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: EventSeries): bool =
@@ -135,9 +132,8 @@ proc dump*(self: Event, s: JsonStream) =
   if not self.`type`.isEmpty:
     s.name("type")
     self.`type`.dump(s)
-  if not self.`eventTime`.isEmpty:
-    s.name("eventTime")
-    self.`eventTime`.dump(s)
+  s.name("eventTime")
+  self.`eventTime`.dump(s)
   if not self.`series`.isEmpty:
     s.name("series")
     self.`series`.dump(s)
@@ -201,6 +197,9 @@ proc get*(client: Client, t: typedesc[Event], name: string, namespace = "default
 proc create*(client: Client, t: Event, namespace = "default"): Future[Event] {.async.}=
   return await client.create("/apis/events.k8s.io/v1beta1", t, namespace, loadEvent)
 
+proc delete*(client: Client, t: typedesc[Event], name: string, namespace = "default") {.async.}=
+  await client.delete("/apis/events.k8s.io/v1beta1", t, name, namespace)
+
 type
   EventList* = object
     `apiVersion`*: string
@@ -234,9 +233,8 @@ proc dump*(self: EventList, s: JsonStream) =
   s.objectStart()
   s.name("apiVersion"); s.value("events.k8s.io/v1beta1")
   s.name("kind"); s.value("EventList")
-  if not self.`items`.isEmpty:
-    s.name("items")
-    self.`items`.dump(s)
+  s.name("items")
+  self.`items`.dump(s)
   if not self.`metadata`.isEmpty:
     s.name("metadata")
     self.`metadata`.dump(s)

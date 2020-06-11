@@ -46,21 +46,18 @@ proc dump*(self: CustomResourceColumnDefinition, s: JsonStream) =
   if not self.`format`.isEmpty:
     s.name("format")
     self.`format`.dump(s)
-  if not self.`type`.isEmpty:
-    s.name("type")
-    self.`type`.dump(s)
+  s.name("type")
+  self.`type`.dump(s)
   if not self.`priority`.isEmpty:
     s.name("priority")
     self.`priority`.dump(s)
-  if not self.`jsonPath`.isEmpty:
-    s.name("jsonPath")
-    self.`jsonPath`.dump(s)
+  s.name("jsonPath")
+  self.`jsonPath`.dump(s)
   if not self.`description`.isEmpty:
     s.name("description")
     self.`description`.dump(s)
-  if not self.`name`.isEmpty:
-    s.name("name")
-    self.`name`.dump(s)
+  s.name("name")
+  self.`name`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: CustomResourceColumnDefinition): bool =
@@ -100,15 +97,13 @@ proc load*(self: var CustomResourceSubresourceScale, parser: var JsonParser) =
 
 proc dump*(self: CustomResourceSubresourceScale, s: JsonStream) =
   s.objectStart()
-  if not self.`specReplicasPath`.isEmpty:
-    s.name("specReplicasPath")
-    self.`specReplicasPath`.dump(s)
+  s.name("specReplicasPath")
+  self.`specReplicasPath`.dump(s)
   if not self.`labelSelectorPath`.isEmpty:
     s.name("labelSelectorPath")
     self.`labelSelectorPath`.dump(s)
-  if not self.`statusReplicasPath`.isEmpty:
-    s.name("statusReplicasPath")
-    self.`statusReplicasPath`.dump(s)
+  s.name("statusReplicasPath")
+  self.`statusReplicasPath`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: CustomResourceSubresourceScale): bool =
@@ -623,21 +618,18 @@ proc load*(self: var CustomResourceDefinitionVersion, parser: var JsonParser) =
 
 proc dump*(self: CustomResourceDefinitionVersion, s: JsonStream) =
   s.objectStart()
-  if not self.`served`.isEmpty:
-    s.name("served")
-    self.`served`.dump(s)
+  s.name("served")
+  self.`served`.dump(s)
   if not self.`additionalPrinterColumns`.isEmpty:
     s.name("additionalPrinterColumns")
     self.`additionalPrinterColumns`.dump(s)
-  if not self.`storage`.isEmpty:
-    s.name("storage")
-    self.`storage`.dump(s)
+  s.name("storage")
+  self.`storage`.dump(s)
   if not self.`subresources`.isEmpty:
     s.name("subresources")
     self.`subresources`.dump(s)
-  if not self.`name`.isEmpty:
-    s.name("name")
-    self.`name`.dump(s)
+  s.name("name")
+  self.`name`.dump(s)
   if not self.`schema`.isEmpty:
     s.name("schema")
     self.`schema`.dump(s)
@@ -686,15 +678,13 @@ proc dump*(self: ServiceReference, s: JsonStream) =
   if not self.`path`.isEmpty:
     s.name("path")
     self.`path`.dump(s)
-  if not self.`namespace`.isEmpty:
-    s.name("namespace")
-    self.`namespace`.dump(s)
+  s.name("namespace")
+  self.`namespace`.dump(s)
   if not self.`port`.isEmpty:
     s.name("port")
     self.`port`.dump(s)
-  if not self.`name`.isEmpty:
-    s.name("name")
-    self.`name`.dump(s)
+  s.name("name")
+  self.`name`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: ServiceReference): bool =
@@ -792,18 +782,16 @@ proc dump*(self: CustomResourceDefinitionNames, s: JsonStream) =
   if not self.`categories`.isEmpty:
     s.name("categories")
     self.`categories`.dump(s)
-  if not self.`plural`.isEmpty:
-    s.name("plural")
-    self.`plural`.dump(s)
+  s.name("plural")
+  self.`plural`.dump(s)
   if not self.`singular`.isEmpty:
     s.name("singular")
     self.`singular`.dump(s)
   if not self.`listKind`.isEmpty:
     s.name("listKind")
     self.`listKind`.dump(s)
-  if not self.`kind`.isEmpty:
-    s.name("kind")
-    self.`kind`.dump(s)
+  s.name("kind")
+  self.`kind`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: CustomResourceDefinitionNames): bool =
@@ -843,9 +831,8 @@ proc dump*(self: WebhookConversion, s: JsonStream) =
   if not self.`clientConfig`.isEmpty:
     s.name("clientConfig")
     self.`clientConfig`.dump(s)
-  if not self.`conversionReviewVersions`.isEmpty:
-    s.name("conversionReviewVersions")
-    self.`conversionReviewVersions`.dump(s)
+  s.name("conversionReviewVersions")
+  self.`conversionReviewVersions`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: WebhookConversion): bool =
@@ -878,9 +865,8 @@ proc load*(self: var CustomResourceConversion, parser: var JsonParser) =
 
 proc dump*(self: CustomResourceConversion, s: JsonStream) =
   s.objectStart()
-  if not self.`strategy`.isEmpty:
-    s.name("strategy")
-    self.`strategy`.dump(s)
+  s.name("strategy")
+  self.`strategy`.dump(s)
   if not self.`webhook`.isEmpty:
     s.name("webhook")
     self.`webhook`.dump(s)
@@ -928,21 +914,17 @@ proc load*(self: var CustomResourceDefinitionSpec, parser: var JsonParser) =
 
 proc dump*(self: CustomResourceDefinitionSpec, s: JsonStream) =
   s.objectStart()
-  if not self.`names`.isEmpty:
-    s.name("names")
-    self.`names`.dump(s)
-  if not self.`group`.isEmpty:
-    s.name("group")
-    self.`group`.dump(s)
-  if not self.`versions`.isEmpty:
-    s.name("versions")
-    self.`versions`.dump(s)
+  s.name("names")
+  self.`names`.dump(s)
+  s.name("group")
+  self.`group`.dump(s)
+  s.name("versions")
+  self.`versions`.dump(s)
   if not self.`preserveUnknownFields`.isEmpty:
     s.name("preserveUnknownFields")
     self.`preserveUnknownFields`.dump(s)
-  if not self.`scope`.isEmpty:
-    s.name("scope")
-    self.`scope`.dump(s)
+  s.name("scope")
+  self.`scope`.dump(s)
   if not self.`conversion`.isEmpty:
     s.name("conversion")
     self.`conversion`.dump(s)
@@ -994,18 +976,16 @@ proc dump*(self: CustomResourceDefinitionCondition, s: JsonStream) =
   if not self.`lastTransitionTime`.isEmpty:
     s.name("lastTransitionTime")
     self.`lastTransitionTime`.dump(s)
-  if not self.`type`.isEmpty:
-    s.name("type")
-    self.`type`.dump(s)
+  s.name("type")
+  self.`type`.dump(s)
   if not self.`message`.isEmpty:
     s.name("message")
     self.`message`.dump(s)
   if not self.`reason`.isEmpty:
     s.name("reason")
     self.`reason`.dump(s)
-  if not self.`status`.isEmpty:
-    s.name("status")
-    self.`status`.dump(s)
+  s.name("status")
+  self.`status`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: CustomResourceDefinitionCondition): bool =
@@ -1044,12 +1024,10 @@ proc load*(self: var CustomResourceDefinitionStatus, parser: var JsonParser) =
 
 proc dump*(self: CustomResourceDefinitionStatus, s: JsonStream) =
   s.objectStart()
-  if not self.`storedVersions`.isEmpty:
-    s.name("storedVersions")
-    self.`storedVersions`.dump(s)
-  if not self.`acceptedNames`.isEmpty:
-    s.name("acceptedNames")
-    self.`acceptedNames`.dump(s)
+  s.name("storedVersions")
+  self.`storedVersions`.dump(s)
+  s.name("acceptedNames")
+  self.`acceptedNames`.dump(s)
   if not self.`conditions`.isEmpty:
     s.name("conditions")
     self.`conditions`.dump(s)
@@ -1097,9 +1075,8 @@ proc dump*(self: CustomResourceDefinition, s: JsonStream) =
   s.objectStart()
   s.name("apiVersion"); s.value("apiextensions.k8s.io/v1")
   s.name("kind"); s.value("CustomResourceDefinition")
-  if not self.`spec`.isEmpty:
-    s.name("spec")
-    self.`spec`.dump(s)
+  s.name("spec")
+  self.`spec`.dump(s)
   if not self.`status`.isEmpty:
     s.name("status")
     self.`status`.dump(s)
@@ -1126,6 +1103,9 @@ proc get*(client: Client, t: typedesc[CustomResourceDefinition], name: string, n
 
 proc create*(client: Client, t: CustomResourceDefinition, namespace = "default"): Future[CustomResourceDefinition] {.async.}=
   return await client.create("/apis/apiextensions.k8s.io/v1", t, namespace, loadCustomResourceDefinition)
+
+proc delete*(client: Client, t: typedesc[CustomResourceDefinition], name: string, namespace = "default") {.async.}=
+  await client.delete("/apis/apiextensions.k8s.io/v1", t, name, namespace)
 
 type
   JSONSchemaPropsOrStringArray* = distinct string
@@ -1171,9 +1151,8 @@ proc dump*(self: CustomResourceDefinitionList, s: JsonStream) =
   s.objectStart()
   s.name("apiVersion"); s.value("apiextensions.k8s.io/v1")
   s.name("kind"); s.value("CustomResourceDefinitionList")
-  if not self.`items`.isEmpty:
-    s.name("items")
-    self.`items`.dump(s)
+  s.name("items")
+  self.`items`.dump(s)
   if not self.`metadata`.isEmpty:
     s.name("metadata")
     self.`metadata`.dump(s)

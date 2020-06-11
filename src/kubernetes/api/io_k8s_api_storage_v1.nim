@@ -67,9 +67,8 @@ proc dump*(self: StorageClass, s: JsonStream) =
   if not self.`parameters`.isEmpty:
     s.name("parameters")
     self.`parameters`.dump(s)
-  if not self.`provisioner`.isEmpty:
-    s.name("provisioner")
-    self.`provisioner`.dump(s)
+  s.name("provisioner")
+  self.`provisioner`.dump(s)
   if not self.`volumeBindingMode`.isEmpty:
     s.name("volumeBindingMode")
     self.`volumeBindingMode`.dump(s)
@@ -108,6 +107,9 @@ proc get*(client: Client, t: typedesc[StorageClass], name: string, namespace = "
 proc create*(client: Client, t: StorageClass, namespace = "default"): Future[StorageClass] {.async.}=
   return await client.create("/apis/storage.k8s.io/v1", t, namespace, loadStorageClass)
 
+proc delete*(client: Client, t: typedesc[StorageClass], name: string, namespace = "default") {.async.}=
+  await client.delete("/apis/storage.k8s.io/v1", t, name, namespace)
+
 type
   StorageClassList* = object
     `apiVersion`*: string
@@ -141,9 +143,8 @@ proc dump*(self: StorageClassList, s: JsonStream) =
   s.objectStart()
   s.name("apiVersion"); s.value("storage.k8s.io/v1")
   s.name("kind"); s.value("StorageClassList")
-  if not self.`items`.isEmpty:
-    s.name("items")
-    self.`items`.dump(s)
+  s.name("items")
+  self.`items`.dump(s)
   if not self.`metadata`.isEmpty:
     s.name("metadata")
     self.`metadata`.dump(s)
@@ -230,15 +231,12 @@ proc load*(self: var VolumeAttachmentSpec, parser: var JsonParser) =
 
 proc dump*(self: VolumeAttachmentSpec, s: JsonStream) =
   s.objectStart()
-  if not self.`nodeName`.isEmpty:
-    s.name("nodeName")
-    self.`nodeName`.dump(s)
-  if not self.`attacher`.isEmpty:
-    s.name("attacher")
-    self.`attacher`.dump(s)
-  if not self.`source`.isEmpty:
-    s.name("source")
-    self.`source`.dump(s)
+  s.name("nodeName")
+  self.`nodeName`.dump(s)
+  s.name("attacher")
+  self.`attacher`.dump(s)
+  s.name("source")
+  self.`source`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: VolumeAttachmentSpec): bool =
@@ -316,9 +314,8 @@ proc load*(self: var VolumeAttachmentStatus, parser: var JsonParser) =
 
 proc dump*(self: VolumeAttachmentStatus, s: JsonStream) =
   s.objectStart()
-  if not self.`attached`.isEmpty:
-    s.name("attached")
-    self.`attached`.dump(s)
+  s.name("attached")
+  self.`attached`.dump(s)
   if not self.`detachError`.isEmpty:
     s.name("detachError")
     self.`detachError`.dump(s)
@@ -373,9 +370,8 @@ proc dump*(self: VolumeAttachment, s: JsonStream) =
   s.objectStart()
   s.name("apiVersion"); s.value("storage.k8s.io/v1")
   s.name("kind"); s.value("VolumeAttachment")
-  if not self.`spec`.isEmpty:
-    s.name("spec")
-    self.`spec`.dump(s)
+  s.name("spec")
+  self.`spec`.dump(s)
   if not self.`status`.isEmpty:
     s.name("status")
     self.`status`.dump(s)
@@ -402,6 +398,9 @@ proc get*(client: Client, t: typedesc[VolumeAttachment], name: string, namespace
 
 proc create*(client: Client, t: VolumeAttachment, namespace = "default"): Future[VolumeAttachment] {.async.}=
   return await client.create("/apis/storage.k8s.io/v1", t, namespace, loadVolumeAttachment)
+
+proc delete*(client: Client, t: typedesc[VolumeAttachment], name: string, namespace = "default") {.async.}=
+  await client.delete("/apis/storage.k8s.io/v1", t, name, namespace)
 
 type
   VolumeAttachmentList* = object
@@ -436,9 +435,8 @@ proc dump*(self: VolumeAttachmentList, s: JsonStream) =
   s.objectStart()
   s.name("apiVersion"); s.value("storage.k8s.io/v1")
   s.name("kind"); s.value("VolumeAttachmentList")
-  if not self.`items`.isEmpty:
-    s.name("items")
-    self.`items`.dump(s)
+  s.name("items")
+  self.`items`.dump(s)
   if not self.`metadata`.isEmpty:
     s.name("metadata")
     self.`metadata`.dump(s)

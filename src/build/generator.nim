@@ -172,95 +172,127 @@ proc apiVersion(definition: Definition): Option[string] =
       return  gvk[0].group & "/" & gvk[0].version
   definition.`x-kubernetes-group-version-kind`.map(mapper) 
 
-proc generate(definition: Definition, name: string, f: File) =
+proc generateType(definition: Definition, name: string, f: File) =
   f.writeLine("")
   f.writeLine("type")
-  if definition.properties.isSome:
-    f.writeLine("  ", name.typename, "* = object")
-    for propertyName, property in definition.properties.get.pairs:
-      var t = nimType(property.extendedTypeSpec,name.modulename)
-      f.writeLine("    `",propertyName,"`*: ", t)
-    f.writeLine("")
-    f.writeLine("proc load*(self: var ", name.typename, ", parser: var JsonParser) =")
-    f.writeLine("  if parser.kind != jsonObjectStart: raiseParseErr(parser,\"object start\")")
-    f.writeLine("  parser.next")
-    f.writeLine("  while true:")
-    f.writeLine("    case parser.kind:")
-    f.writeLine("      of jsonObjectEnd:")
-    f.writeLine("        parser.next")
-    f.writeLine("        return")
-    f.writeLine("      of jsonString:")
-    f.writeLine("        let key = parser.str")
-    f.writeLine("        parser.next")
-    f.writeLine("        case key:")
-    for propertyName, property in definition.properties.get.pairs:
-      f.writeLine(&"""          of "{propertyName}":""")
-      f.writeLine(fmt"            load(self.`{propertyName}`,parser)")
-    f.writeLine("      else: raiseParseErr(parser,\"string not \" & $(parser.kind))")
-    f.writeLine("")
-    f.writeLine("proc dump*(self: ", name.typename, ", s: JsonStream) =")
-    f.writeLine("  s.objectStart()")
-    let apiVersion = definition.apiVersion
-    if apiVersion.isSome:
-      f.writeLine(&"""  s.name("apiVersion"); s.value("{apiVersion.get}")""")
-      f.writeLine(&"""  s.name("kind"); s.value("{name.typename}")""")
+  f.writeLine("  ", name.typename, "* = object")
+  for propertyName, property in definition.properties.get.pairs:
+    var t = nimType(property.extendedTypeSpec,name.modulename)
+    f.writeLine("    `",propertyName,"`*: ", t)
 
-    for propertyName, property in definition.properties.get.pairs:
-      if apiVersion.isSome and (propertyName == "kind" or propertyName == "apiVersion"):
-        continue
+proc generateLoad(definition: Definition, name: string, f: File) =
+  f.writeLine("")
+  f.writeLine("proc load*(self: var ", name.typename, ", parser: var JsonParser) =")
+  f.writeLine("  if parser.kind != jsonObjectStart: raiseParseErr(parser,\"object start\")")
+  f.writeLine("  parser.next")
+  f.writeLine("  while true:")
+  f.writeLine("    case parser.kind:")
+  f.writeLine("      of jsonObjectEnd:")
+  f.writeLine("        parser.next")
+  f.writeLine("        return")
+  f.writeLine("      of jsonString:")
+  f.writeLine("        let key = parser.str")
+  f.writeLine("        parser.next")
+  f.writeLine("        case key:")
+  for propertyName, property in definition.properties.get.pairs:
+    f.writeLine(&"""          of "{propertyName}":""")
+    f.writeLine(fmt"            load(self.`{propertyName}`,parser)")
+  f.writeLine("      else: raiseParseErr(parser,\"string not \" & $(parser.kind))")
+
+
+proc generateDump(definition: Definition, name: string, f: File) =
+  f.writeLine("")
+  f.writeLine("proc dump*(self: ", name.typename, ", s: JsonStream) =")
+  f.writeLine("  s.objectStart()")
+  let apiVersion = definition.apiVersion
+  if apiVersion.isSome:
+    f.writeLine(&"""  s.name("apiVersion"); s.value("{apiVersion.get}")""")
+    f.writeLine(&"""  s.name("kind"); s.value("{name.typename}")""")
+  let required = toHashSet(definition.required.get(@[]))
+  for propertyName, property in definition.properties.get.pairs:
+    if apiVersion.isSome and (propertyName == "kind" or propertyName == "apiVersion"):
+      continue
+    if not required.contains(propertyName):
       f.writeLine(&"""  if not self.`{propertyName}`.isEmpty:""")
       f.writeLine(&"""    s.name("{propertyName}")""")
       f.writeLine(&"""    self.`{propertyName}`.dump(s)""")
-    f.writeLine("  s.objectEnd()")
+    else:
+      f.writeLine(&"""  s.name("{propertyName}")""")
+      f.writeLine(&"""  self.`{propertyName}`.dump(s)""")
+  f.writeLine("  s.objectEnd()")
+
+proc generateIsEmpty(definition: Definition, name: string, f: File) =
+  f.writeLine("")
+  f.writeLine("proc isEmpty*(self: ", name.typename, "): bool =")
+  for propertyName, property in definition.properties.get.pairs:
+    f.writeLine(&"""  if not self.`{propertyName}`.isEmpty: return false""")
+  f.writeLine(&"""  true""")
+
+proc generateApi(definition: Definition, name: string, apiPath: string, f: File) =
+  f.writeLine("")
+  f.writeLine("proc load", name.typename, "(parser: var JsonParser):", name.typename, " = ")
+  f.writeLine("  var ret: ", name.typename, "")
+  f.writeLine("  load(ret,parser)")
+  f.writeLine("  return ret ")
+  if name.endsWith("List"):
+    let itemName = name.typename[0..^5]
     f.writeLine("")
-    f.writeLine("proc isEmpty*(self: ", name.typename, "): bool =")
-    for propertyName, property in definition.properties.get.pairs:
-      f.writeLine(&"""  if not self.`{propertyName}`.isEmpty: return false""")
-    f.writeLine(&"""  true""")
+    f.writeLine("proc list*(client: Client, t: typedesc[", itemName, "], namespace = \"default\"): Future[seq[", itemName, "]] {.async.}=")
+    f.writeLine("  return (await client.list(\"" & apiPath & "\", ", name.typename, ", namespace, load", name.typename, ")).items")
+  else:
+    f.writeLine("")
+    f.writeLine("proc get*(client: Client, t: typedesc[", name.typename, "], name: string, namespace = \"default\"): Future[", name.typename, "] {.async.}=")
+    f.writeLine("  return await client.get(\"" & apiPath & "\", t, name, namespace, load", name.typename, ")")
+    f.writeLine("")
+    f.writeLine("proc create*(client: Client, t: ", name.typename, ", namespace = \"default\"): Future[", name.typename, "] {.async.}=")
+    f.writeLine("  return await client.create(\"" & apiPath & "\", t, namespace, load", name.typename, ")")
+    f.writeLine("")
+    f.writeLine("proc delete*(client: Client, t: typedesc[", name.typename, "], name: string, namespace = \"default\") {.async.}=")
+    f.writeLine("  await client.delete(\"" & apiPath & "\", t, name, namespace)")
+
+proc generateIntOrString(name: string, f: File) =
+  f.writeLine("")
+  f.writeLine("type")
+  f.writeLine("  ", name.typename, "* = distinct base_types.IntOrString")
+  f.writeLine("")
+  f.writeLine("proc load*(self: var ", name.typename, ", parser: var JsonParser) =")
+  f.writeLine("  load(base_types.IntOrString(self),parser)")
+  f.writeLine("")
+  f.writeLine("proc dump*(self: ", name.typename, ", s: JsonStream) =")
+  f.writeLine("  dump(base_types.IntOrString(self),s)")
+  f.writeLine("")
+  f.writeLine("proc isEmpty*(self: ", name.typename, "): bool = base_types.IntOrString(self).isEmpty")
+
+proc generateTypedef(definition: Definition, name: string, f: File) =
+  f.writeLine("")
+  f.writeLine("type")
+  let subtype = definition.extendedTypeSpec.nimType(name.modulename)
+  f.writeLine("  ", name.typename, "* = distinct ",subtype)
+  f.writeLine("")
+  f.writeLine("proc load*(self: var ", name.typename, ", parser: var JsonParser) =")
+  f.writeLine(fmt"  load({subtype}(self),parser)")
+  f.writeLine("")
+  f.writeLine("proc dump*(self: ", name.typename, ", s: JsonStream) =")
+  f.writeLine(fmt"  dump({subtype}(self),s)")
+  f.writeLine("")
+  f.writeLine("proc isEmpty*(self: ", name.typename, "): bool = ",subtype,"(self).isEmpty")
+
+proc generate(definition: Definition, name: string, f: File) =
+  if definition.properties.isSome:
+    definition.generateType(name,f)
+    definition.generateLoad(name,f)
+    definition.generateDump(name,f)
+    definition.generateIsEmpty(name,f)
 
     let apiPath = definition.apiPath
     if apiPath.isSome:
-      f.writeLine("")
-      f.writeLine("proc load", name.typename, "(parser: var JsonParser):", name.typename, " = ")
-      f.writeLine("  var ret: ", name.typename, "")
-      f.writeLine("  load(ret,parser)")
-      f.writeLine("  return ret ")
-      if name.endsWith("List"):
-        let itemName = name.typename[0..^5]
-        f.writeLine("")
-        f.writeLine("proc list*(client: Client, t: typedesc[", itemName, "], namespace = \"default\"): Future[seq[", itemName, "]] {.async.}=")
-        f.writeLine("  return (await client.list(\"" & apiPath.get & "\", ", name.typename, ", namespace, load", name.typename, ")).items")
-      else:
-        f.writeLine("")
-        f.writeLine("proc get*(client: Client, t: typedesc[", name.typename, "], name: string, namespace = \"default\"): Future[", name.typename, "] {.async.}=")
-        f.writeLine("  return await client.get(\"" & apiPath.get & "\", t, name, namespace, load", name.typename, ")")
-        f.writeLine("")
-        f.writeLine("proc create*(client: Client, t: ", name.typename, ", namespace = \"default\"): Future[", name.typename, "] {.async.}=")
-        f.writeLine("  return await client.create(\"" & apiPath.get & "\", t, namespace, load", name.typename, ")")
+      definition.generateApi(name,apiPath.get,f)
 
   else:
     if name.typename == "IntOrString":
-      f.writeLine("  ", name.typename, "* = distinct base_types.IntOrString")
-      f.writeLine("")
-      f.writeLine("proc load*(self: var ", name.typename, ", parser: var JsonParser) =")
-      f.writeLine("  load(base_types.IntOrString(self),parser)")
-      f.writeLine("")
-      f.writeLine("proc dump*(self: ", name.typename, ", s: JsonStream) =")
-      f.writeLine("  dump(base_types.IntOrString(self),s)")
-      f.writeLine("")
-      f.writeLine("proc isEmpty*(self: ", name.typename, "): bool = base_types.IntOrString(self).isEmpty")
+      generateIntOrString(name,f)
     else:
-      let subtype = definition.extendedTypeSpec.nimType(name.modulename)
-      f.writeLine("  ", name.typename, "* = distinct ",subtype)
-      f.writeLine("")
-      f.writeLine("proc load*(self: var ", name.typename, ", parser: var JsonParser) =")
-      f.writeLine(fmt"  load({subtype}(self),parser)")
-      f.writeLine("")
-      f.writeLine("proc dump*(self: ", name.typename, ", s: JsonStream) =")
-      f.writeLine(fmt"  dump({subtype}(self),s)")
-      f.writeLine("")
-      f.writeLine("proc isEmpty*(self: ", name.typename, "): bool = ",subtype,"(self).isEmpty")
-
+      definition.generateTypedef(name,f)
 
 
 

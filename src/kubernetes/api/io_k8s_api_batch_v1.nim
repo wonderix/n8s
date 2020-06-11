@@ -61,9 +61,8 @@ proc dump*(self: JobSpec, s: JsonStream) =
   if not self.`manualSelector`.isEmpty:
     s.name("manualSelector")
     self.`manualSelector`.dump(s)
-  if not self.`template`.isEmpty:
-    s.name("template")
-    self.`template`.dump(s)
+  s.name("template")
+  self.`template`.dump(s)
   if not self.`selector`.isEmpty:
     s.name("selector")
     self.`selector`.dump(s)
@@ -126,9 +125,8 @@ proc dump*(self: JobCondition, s: JsonStream) =
   if not self.`lastTransitionTime`.isEmpty:
     s.name("lastTransitionTime")
     self.`lastTransitionTime`.dump(s)
-  if not self.`type`.isEmpty:
-    s.name("type")
-    self.`type`.dump(s)
+  s.name("type")
+  self.`type`.dump(s)
   if not self.`message`.isEmpty:
     s.name("message")
     self.`message`.dump(s)
@@ -138,9 +136,8 @@ proc dump*(self: JobCondition, s: JsonStream) =
   if not self.`reason`.isEmpty:
     s.name("reason")
     self.`reason`.dump(s)
-  if not self.`status`.isEmpty:
-    s.name("status")
-    self.`status`.dump(s)
+  s.name("status")
+  self.`status`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: JobCondition): bool =
@@ -284,6 +281,9 @@ proc get*(client: Client, t: typedesc[Job], name: string, namespace = "default")
 proc create*(client: Client, t: Job, namespace = "default"): Future[Job] {.async.}=
   return await client.create("/apis/batch/v1", t, namespace, loadJob)
 
+proc delete*(client: Client, t: typedesc[Job], name: string, namespace = "default") {.async.}=
+  await client.delete("/apis/batch/v1", t, name, namespace)
+
 type
   JobList* = object
     `apiVersion`*: string
@@ -317,9 +317,8 @@ proc dump*(self: JobList, s: JsonStream) =
   s.objectStart()
   s.name("apiVersion"); s.value("batch/v1")
   s.name("kind"); s.value("JobList")
-  if not self.`items`.isEmpty:
-    s.name("items")
-    self.`items`.dump(s)
+  s.name("items")
+  self.`items`.dump(s)
   if not self.`metadata`.isEmpty:
     s.name("metadata")
     self.`metadata`.dump(s)

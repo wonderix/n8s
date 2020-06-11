@@ -37,9 +37,8 @@ proc load*(self: var RawExtension_v2, parser: var JsonParser) =
 
 proc dump*(self: RawExtension_v2, s: JsonStream) =
   s.objectStart()
-  if not self.`Raw`.isEmpty:
-    s.name("Raw")
-    self.`Raw`.dump(s)
+  s.name("Raw")
+  self.`Raw`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: RawExtension_v2): bool =

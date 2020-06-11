@@ -99,15 +99,12 @@ proc dump*(self: APIServiceSpec, s: JsonStream) =
   if not self.`group`.isEmpty:
     s.name("group")
     self.`group`.dump(s)
-  if not self.`groupPriorityMinimum`.isEmpty:
-    s.name("groupPriorityMinimum")
-    self.`groupPriorityMinimum`.dump(s)
-  if not self.`versionPriority`.isEmpty:
-    s.name("versionPriority")
-    self.`versionPriority`.dump(s)
-  if not self.`service`.isEmpty:
-    s.name("service")
-    self.`service`.dump(s)
+  s.name("groupPriorityMinimum")
+  self.`groupPriorityMinimum`.dump(s)
+  s.name("versionPriority")
+  self.`versionPriority`.dump(s)
+  s.name("service")
+  self.`service`.dump(s)
   if not self.`insecureSkipTLSVerify`.isEmpty:
     s.name("insecureSkipTLSVerify")
     self.`insecureSkipTLSVerify`.dump(s)
@@ -160,18 +157,16 @@ proc dump*(self: APIServiceCondition, s: JsonStream) =
   if not self.`lastTransitionTime`.isEmpty:
     s.name("lastTransitionTime")
     self.`lastTransitionTime`.dump(s)
-  if not self.`type`.isEmpty:
-    s.name("type")
-    self.`type`.dump(s)
+  s.name("type")
+  self.`type`.dump(s)
   if not self.`message`.isEmpty:
     s.name("message")
     self.`message`.dump(s)
   if not self.`reason`.isEmpty:
     s.name("reason")
     self.`reason`.dump(s)
-  if not self.`status`.isEmpty:
-    s.name("status")
-    self.`status`.dump(s)
+  s.name("status")
+  self.`status`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: APIServiceCondition): bool =
@@ -279,6 +274,9 @@ proc get*(client: Client, t: typedesc[APIService], name: string, namespace = "de
 proc create*(client: Client, t: APIService, namespace = "default"): Future[APIService] {.async.}=
   return await client.create("/apis/apiregistration.k8s.io/v1beta1", t, namespace, loadAPIService)
 
+proc delete*(client: Client, t: typedesc[APIService], name: string, namespace = "default") {.async.}=
+  await client.delete("/apis/apiregistration.k8s.io/v1beta1", t, name, namespace)
+
 type
   APIServiceList* = object
     `apiVersion`*: string
@@ -312,9 +310,8 @@ proc dump*(self: APIServiceList, s: JsonStream) =
   s.objectStart()
   s.name("apiVersion"); s.value("apiregistration.k8s.io/v1beta1")
   s.name("kind"); s.value("APIServiceList")
-  if not self.`items`.isEmpty:
-    s.name("items")
-    self.`items`.dump(s)
+  s.name("items")
+  self.`items`.dump(s)
   if not self.`metadata`.isEmpty:
     s.name("metadata")
     self.`metadata`.dump(s)

@@ -46,9 +46,8 @@ proc dump*(self: SubjectAccessReviewStatus, s: JsonStream) =
   if not self.`reason`.isEmpty:
     s.name("reason")
     self.`reason`.dump(s)
-  if not self.`allowed`.isEmpty:
-    s.name("allowed")
-    self.`allowed`.dump(s)
+  s.name("allowed")
+  self.`allowed`.dump(s)
   s.objectEnd()
 
 proc isEmpty*(self: SubjectAccessReviewStatus): bool =
@@ -263,9 +262,8 @@ proc load*(self: var NonResourceRule, parser: var JsonParser) =
 
 proc dump*(self: NonResourceRule, s: JsonStream) =
   s.objectStart()
-  if not self.`verbs`.isEmpty:
-    s.name("verbs")
-    self.`verbs`.dump(s)
+  s.name("verbs")
+  self.`verbs`.dump(s)
   if not self.`nonResourceURLs`.isEmpty:
     s.name("nonResourceURLs")
     self.`nonResourceURLs`.dump(s)
@@ -313,9 +311,8 @@ proc dump*(self: ResourceRule, s: JsonStream) =
   if not self.`apiGroups`.isEmpty:
     s.name("apiGroups")
     self.`apiGroups`.dump(s)
-  if not self.`verbs`.isEmpty:
-    s.name("verbs")
-    self.`verbs`.dump(s)
+  s.name("verbs")
+  self.`verbs`.dump(s)
   if not self.`resourceNames`.isEmpty:
     s.name("resourceNames")
     self.`resourceNames`.dump(s)
@@ -359,15 +356,12 @@ proc load*(self: var SubjectRulesReviewStatus, parser: var JsonParser) =
 
 proc dump*(self: SubjectRulesReviewStatus, s: JsonStream) =
   s.objectStart()
-  if not self.`nonResourceRules`.isEmpty:
-    s.name("nonResourceRules")
-    self.`nonResourceRules`.dump(s)
-  if not self.`resourceRules`.isEmpty:
-    s.name("resourceRules")
-    self.`resourceRules`.dump(s)
-  if not self.`incomplete`.isEmpty:
-    s.name("incomplete")
-    self.`incomplete`.dump(s)
+  s.name("nonResourceRules")
+  self.`nonResourceRules`.dump(s)
+  s.name("resourceRules")
+  self.`resourceRules`.dump(s)
+  s.name("incomplete")
+  self.`incomplete`.dump(s)
   if not self.`evaluationError`.isEmpty:
     s.name("evaluationError")
     self.`evaluationError`.dump(s)
@@ -416,9 +410,8 @@ proc dump*(self: SelfSubjectRulesReview, s: JsonStream) =
   s.objectStart()
   s.name("apiVersion"); s.value("authorization.k8s.io/v1")
   s.name("kind"); s.value("SelfSubjectRulesReview")
-  if not self.`spec`.isEmpty:
-    s.name("spec")
-    self.`spec`.dump(s)
+  s.name("spec")
+  self.`spec`.dump(s)
   if not self.`status`.isEmpty:
     s.name("status")
     self.`status`.dump(s)
@@ -445,6 +438,9 @@ proc get*(client: Client, t: typedesc[SelfSubjectRulesReview], name: string, nam
 
 proc create*(client: Client, t: SelfSubjectRulesReview, namespace = "default"): Future[SelfSubjectRulesReview] {.async.}=
   return await client.create("/apis/authorization.k8s.io/v1", t, namespace, loadSelfSubjectRulesReview)
+
+proc delete*(client: Client, t: typedesc[SelfSubjectRulesReview], name: string, namespace = "default") {.async.}=
+  await client.delete("/apis/authorization.k8s.io/v1", t, name, namespace)
 
 type
   SubjectAccessReviewSpec* = object
@@ -548,9 +544,8 @@ proc dump*(self: SubjectAccessReview, s: JsonStream) =
   s.objectStart()
   s.name("apiVersion"); s.value("authorization.k8s.io/v1")
   s.name("kind"); s.value("SubjectAccessReview")
-  if not self.`spec`.isEmpty:
-    s.name("spec")
-    self.`spec`.dump(s)
+  s.name("spec")
+  self.`spec`.dump(s)
   if not self.`status`.isEmpty:
     s.name("status")
     self.`status`.dump(s)
@@ -577,6 +572,9 @@ proc get*(client: Client, t: typedesc[SubjectAccessReview], name: string, namesp
 
 proc create*(client: Client, t: SubjectAccessReview, namespace = "default"): Future[SubjectAccessReview] {.async.}=
   return await client.create("/apis/authorization.k8s.io/v1", t, namespace, loadSubjectAccessReview)
+
+proc delete*(client: Client, t: typedesc[SubjectAccessReview], name: string, namespace = "default") {.async.}=
+  await client.delete("/apis/authorization.k8s.io/v1", t, name, namespace)
 
 type
   SelfSubjectAccessReview* = object
@@ -614,9 +612,8 @@ proc dump*(self: SelfSubjectAccessReview, s: JsonStream) =
   s.objectStart()
   s.name("apiVersion"); s.value("authorization.k8s.io/v1")
   s.name("kind"); s.value("SelfSubjectAccessReview")
-  if not self.`spec`.isEmpty:
-    s.name("spec")
-    self.`spec`.dump(s)
+  s.name("spec")
+  self.`spec`.dump(s)
   if not self.`status`.isEmpty:
     s.name("status")
     self.`status`.dump(s)
@@ -643,6 +640,9 @@ proc get*(client: Client, t: typedesc[SelfSubjectAccessReview], name: string, na
 
 proc create*(client: Client, t: SelfSubjectAccessReview, namespace = "default"): Future[SelfSubjectAccessReview] {.async.}=
   return await client.create("/apis/authorization.k8s.io/v1", t, namespace, loadSelfSubjectAccessReview)
+
+proc delete*(client: Client, t: typedesc[SelfSubjectAccessReview], name: string, namespace = "default") {.async.}=
+  await client.delete("/apis/authorization.k8s.io/v1", t, name, namespace)
 
 type
   LocalSubjectAccessReview* = object
@@ -680,9 +680,8 @@ proc dump*(self: LocalSubjectAccessReview, s: JsonStream) =
   s.objectStart()
   s.name("apiVersion"); s.value("authorization.k8s.io/v1")
   s.name("kind"); s.value("LocalSubjectAccessReview")
-  if not self.`spec`.isEmpty:
-    s.name("spec")
-    self.`spec`.dump(s)
+  s.name("spec")
+  self.`spec`.dump(s)
   if not self.`status`.isEmpty:
     s.name("status")
     self.`status`.dump(s)
@@ -709,3 +708,6 @@ proc get*(client: Client, t: typedesc[LocalSubjectAccessReview], name: string, n
 
 proc create*(client: Client, t: LocalSubjectAccessReview, namespace = "default"): Future[LocalSubjectAccessReview] {.async.}=
   return await client.create("/apis/authorization.k8s.io/v1", t, namespace, loadLocalSubjectAccessReview)
+
+proc delete*(client: Client, t: typedesc[LocalSubjectAccessReview], name: string, namespace = "default") {.async.}=
+  await client.delete("/apis/authorization.k8s.io/v1", t, name, namespace)
