@@ -17,6 +17,7 @@ let client = newClient()
 # Prepare secret
 var secret: Secret
 secret.metadata.name = "test"
+secret.data["password"] == "mypassword".ByteArray
 
 # Create secret in kubernetes
 secret = await client.create(secret)
