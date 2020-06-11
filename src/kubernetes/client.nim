@@ -71,7 +71,6 @@ proc create*[T](client: Client, groupVersion: string, t: T, namespace: string, l
   stream.setPosition(0)
   return loadJson(await client.create(path,stream.readAll()),path,load)
 
-
 proc delete*(client: Client, path: string) {.async.}=
   let response = await client.client.request(client.config.server & path, httpMethod = HttpDelete, headers= client.account.authHeaders)
   let body = await response.body
@@ -80,6 +79,19 @@ proc delete*(client: Client, path: string) {.async.}=
 proc delete*[T](client: Client, groupVersion: string, t: typedesc[T], name: string, namespace: string) {.async.}=
   let path = groupVersion & "/namespaces/" & namespace & "/" & ($t).toLowerAscii() & "s/" & name
   await client.delete(path)
+
+proc replace*(client: Client, path: string, content: string): Future[Stream] {.async.}=
+  let response = await client.client.request(client.config.server & path, httpMethod = HttpPut, headers= client.account.authHeaders, body=content)
+  let body = await response.body
+  if not response.code.is2xx: raiseError(response, body)
+  return newStringStream(body)
+
+proc replace*[T](client: Client, groupVersion: string, t: T, name: string, namespace: string, load: proc(parser: var JsonParser): T): Future[T] {.async.}=
+  let path = groupVersion & "/namespaces/" & namespace & "/" & ($(typedesc[T])).toLowerAscii() & "s/" & name
+  let stream = newStringStream()
+  t.dump(newJsonStream(stream))
+  stream.setPosition(0)
+  return loadJson(await client.replace(path,stream.readAll()),path,load)
 
 proc apiResources*(client: Client): Future[seq[APIResource]] {.async.}=
   let response = await client.client.request(client.config.server & "/api/v1", httpMethod = HttpGet, headers= client.account.authHeaders)

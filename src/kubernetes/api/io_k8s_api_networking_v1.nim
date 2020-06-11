@@ -315,6 +315,9 @@ proc create*(client: Client, t: NetworkPolicy, namespace = "default"): Future[Ne
 proc delete*(client: Client, t: typedesc[NetworkPolicy], name: string, namespace = "default") {.async.}=
   await client.delete("/apis/networking.k8s.io/v1", t, name, namespace)
 
+proc replace*(client: Client, t: NetworkPolicy, namespace = "default"): Future[NetworkPolicy] {.async.}=
+  return await client.replace("/apis/networking.k8s.io/v1", t, t.metadata.name, namespace, loadNetworkPolicy)
+
 type
   NetworkPolicyList* = object
     `apiVersion`*: string

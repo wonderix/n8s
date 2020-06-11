@@ -223,6 +223,9 @@ proc create*(client: Client, t: CronJob, namespace = "default"): Future[CronJob]
 proc delete*(client: Client, t: typedesc[CronJob], name: string, namespace = "default") {.async.}=
   await client.delete("/apis/batch/v1beta1", t, name, namespace)
 
+proc replace*(client: Client, t: CronJob, namespace = "default"): Future[CronJob] {.async.}=
+  return await client.replace("/apis/batch/v1beta1", t, t.metadata.name, namespace, loadCronJob)
+
 type
   CronJobList* = object
     `apiVersion`*: string

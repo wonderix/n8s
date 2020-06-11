@@ -87,6 +87,9 @@ proc create*(client: Client, t: PriorityClass, namespace = "default"): Future[Pr
 proc delete*(client: Client, t: typedesc[PriorityClass], name: string, namespace = "default") {.async.}=
   await client.delete("/apis/scheduling.k8s.io/v1beta1", t, name, namespace)
 
+proc replace*(client: Client, t: PriorityClass, namespace = "default"): Future[PriorityClass] {.async.}=
+  return await client.replace("/apis/scheduling.k8s.io/v1beta1", t, t.metadata.name, namespace, loadPriorityClass)
+
 type
   PriorityClassList* = object
     `apiVersion`*: string

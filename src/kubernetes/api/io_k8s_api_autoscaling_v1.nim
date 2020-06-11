@@ -224,6 +224,9 @@ proc create*(client: Client, t: HorizontalPodAutoscaler, namespace = "default"):
 proc delete*(client: Client, t: typedesc[HorizontalPodAutoscaler], name: string, namespace = "default") {.async.}=
   await client.delete("/apis/autoscaling/v1", t, name, namespace)
 
+proc replace*(client: Client, t: HorizontalPodAutoscaler, namespace = "default"): Future[HorizontalPodAutoscaler] {.async.}=
+  return await client.replace("/apis/autoscaling/v1", t, t.metadata.name, namespace, loadHorizontalPodAutoscaler)
+
 type
   ScaleSpec* = object
     `replicas`*: int
@@ -360,6 +363,9 @@ proc create*(client: Client, t: Scale, namespace = "default"): Future[Scale] {.a
 
 proc delete*(client: Client, t: typedesc[Scale], name: string, namespace = "default") {.async.}=
   await client.delete("/apis/autoscaling/v1", t, name, namespace)
+
+proc replace*(client: Client, t: Scale, namespace = "default"): Future[Scale] {.async.}=
+  return await client.replace("/apis/autoscaling/v1", t, t.metadata.name, namespace, loadScale)
 
 type
   HorizontalPodAutoscalerList* = object

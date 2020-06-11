@@ -472,6 +472,9 @@ proc create*(client: Client, t: DaemonSet, namespace = "default"): Future[Daemon
 proc delete*(client: Client, t: typedesc[DaemonSet], name: string, namespace = "default") {.async.}=
   await client.delete("/apis/apps/v1", t, name, namespace)
 
+proc replace*(client: Client, t: DaemonSet, namespace = "default"): Future[DaemonSet] {.async.}=
+  return await client.replace("/apis/apps/v1", t, t.metadata.name, namespace, loadDaemonSet)
+
 type
   RollingUpdateStatefulSetStrategy* = object
     `partition`*: int
@@ -830,6 +833,9 @@ proc create*(client: Client, t: StatefulSet, namespace = "default"): Future[Stat
 proc delete*(client: Client, t: typedesc[StatefulSet], name: string, namespace = "default") {.async.}=
   await client.delete("/apis/apps/v1", t, name, namespace)
 
+proc replace*(client: Client, t: StatefulSet, namespace = "default"): Future[StatefulSet] {.async.}=
+  return await client.replace("/apis/apps/v1", t, t.metadata.name, namespace, loadStatefulSet)
+
 type
   StatefulSetList* = object
     `apiVersion`*: string
@@ -1004,6 +1010,9 @@ proc create*(client: Client, t: ReplicaSet, namespace = "default"): Future[Repli
 
 proc delete*(client: Client, t: typedesc[ReplicaSet], name: string, namespace = "default") {.async.}=
   await client.delete("/apis/apps/v1", t, name, namespace)
+
+proc replace*(client: Client, t: ReplicaSet, namespace = "default"): Future[ReplicaSet] {.async.}=
+  return await client.replace("/apis/apps/v1", t, t.metadata.name, namespace, loadReplicaSet)
 
 type
   ReplicaSetList* = object
@@ -1427,6 +1436,9 @@ proc create*(client: Client, t: Deployment, namespace = "default"): Future[Deplo
 proc delete*(client: Client, t: typedesc[Deployment], name: string, namespace = "default") {.async.}=
   await client.delete("/apis/apps/v1", t, name, namespace)
 
+proc replace*(client: Client, t: Deployment, namespace = "default"): Future[Deployment] {.async.}=
+  return await client.replace("/apis/apps/v1", t, t.metadata.name, namespace, loadDeployment)
+
 type
   ControllerRevision* = object
     `apiVersion`*: string
@@ -1494,6 +1506,9 @@ proc create*(client: Client, t: ControllerRevision, namespace = "default"): Futu
 
 proc delete*(client: Client, t: typedesc[ControllerRevision], name: string, namespace = "default") {.async.}=
   await client.delete("/apis/apps/v1", t, name, namespace)
+
+proc replace*(client: Client, t: ControllerRevision, namespace = "default"): Future[ControllerRevision] {.async.}=
+  return await client.replace("/apis/apps/v1", t, t.metadata.name, namespace, loadControllerRevision)
 
 type
   ControllerRevisionList* = object

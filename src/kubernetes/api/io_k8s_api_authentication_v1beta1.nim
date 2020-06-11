@@ -215,3 +215,6 @@ proc create*(client: Client, t: TokenReview, namespace = "default"): Future[Toke
 
 proc delete*(client: Client, t: typedesc[TokenReview], name: string, namespace = "default") {.async.}=
   await client.delete("/apis/authentication.k8s.io/v1beta1", t, name, namespace)
+
+proc replace*(client: Client, t: TokenReview, namespace = "default"): Future[TokenReview] {.async.}=
+  return await client.replace("/apis/authentication.k8s.io/v1beta1", t, t.metadata.name, namespace, loadTokenReview)

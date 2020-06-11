@@ -110,6 +110,9 @@ proc create*(client: Client, t: StorageClass, namespace = "default"): Future[Sto
 proc delete*(client: Client, t: typedesc[StorageClass], name: string, namespace = "default") {.async.}=
   await client.delete("/apis/storage.k8s.io/v1", t, name, namespace)
 
+proc replace*(client: Client, t: StorageClass, namespace = "default"): Future[StorageClass] {.async.}=
+  return await client.replace("/apis/storage.k8s.io/v1", t, t.metadata.name, namespace, loadStorageClass)
+
 type
   StorageClassList* = object
     `apiVersion`*: string
@@ -401,6 +404,9 @@ proc create*(client: Client, t: VolumeAttachment, namespace = "default"): Future
 
 proc delete*(client: Client, t: typedesc[VolumeAttachment], name: string, namespace = "default") {.async.}=
   await client.delete("/apis/storage.k8s.io/v1", t, name, namespace)
+
+proc replace*(client: Client, t: VolumeAttachment, namespace = "default"): Future[VolumeAttachment] {.async.}=
+  return await client.replace("/apis/storage.k8s.io/v1", t, t.metadata.name, namespace, loadVolumeAttachment)
 
 type
   VolumeAttachmentList* = object

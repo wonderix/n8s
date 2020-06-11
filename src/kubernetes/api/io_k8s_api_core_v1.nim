@@ -5812,6 +5812,9 @@ proc create*(client: Client, t: Pod, namespace = "default"): Future[Pod] {.async
 proc delete*(client: Client, t: typedesc[Pod], name: string, namespace = "default") {.async.}=
   await client.delete("/api/v1", t, name, namespace)
 
+proc replace*(client: Client, t: Pod, namespace = "default"): Future[Pod] {.async.}=
+  return await client.replace("/api/v1", t, t.metadata.name, namespace, loadPod)
+
 type
   ObjectReference* = object
     `uid`*: string
@@ -6086,6 +6089,9 @@ proc create*(client: Client, t: Endpoints, namespace = "default"): Future[Endpoi
 
 proc delete*(client: Client, t: typedesc[Endpoints], name: string, namespace = "default") {.async.}=
   await client.delete("/api/v1", t, name, namespace)
+
+proc replace*(client: Client, t: Endpoints, namespace = "default"): Future[Endpoints] {.async.}=
+  return await client.replace("/api/v1", t, t.metadata.name, namespace, loadEndpoints)
 
 type
   ScopedResourceSelectorRequirement* = object
@@ -6622,6 +6628,9 @@ proc create*(client: Client, t: ReplicationController, namespace = "default"): F
 proc delete*(client: Client, t: typedesc[ReplicationController], name: string, namespace = "default") {.async.}=
   await client.delete("/api/v1", t, name, namespace)
 
+proc replace*(client: Client, t: ReplicationController, namespace = "default"): Future[ReplicationController] {.async.}=
+  return await client.replace("/api/v1", t, t.metadata.name, namespace, loadReplicationController)
+
 type
   LimitRangeItem* = object
     `maxLimitRequestRatio`*: Table[string,io_k8s_apimachinery_pkg_api_resource.Quantity]
@@ -6780,6 +6789,9 @@ proc create*(client: Client, t: LimitRange, namespace = "default"): Future[Limit
 proc delete*(client: Client, t: typedesc[LimitRange], name: string, namespace = "default") {.async.}=
   await client.delete("/api/v1", t, name, namespace)
 
+proc replace*(client: Client, t: LimitRange, namespace = "default"): Future[LimitRange] {.async.}=
+  return await client.replace("/api/v1", t, t.metadata.name, namespace, loadLimitRange)
+
 type
   LimitRangeList* = object
     `apiVersion`*: string
@@ -6903,6 +6915,9 @@ proc create*(client: Client, t: Node, namespace = "default"): Future[Node] {.asy
 
 proc delete*(client: Client, t: typedesc[Node], name: string, namespace = "default") {.async.}=
   await client.delete("/api/v1", t, name, namespace)
+
+proc replace*(client: Client, t: Node, namespace = "default"): Future[Node] {.async.}=
+  return await client.replace("/api/v1", t, t.metadata.name, namespace, loadNode)
 
 type
   NodeList* = object
@@ -7175,6 +7190,9 @@ proc create*(client: Client, t: ConfigMap, namespace = "default"): Future[Config
 
 proc delete*(client: Client, t: typedesc[ConfigMap], name: string, namespace = "default") {.async.}=
   await client.delete("/api/v1", t, name, namespace)
+
+proc replace*(client: Client, t: ConfigMap, namespace = "default"): Future[ConfigMap] {.async.}=
+  return await client.replace("/api/v1", t, t.metadata.name, namespace, loadConfigMap)
 
 type
   ConfigMapList* = object
@@ -7583,6 +7601,9 @@ proc create*(client: Client, t: Service, namespace = "default"): Future[Service]
 
 proc delete*(client: Client, t: typedesc[Service], name: string, namespace = "default") {.async.}=
   await client.delete("/api/v1", t, name, namespace)
+
+proc replace*(client: Client, t: Service, namespace = "default"): Future[Service] {.async.}=
+  return await client.replace("/api/v1", t, t.metadata.name, namespace, loadService)
 
 type
   ServiceList* = object
@@ -8005,6 +8026,9 @@ proc create*(client: Client, t: ResourceQuota, namespace = "default"): Future[Re
 
 proc delete*(client: Client, t: typedesc[ResourceQuota], name: string, namespace = "default") {.async.}=
   await client.delete("/api/v1", t, name, namespace)
+
+proc replace*(client: Client, t: ResourceQuota, namespace = "default"): Future[ResourceQuota] {.async.}=
+  return await client.replace("/api/v1", t, t.metadata.name, namespace, loadResourceQuota)
 
 type
   ISCSIPersistentVolumeSource* = object
@@ -9095,6 +9119,9 @@ proc create*(client: Client, t: Event, namespace = "default"): Future[Event] {.a
 proc delete*(client: Client, t: typedesc[Event], name: string, namespace = "default") {.async.}=
   await client.delete("/api/v1", t, name, namespace)
 
+proc replace*(client: Client, t: Event, namespace = "default"): Future[Event] {.async.}=
+  return await client.replace("/api/v1", t, t.metadata.name, namespace, loadEvent)
+
 type
   EventList* = object
     `apiVersion`*: string
@@ -9219,6 +9246,9 @@ proc create*(client: Client, t: PersistentVolume, namespace = "default"): Future
 proc delete*(client: Client, t: typedesc[PersistentVolume], name: string, namespace = "default") {.async.}=
   await client.delete("/api/v1", t, name, namespace)
 
+proc replace*(client: Client, t: PersistentVolume, namespace = "default"): Future[PersistentVolume] {.async.}=
+  return await client.replace("/api/v1", t, t.metadata.name, namespace, loadPersistentVolume)
+
 type
   TypedLocalObjectReference* = object
     `apiGroup`*: string
@@ -9323,6 +9353,9 @@ proc create*(client: Client, t: PodTemplate, namespace = "default"): Future[PodT
 
 proc delete*(client: Client, t: typedesc[PodTemplate], name: string, namespace = "default") {.async.}=
   await client.delete("/api/v1", t, name, namespace)
+
+proc replace*(client: Client, t: PodTemplate, namespace = "default"): Future[PodTemplate] {.async.}=
+  return await client.replace("/api/v1", t, t.metadata.name, namespace, loadPodTemplate)
 
 type
   PodTemplateList* = object
@@ -9490,6 +9523,9 @@ proc create*(client: Client, t: ComponentStatus, namespace = "default"): Future[
 
 proc delete*(client: Client, t: typedesc[ComponentStatus], name: string, namespace = "default") {.async.}=
   await client.delete("/api/v1", t, name, namespace)
+
+proc replace*(client: Client, t: ComponentStatus, namespace = "default"): Future[ComponentStatus] {.async.}=
+  return await client.replace("/api/v1", t, t.metadata.name, namespace, loadComponentStatus)
 
 type
   ComponentStatusList* = object
@@ -9688,6 +9724,9 @@ proc create*(client: Client, t: PersistentVolumeClaim, namespace = "default"): F
 proc delete*(client: Client, t: typedesc[PersistentVolumeClaim], name: string, namespace = "default") {.async.}=
   await client.delete("/api/v1", t, name, namespace)
 
+proc replace*(client: Client, t: PersistentVolumeClaim, namespace = "default"): Future[PersistentVolumeClaim] {.async.}=
+  return await client.replace("/api/v1", t, t.metadata.name, namespace, loadPersistentVolumeClaim)
+
 type
   PersistentVolumeList* = object
     `apiVersion`*: string
@@ -9804,6 +9843,9 @@ proc create*(client: Client, t: Binding, namespace = "default"): Future[Binding]
 proc delete*(client: Client, t: typedesc[Binding], name: string, namespace = "default") {.async.}=
   await client.delete("/api/v1", t, name, namespace)
 
+proc replace*(client: Client, t: Binding, namespace = "default"): Future[Binding] {.async.}=
+  return await client.replace("/api/v1", t, t.metadata.name, namespace, loadBinding)
+
 type
   NamespaceSpec* = object
     `finalizers`*: seq[string]
@@ -9903,6 +9945,9 @@ proc create*(client: Client, t: Namespace, namespace = "default"): Future[Namesp
 
 proc delete*(client: Client, t: typedesc[Namespace], name: string, namespace = "default") {.async.}=
   await client.delete("/api/v1", t, name, namespace)
+
+proc replace*(client: Client, t: Namespace, namespace = "default"): Future[Namespace] {.async.}=
+  return await client.replace("/api/v1", t, t.metadata.name, namespace, loadNamespace)
 
 type
   ResourceQuotaList* = object
@@ -10144,6 +10189,9 @@ proc create*(client: Client, t: ServiceAccount, namespace = "default"): Future[S
 
 proc delete*(client: Client, t: typedesc[ServiceAccount], name: string, namespace = "default") {.async.}=
   await client.delete("/api/v1", t, name, namespace)
+
+proc replace*(client: Client, t: ServiceAccount, namespace = "default"): Future[ServiceAccount] {.async.}=
+  return await client.replace("/api/v1", t, t.metadata.name, namespace, loadServiceAccount)
 
 type
   ServiceAccountList* = object
@@ -10440,6 +10488,9 @@ proc create*(client: Client, t: Secret, namespace = "default"): Future[Secret] {
 
 proc delete*(client: Client, t: typedesc[Secret], name: string, namespace = "default") {.async.}=
   await client.delete("/api/v1", t, name, namespace)
+
+proc replace*(client: Client, t: Secret, namespace = "default"): Future[Secret] {.async.}=
+  return await client.replace("/api/v1", t, t.metadata.name, namespace, loadSecret)
 
 type
   SecretList* = object

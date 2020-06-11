@@ -442,6 +442,9 @@ proc create*(client: Client, t: SelfSubjectRulesReview, namespace = "default"): 
 proc delete*(client: Client, t: typedesc[SelfSubjectRulesReview], name: string, namespace = "default") {.async.}=
   await client.delete("/apis/authorization.k8s.io/v1", t, name, namespace)
 
+proc replace*(client: Client, t: SelfSubjectRulesReview, namespace = "default"): Future[SelfSubjectRulesReview] {.async.}=
+  return await client.replace("/apis/authorization.k8s.io/v1", t, t.metadata.name, namespace, loadSelfSubjectRulesReview)
+
 type
   SubjectAccessReviewSpec* = object
     `uid`*: string
@@ -576,6 +579,9 @@ proc create*(client: Client, t: SubjectAccessReview, namespace = "default"): Fut
 proc delete*(client: Client, t: typedesc[SubjectAccessReview], name: string, namespace = "default") {.async.}=
   await client.delete("/apis/authorization.k8s.io/v1", t, name, namespace)
 
+proc replace*(client: Client, t: SubjectAccessReview, namespace = "default"): Future[SubjectAccessReview] {.async.}=
+  return await client.replace("/apis/authorization.k8s.io/v1", t, t.metadata.name, namespace, loadSubjectAccessReview)
+
 type
   SelfSubjectAccessReview* = object
     `apiVersion`*: string
@@ -644,6 +650,9 @@ proc create*(client: Client, t: SelfSubjectAccessReview, namespace = "default"):
 proc delete*(client: Client, t: typedesc[SelfSubjectAccessReview], name: string, namespace = "default") {.async.}=
   await client.delete("/apis/authorization.k8s.io/v1", t, name, namespace)
 
+proc replace*(client: Client, t: SelfSubjectAccessReview, namespace = "default"): Future[SelfSubjectAccessReview] {.async.}=
+  return await client.replace("/apis/authorization.k8s.io/v1", t, t.metadata.name, namespace, loadSelfSubjectAccessReview)
+
 type
   LocalSubjectAccessReview* = object
     `apiVersion`*: string
@@ -711,3 +720,6 @@ proc create*(client: Client, t: LocalSubjectAccessReview, namespace = "default")
 
 proc delete*(client: Client, t: typedesc[LocalSubjectAccessReview], name: string, namespace = "default") {.async.}=
   await client.delete("/apis/authorization.k8s.io/v1", t, name, namespace)
+
+proc replace*(client: Client, t: LocalSubjectAccessReview, namespace = "default"): Future[LocalSubjectAccessReview] {.async.}=
+  return await client.replace("/apis/authorization.k8s.io/v1", t, t.metadata.name, namespace, loadLocalSubjectAccessReview)

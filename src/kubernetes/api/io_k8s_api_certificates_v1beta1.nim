@@ -229,6 +229,9 @@ proc create*(client: Client, t: CertificateSigningRequest, namespace = "default"
 proc delete*(client: Client, t: typedesc[CertificateSigningRequest], name: string, namespace = "default") {.async.}=
   await client.delete("/apis/certificates.k8s.io/v1beta1", t, name, namespace)
 
+proc replace*(client: Client, t: CertificateSigningRequest, namespace = "default"): Future[CertificateSigningRequest] {.async.}=
+  return await client.replace("/apis/certificates.k8s.io/v1beta1", t, t.metadata.name, namespace, loadCertificateSigningRequest)
+
 type
   CertificateSigningRequestList* = object
     `apiVersion`*: string

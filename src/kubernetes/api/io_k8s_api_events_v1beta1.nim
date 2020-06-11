@@ -200,6 +200,9 @@ proc create*(client: Client, t: Event, namespace = "default"): Future[Event] {.a
 proc delete*(client: Client, t: typedesc[Event], name: string, namespace = "default") {.async.}=
   await client.delete("/apis/events.k8s.io/v1beta1", t, name, namespace)
 
+proc replace*(client: Client, t: Event, namespace = "default"): Future[Event] {.async.}=
+  return await client.replace("/apis/events.k8s.io/v1beta1", t, t.metadata.name, namespace, loadEvent)
+
 type
   EventList* = object
     `apiVersion`*: string

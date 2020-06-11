@@ -152,6 +152,9 @@ proc create*(client: Client, t: RuntimeClass, namespace = "default"): Future[Run
 proc delete*(client: Client, t: typedesc[RuntimeClass], name: string, namespace = "default") {.async.}=
   await client.delete("/apis/node.k8s.io/v1beta1", t, name, namespace)
 
+proc replace*(client: Client, t: RuntimeClass, namespace = "default"): Future[RuntimeClass] {.async.}=
+  return await client.replace("/apis/node.k8s.io/v1beta1", t, t.metadata.name, namespace, loadRuntimeClass)
+
 type
   RuntimeClassList* = object
     `apiVersion`*: string

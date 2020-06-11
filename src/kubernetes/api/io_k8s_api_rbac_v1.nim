@@ -165,6 +165,9 @@ proc create*(client: Client, t: RoleBinding, namespace = "default"): Future[Role
 proc delete*(client: Client, t: typedesc[RoleBinding], name: string, namespace = "default") {.async.}=
   await client.delete("/apis/rbac.authorization.k8s.io/v1", t, name, namespace)
 
+proc replace*(client: Client, t: RoleBinding, namespace = "default"): Future[RoleBinding] {.async.}=
+  return await client.replace("/apis/rbac.authorization.k8s.io/v1", t, t.metadata.name, namespace, loadRoleBinding)
+
 type
   ClusterRoleBinding* = object
     `roleRef`*: RoleRef
@@ -232,6 +235,9 @@ proc create*(client: Client, t: ClusterRoleBinding, namespace = "default"): Futu
 
 proc delete*(client: Client, t: typedesc[ClusterRoleBinding], name: string, namespace = "default") {.async.}=
   await client.delete("/apis/rbac.authorization.k8s.io/v1", t, name, namespace)
+
+proc replace*(client: Client, t: ClusterRoleBinding, namespace = "default"): Future[ClusterRoleBinding] {.async.}=
+  return await client.replace("/apis/rbac.authorization.k8s.io/v1", t, t.metadata.name, namespace, loadClusterRoleBinding)
 
 type
   ClusterRoleBindingList* = object
@@ -463,6 +469,9 @@ proc create*(client: Client, t: Role, namespace = "default"): Future[Role] {.asy
 proc delete*(client: Client, t: typedesc[Role], name: string, namespace = "default") {.async.}=
   await client.delete("/apis/rbac.authorization.k8s.io/v1", t, name, namespace)
 
+proc replace*(client: Client, t: Role, namespace = "default"): Future[Role] {.async.}=
+  return await client.replace("/apis/rbac.authorization.k8s.io/v1", t, t.metadata.name, namespace, loadRole)
+
 type
   AggregationRule* = object
     `clusterRoleSelectors`*: seq[io_k8s_apimachinery_pkg_apis_meta_v1.LabelSelector]
@@ -562,6 +571,9 @@ proc create*(client: Client, t: ClusterRole, namespace = "default"): Future[Clus
 
 proc delete*(client: Client, t: typedesc[ClusterRole], name: string, namespace = "default") {.async.}=
   await client.delete("/apis/rbac.authorization.k8s.io/v1", t, name, namespace)
+
+proc replace*(client: Client, t: ClusterRole, namespace = "default"): Future[ClusterRole] {.async.}=
+  return await client.replace("/apis/rbac.authorization.k8s.io/v1", t, t.metadata.name, namespace, loadClusterRole)
 
 type
   ClusterRoleList* = object

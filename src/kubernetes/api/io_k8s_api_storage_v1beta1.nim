@@ -244,6 +244,9 @@ proc create*(client: Client, t: VolumeAttachment, namespace = "default"): Future
 proc delete*(client: Client, t: typedesc[VolumeAttachment], name: string, namespace = "default") {.async.}=
   await client.delete("/apis/storage.k8s.io/v1beta1", t, name, namespace)
 
+proc replace*(client: Client, t: VolumeAttachment, namespace = "default"): Future[VolumeAttachment] {.async.}=
+  return await client.replace("/apis/storage.k8s.io/v1beta1", t, t.metadata.name, namespace, loadVolumeAttachment)
+
 type
   VolumeAttachmentList* = object
     `apiVersion`*: string
@@ -471,6 +474,9 @@ proc create*(client: Client, t: CSINode, namespace = "default"): Future[CSINode]
 proc delete*(client: Client, t: typedesc[CSINode], name: string, namespace = "default") {.async.}=
   await client.delete("/apis/storage.k8s.io/v1beta1", t, name, namespace)
 
+proc replace*(client: Client, t: CSINode, namespace = "default"): Future[CSINode] {.async.}=
+  return await client.replace("/apis/storage.k8s.io/v1beta1", t, t.metadata.name, namespace, loadCSINode)
+
 type
   CSIDriverSpec* = object
     `attachRequired`*: bool
@@ -576,6 +582,9 @@ proc create*(client: Client, t: CSIDriver, namespace = "default"): Future[CSIDri
 
 proc delete*(client: Client, t: typedesc[CSIDriver], name: string, namespace = "default") {.async.}=
   await client.delete("/apis/storage.k8s.io/v1beta1", t, name, namespace)
+
+proc replace*(client: Client, t: CSIDriver, namespace = "default"): Future[CSIDriver] {.async.}=
+  return await client.replace("/apis/storage.k8s.io/v1beta1", t, t.metadata.name, namespace, loadCSIDriver)
 
 type
   CSIDriverList* = object
@@ -789,6 +798,9 @@ proc create*(client: Client, t: StorageClass, namespace = "default"): Future[Sto
 
 proc delete*(client: Client, t: typedesc[StorageClass], name: string, namespace = "default") {.async.}=
   await client.delete("/apis/storage.k8s.io/v1beta1", t, name, namespace)
+
+proc replace*(client: Client, t: StorageClass, namespace = "default"): Future[StorageClass] {.async.}=
+  return await client.replace("/apis/storage.k8s.io/v1beta1", t, t.metadata.name, namespace, loadStorageClass)
 
 type
   StorageClassList* = object

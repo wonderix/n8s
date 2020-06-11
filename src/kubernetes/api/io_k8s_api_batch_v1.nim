@@ -284,6 +284,9 @@ proc create*(client: Client, t: Job, namespace = "default"): Future[Job] {.async
 proc delete*(client: Client, t: typedesc[Job], name: string, namespace = "default") {.async.}=
   await client.delete("/apis/batch/v1", t, name, namespace)
 
+proc replace*(client: Client, t: Job, namespace = "default"): Future[Job] {.async.}=
+  return await client.replace("/apis/batch/v1", t, t.metadata.name, namespace, loadJob)
+
 type
   JobList* = object
     `apiVersion`*: string

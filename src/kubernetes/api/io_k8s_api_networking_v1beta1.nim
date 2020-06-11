@@ -331,6 +331,9 @@ proc create*(client: Client, t: Ingress, namespace = "default"): Future[Ingress]
 proc delete*(client: Client, t: typedesc[Ingress], name: string, namespace = "default") {.async.}=
   await client.delete("/apis/networking.k8s.io/v1beta1", t, name, namespace)
 
+proc replace*(client: Client, t: Ingress, namespace = "default"): Future[Ingress] {.async.}=
+  return await client.replace("/apis/networking.k8s.io/v1beta1", t, t.metadata.name, namespace, loadIngress)
+
 type
   IngressList* = object
     `apiVersion`*: string

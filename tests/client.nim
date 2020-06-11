@@ -11,11 +11,17 @@ proc createSecret() {.async.} =
   except NotFoundError:
     discard
 
+  let secretData = "test".ByteArray
   var secret: Secret
-  secret.data["test"] = "test".ByteArray
+  secret.data["test"] = secretData
   secret.metadata.name = "test"
 
   secret = await client.create(secret)
+  doAssert secret.data["test"] == secretData
+  
+  secret.data["test"] = "hello".ByteArray
+  secret = await client.replace(secret)
+  doAssert secret.data["test"] == "hello".ByteArray
 
   await client.delete(Secret,"test")
 

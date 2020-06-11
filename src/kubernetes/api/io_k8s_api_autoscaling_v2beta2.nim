@@ -837,6 +837,9 @@ proc create*(client: Client, t: HorizontalPodAutoscaler, namespace = "default"):
 proc delete*(client: Client, t: typedesc[HorizontalPodAutoscaler], name: string, namespace = "default") {.async.}=
   await client.delete("/apis/autoscaling/v2beta2", t, name, namespace)
 
+proc replace*(client: Client, t: HorizontalPodAutoscaler, namespace = "default"): Future[HorizontalPodAutoscaler] {.async.}=
+  return await client.replace("/apis/autoscaling/v2beta2", t, t.metadata.name, namespace, loadHorizontalPodAutoscaler)
+
 type
   HorizontalPodAutoscalerList* = object
     `apiVersion`*: string

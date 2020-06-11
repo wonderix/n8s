@@ -697,6 +697,9 @@ proc create*(client: Client, t: PodSecurityPolicy, namespace = "default"): Futur
 proc delete*(client: Client, t: typedesc[PodSecurityPolicy], name: string, namespace = "default") {.async.}=
   await client.delete("/apis/policy/v1beta1", t, name, namespace)
 
+proc replace*(client: Client, t: PodSecurityPolicy, namespace = "default"): Future[PodSecurityPolicy] {.async.}=
+  return await client.replace("/apis/policy/v1beta1", t, t.metadata.name, namespace, loadPodSecurityPolicy)
+
 type
   PodDisruptionBudgetStatus* = object
     `expectedPods`*: int
@@ -828,6 +831,9 @@ proc create*(client: Client, t: PodDisruptionBudget, namespace = "default"): Fut
 proc delete*(client: Client, t: typedesc[PodDisruptionBudget], name: string, namespace = "default") {.async.}=
   await client.delete("/apis/policy/v1beta1", t, name, namespace)
 
+proc replace*(client: Client, t: PodDisruptionBudget, namespace = "default"): Future[PodDisruptionBudget] {.async.}=
+  return await client.replace("/apis/policy/v1beta1", t, t.metadata.name, namespace, loadPodDisruptionBudget)
+
 type
   Eviction* = object
     `apiVersion`*: string
@@ -889,6 +895,9 @@ proc create*(client: Client, t: Eviction, namespace = "default"): Future[Evictio
 
 proc delete*(client: Client, t: typedesc[Eviction], name: string, namespace = "default") {.async.}=
   await client.delete("/apis/policy/v1beta1", t, name, namespace)
+
+proc replace*(client: Client, t: Eviction, namespace = "default"): Future[Eviction] {.async.}=
+  return await client.replace("/apis/policy/v1beta1", t, t.metadata.name, namespace, loadEviction)
 
 type
   PodDisruptionBudgetList* = object

@@ -222,13 +222,15 @@ proc generateDump(definition: Definition, name: string, f: File) =
   f.writeLine("  s.objectEnd()")
 
 proc generateIsEmpty(definition: Definition, name: string, f: File) =
+  let properties = definition.properties.get
   f.writeLine("")
   f.writeLine("proc isEmpty*(self: ", name.typename, "): bool =")
-  for propertyName, property in definition.properties.get.pairs:
+  for propertyName, property in properties.pairs:
     f.writeLine(&"""  if not self.`{propertyName}`.isEmpty: return false""")
   f.writeLine(&"""  true""")
 
 proc generateApi(definition: Definition, name: string, apiPath: string, f: File) =
+  let properties = definition.properties.get
   f.writeLine("")
   f.writeLine("proc load", name.typename, "(parser: var JsonParser):", name.typename, " = ")
   f.writeLine("  var ret: ", name.typename, "")
@@ -249,6 +251,10 @@ proc generateApi(definition: Definition, name: string, apiPath: string, f: File)
     f.writeLine("")
     f.writeLine("proc delete*(client: Client, t: typedesc[", name.typename, "], name: string, namespace = \"default\") {.async.}=")
     f.writeLine("  await client.delete(\"" & apiPath & "\", t, name, namespace)")
+    if properties.contains("metadata") and properties["metadata"].`$ref`.get("").endsWith("ObjectMeta"): 
+      f.writeLine("")
+      f.writeLine("proc replace*(client: Client, t: ", name.typename, ", namespace = \"default\"): Future[", name.typename, "] {.async.}=")
+      f.writeLine("  return await client.replace(\"" & apiPath & "\", t, t.metadata.name, namespace, load", name.typename, ")")
 
 proc generateIntOrString(name: string, f: File) =
   f.writeLine("")
