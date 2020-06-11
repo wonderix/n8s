@@ -1,7 +1,7 @@
 import ../client
 import ../base_types
 import parsejson
-import streams
+import ../jsonstream
 import tables
 import io_k8s_apimachinery_pkg_apis_meta_v1
 import asyncdispatch
@@ -35,34 +35,21 @@ proc load*(self: var UserInfo, parser: var JsonParser) =
             load(self.`extra`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: UserInfo, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: UserInfo, s: JsonStream) =
+  s.objectStart()
   if not self.`uid`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"uid\":")
+    s.name("uid")
     self.`uid`.dump(s)
   if not self.`username`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"username\":")
+    s.name("username")
     self.`username`.dump(s)
   if not self.`groups`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"groups\":")
+    s.name("groups")
     self.`groups`.dump(s)
   if not self.`extra`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"extra\":")
+    s.name("extra")
     self.`extra`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: UserInfo): bool =
   if not self.`uid`.isEmpty: return false
@@ -94,22 +81,15 @@ proc load*(self: var TokenReviewSpec, parser: var JsonParser) =
             load(self.`audiences`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: TokenReviewSpec, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: TokenReviewSpec, s: JsonStream) =
+  s.objectStart()
   if not self.`token`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"token\":")
+    s.name("token")
     self.`token`.dump(s)
   if not self.`audiences`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"audiences\":")
+    s.name("audiences")
     self.`audiences`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: TokenReviewSpec): bool =
   if not self.`token`.isEmpty: return false
@@ -145,34 +125,21 @@ proc load*(self: var TokenReviewStatus, parser: var JsonParser) =
             load(self.`audiences`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: TokenReviewStatus, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: TokenReviewStatus, s: JsonStream) =
+  s.objectStart()
   if not self.`user`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"user\":")
+    s.name("user")
     self.`user`.dump(s)
   if not self.`error`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"error\":")
+    s.name("error")
     self.`error`.dump(s)
   if not self.`authenticated`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"authenticated\":")
+    s.name("authenticated")
     self.`authenticated`.dump(s)
   if not self.`audiences`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"audiences\":")
+    s.name("audiences")
     self.`audiences`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: TokenReviewStatus): bool =
   if not self.`user`.isEmpty: return false
@@ -213,40 +180,20 @@ proc load*(self: var TokenReview, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: TokenReview, s: Stream) =
-  s.write("{")
-  var firstIteration = true
-  if not self.`apiVersion`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"apiVersion\":")
-    self.`apiVersion`.dump(s)
+proc dump*(self: TokenReview, s: JsonStream) =
+  s.objectStart()
+  s.name("apiVersion"); s.value("authentication.k8s.io/v1")
+  s.name("kind"); s.value("TokenReview")
   if not self.`spec`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"spec\":")
+    s.name("spec")
     self.`spec`.dump(s)
   if not self.`status`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"status\":")
+    s.name("status")
     self.`status`.dump(s)
-  if not self.`kind`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"kind\":")
-    self.`kind`.dump(s)
   if not self.`metadata`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"metadata\":")
+    s.name("metadata")
     self.`metadata`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: TokenReview): bool =
   if not self.`apiVersion`.isEmpty: return false
@@ -265,6 +212,4 @@ proc get*(client: Client, t: typedesc[TokenReview], name: string, namespace = "d
   return await client.get("/apis/authentication.k8s.io/v1", t, name, namespace, loadTokenReview)
 
 proc create*(client: Client, t: TokenReview, namespace = "default"): Future[TokenReview] {.async.}=
-  t.apiVersion = "/apis/authentication.k8s.io/v1"
-  t.kind = "TokenReview"
-  return await client.get("/apis/authentication.k8s.io/v1", t, name, namespace, loadTokenReview)
+  return await client.create("/apis/authentication.k8s.io/v1", t, namespace, loadTokenReview)

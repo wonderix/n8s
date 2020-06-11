@@ -1,7 +1,7 @@
 import ../client
 import ../base_types
 import parsejson
-import streams
+import ../jsonstream
 import io_k8s_apimachinery_pkg_apis_meta_v1
 import asyncdispatch
 import io_k8s_api_core_v1
@@ -40,40 +40,24 @@ proc load*(self: var ReplicaSetCondition, parser: var JsonParser) =
             load(self.`status`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ReplicaSetCondition, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: ReplicaSetCondition, s: JsonStream) =
+  s.objectStart()
   if not self.`lastTransitionTime`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"lastTransitionTime\":")
+    s.name("lastTransitionTime")
     self.`lastTransitionTime`.dump(s)
   if not self.`type`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"type\":")
+    s.name("type")
     self.`type`.dump(s)
   if not self.`message`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"message\":")
+    s.name("message")
     self.`message`.dump(s)
   if not self.`reason`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"reason\":")
+    s.name("reason")
     self.`reason`.dump(s)
   if not self.`status`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"status\":")
+    s.name("status")
     self.`status`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: ReplicaSetCondition): bool =
   if not self.`lastTransitionTime`.isEmpty: return false
@@ -118,46 +102,27 @@ proc load*(self: var ReplicaSetStatus, parser: var JsonParser) =
             load(self.`availableReplicas`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ReplicaSetStatus, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: ReplicaSetStatus, s: JsonStream) =
+  s.objectStart()
   if not self.`fullyLabeledReplicas`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"fullyLabeledReplicas\":")
+    s.name("fullyLabeledReplicas")
     self.`fullyLabeledReplicas`.dump(s)
   if not self.`replicas`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"replicas\":")
+    s.name("replicas")
     self.`replicas`.dump(s)
   if not self.`observedGeneration`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"observedGeneration\":")
+    s.name("observedGeneration")
     self.`observedGeneration`.dump(s)
   if not self.`conditions`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"conditions\":")
+    s.name("conditions")
     self.`conditions`.dump(s)
   if not self.`readyReplicas`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"readyReplicas\":")
+    s.name("readyReplicas")
     self.`readyReplicas`.dump(s)
   if not self.`availableReplicas`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"availableReplicas\":")
+    s.name("availableReplicas")
     self.`availableReplicas`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: ReplicaSetStatus): bool =
   if not self.`fullyLabeledReplicas`.isEmpty: return false
@@ -188,16 +153,12 @@ proc load*(self: var RollingUpdateDaemonSet, parser: var JsonParser) =
             load(self.`maxUnavailable`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: RollingUpdateDaemonSet, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: RollingUpdateDaemonSet, s: JsonStream) =
+  s.objectStart()
   if not self.`maxUnavailable`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"maxUnavailable\":")
+    s.name("maxUnavailable")
     self.`maxUnavailable`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: RollingUpdateDaemonSet): bool =
   if not self.`maxUnavailable`.isEmpty: return false
@@ -226,22 +187,15 @@ proc load*(self: var DaemonSetUpdateStrategy, parser: var JsonParser) =
             load(self.`rollingUpdate`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: DaemonSetUpdateStrategy, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: DaemonSetUpdateStrategy, s: JsonStream) =
+  s.objectStart()
   if not self.`type`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"type\":")
+    s.name("type")
     self.`type`.dump(s)
   if not self.`rollingUpdate`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"rollingUpdate\":")
+    s.name("rollingUpdate")
     self.`rollingUpdate`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: DaemonSetUpdateStrategy): bool =
   if not self.`type`.isEmpty: return false
@@ -280,40 +234,24 @@ proc load*(self: var DaemonSetSpec, parser: var JsonParser) =
             load(self.`revisionHistoryLimit`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: DaemonSetSpec, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: DaemonSetSpec, s: JsonStream) =
+  s.objectStart()
   if not self.`updateStrategy`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"updateStrategy\":")
+    s.name("updateStrategy")
     self.`updateStrategy`.dump(s)
   if not self.`template`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"template\":")
+    s.name("template")
     self.`template`.dump(s)
   if not self.`selector`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"selector\":")
+    s.name("selector")
     self.`selector`.dump(s)
   if not self.`minReadySeconds`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"minReadySeconds\":")
+    s.name("minReadySeconds")
     self.`minReadySeconds`.dump(s)
   if not self.`revisionHistoryLimit`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"revisionHistoryLimit\":")
+    s.name("revisionHistoryLimit")
     self.`revisionHistoryLimit`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: DaemonSetSpec): bool =
   if not self.`updateStrategy`.isEmpty: return false
@@ -355,40 +293,24 @@ proc load*(self: var DaemonSetCondition, parser: var JsonParser) =
             load(self.`status`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: DaemonSetCondition, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: DaemonSetCondition, s: JsonStream) =
+  s.objectStart()
   if not self.`lastTransitionTime`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"lastTransitionTime\":")
+    s.name("lastTransitionTime")
     self.`lastTransitionTime`.dump(s)
   if not self.`type`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"type\":")
+    s.name("type")
     self.`type`.dump(s)
   if not self.`message`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"message\":")
+    s.name("message")
     self.`message`.dump(s)
   if not self.`reason`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"reason\":")
+    s.name("reason")
     self.`reason`.dump(s)
   if not self.`status`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"status\":")
+    s.name("status")
     self.`status`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: DaemonSetCondition): bool =
   if not self.`lastTransitionTime`.isEmpty: return false
@@ -445,70 +367,39 @@ proc load*(self: var DaemonSetStatus, parser: var JsonParser) =
             load(self.`numberUnavailable`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: DaemonSetStatus, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: DaemonSetStatus, s: JsonStream) =
+  s.objectStart()
   if not self.`currentNumberScheduled`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"currentNumberScheduled\":")
+    s.name("currentNumberScheduled")
     self.`currentNumberScheduled`.dump(s)
   if not self.`numberAvailable`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"numberAvailable\":")
+    s.name("numberAvailable")
     self.`numberAvailable`.dump(s)
   if not self.`observedGeneration`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"observedGeneration\":")
+    s.name("observedGeneration")
     self.`observedGeneration`.dump(s)
   if not self.`collisionCount`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"collisionCount\":")
+    s.name("collisionCount")
     self.`collisionCount`.dump(s)
   if not self.`numberMisscheduled`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"numberMisscheduled\":")
+    s.name("numberMisscheduled")
     self.`numberMisscheduled`.dump(s)
   if not self.`desiredNumberScheduled`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"desiredNumberScheduled\":")
+    s.name("desiredNumberScheduled")
     self.`desiredNumberScheduled`.dump(s)
   if not self.`numberReady`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"numberReady\":")
+    s.name("numberReady")
     self.`numberReady`.dump(s)
   if not self.`updatedNumberScheduled`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"updatedNumberScheduled\":")
+    s.name("updatedNumberScheduled")
     self.`updatedNumberScheduled`.dump(s)
   if not self.`conditions`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"conditions\":")
+    s.name("conditions")
     self.`conditions`.dump(s)
   if not self.`numberUnavailable`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"numberUnavailable\":")
+    s.name("numberUnavailable")
     self.`numberUnavailable`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: DaemonSetStatus): bool =
   if not self.`currentNumberScheduled`.isEmpty: return false
@@ -555,40 +446,20 @@ proc load*(self: var DaemonSet, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: DaemonSet, s: Stream) =
-  s.write("{")
-  var firstIteration = true
-  if not self.`apiVersion`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"apiVersion\":")
-    self.`apiVersion`.dump(s)
+proc dump*(self: DaemonSet, s: JsonStream) =
+  s.objectStart()
+  s.name("apiVersion"); s.value("apps/v1")
+  s.name("kind"); s.value("DaemonSet")
   if not self.`spec`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"spec\":")
+    s.name("spec")
     self.`spec`.dump(s)
   if not self.`status`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"status\":")
+    s.name("status")
     self.`status`.dump(s)
-  if not self.`kind`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"kind\":")
-    self.`kind`.dump(s)
   if not self.`metadata`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"metadata\":")
+    s.name("metadata")
     self.`metadata`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: DaemonSet): bool =
   if not self.`apiVersion`.isEmpty: return false
@@ -607,9 +478,7 @@ proc get*(client: Client, t: typedesc[DaemonSet], name: string, namespace = "def
   return await client.get("/apis/apps/v1", t, name, namespace, loadDaemonSet)
 
 proc create*(client: Client, t: DaemonSet, namespace = "default"): Future[DaemonSet] {.async.}=
-  t.apiVersion = "/apis/apps/v1"
-  t.kind = "DaemonSet"
-  return await client.get("/apis/apps/v1", t, name, namespace, loadDaemonSet)
+  return await client.create("/apis/apps/v1", t, namespace, loadDaemonSet)
 
 type
   RollingUpdateStatefulSetStrategy* = object
@@ -631,16 +500,12 @@ proc load*(self: var RollingUpdateStatefulSetStrategy, parser: var JsonParser) =
             load(self.`partition`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: RollingUpdateStatefulSetStrategy, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: RollingUpdateStatefulSetStrategy, s: JsonStream) =
+  s.objectStart()
   if not self.`partition`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"partition\":")
+    s.name("partition")
     self.`partition`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: RollingUpdateStatefulSetStrategy): bool =
   if not self.`partition`.isEmpty: return false
@@ -669,22 +534,15 @@ proc load*(self: var StatefulSetUpdateStrategy, parser: var JsonParser) =
             load(self.`rollingUpdate`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: StatefulSetUpdateStrategy, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: StatefulSetUpdateStrategy, s: JsonStream) =
+  s.objectStart()
   if not self.`type`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"type\":")
+    s.name("type")
     self.`type`.dump(s)
   if not self.`rollingUpdate`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"rollingUpdate\":")
+    s.name("rollingUpdate")
     self.`rollingUpdate`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: StatefulSetUpdateStrategy): bool =
   if not self.`type`.isEmpty: return false
@@ -732,58 +590,33 @@ proc load*(self: var StatefulSetSpec, parser: var JsonParser) =
             load(self.`revisionHistoryLimit`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: StatefulSetSpec, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: StatefulSetSpec, s: JsonStream) =
+  s.objectStart()
   if not self.`serviceName`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"serviceName\":")
+    s.name("serviceName")
     self.`serviceName`.dump(s)
   if not self.`replicas`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"replicas\":")
+    s.name("replicas")
     self.`replicas`.dump(s)
   if not self.`updateStrategy`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"updateStrategy\":")
+    s.name("updateStrategy")
     self.`updateStrategy`.dump(s)
   if not self.`template`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"template\":")
+    s.name("template")
     self.`template`.dump(s)
   if not self.`podManagementPolicy`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"podManagementPolicy\":")
+    s.name("podManagementPolicy")
     self.`podManagementPolicy`.dump(s)
   if not self.`selector`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"selector\":")
+    s.name("selector")
     self.`selector`.dump(s)
   if not self.`volumeClaimTemplates`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"volumeClaimTemplates\":")
+    s.name("volumeClaimTemplates")
     self.`volumeClaimTemplates`.dump(s)
   if not self.`revisionHistoryLimit`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"revisionHistoryLimit\":")
+    s.name("revisionHistoryLimit")
     self.`revisionHistoryLimit`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: StatefulSetSpec): bool =
   if not self.`serviceName`.isEmpty: return false
@@ -828,40 +661,24 @@ proc load*(self: var StatefulSetCondition, parser: var JsonParser) =
             load(self.`status`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: StatefulSetCondition, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: StatefulSetCondition, s: JsonStream) =
+  s.objectStart()
   if not self.`lastTransitionTime`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"lastTransitionTime\":")
+    s.name("lastTransitionTime")
     self.`lastTransitionTime`.dump(s)
   if not self.`type`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"type\":")
+    s.name("type")
     self.`type`.dump(s)
   if not self.`message`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"message\":")
+    s.name("message")
     self.`message`.dump(s)
   if not self.`reason`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"reason\":")
+    s.name("reason")
     self.`reason`.dump(s)
   if not self.`status`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"status\":")
+    s.name("status")
     self.`status`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: StatefulSetCondition): bool =
   if not self.`lastTransitionTime`.isEmpty: return false
@@ -915,64 +732,36 @@ proc load*(self: var StatefulSetStatus, parser: var JsonParser) =
             load(self.`currentReplicas`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: StatefulSetStatus, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: StatefulSetStatus, s: JsonStream) =
+  s.objectStart()
   if not self.`replicas`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"replicas\":")
+    s.name("replicas")
     self.`replicas`.dump(s)
   if not self.`currentRevision`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"currentRevision\":")
+    s.name("currentRevision")
     self.`currentRevision`.dump(s)
   if not self.`observedGeneration`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"observedGeneration\":")
+    s.name("observedGeneration")
     self.`observedGeneration`.dump(s)
   if not self.`collisionCount`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"collisionCount\":")
+    s.name("collisionCount")
     self.`collisionCount`.dump(s)
   if not self.`updateRevision`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"updateRevision\":")
+    s.name("updateRevision")
     self.`updateRevision`.dump(s)
   if not self.`conditions`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"conditions\":")
+    s.name("conditions")
     self.`conditions`.dump(s)
   if not self.`updatedReplicas`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"updatedReplicas\":")
+    s.name("updatedReplicas")
     self.`updatedReplicas`.dump(s)
   if not self.`readyReplicas`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"readyReplicas\":")
+    s.name("readyReplicas")
     self.`readyReplicas`.dump(s)
   if not self.`currentReplicas`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"currentReplicas\":")
+    s.name("currentReplicas")
     self.`currentReplicas`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: StatefulSetStatus): bool =
   if not self.`replicas`.isEmpty: return false
@@ -1018,40 +807,20 @@ proc load*(self: var StatefulSet, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: StatefulSet, s: Stream) =
-  s.write("{")
-  var firstIteration = true
-  if not self.`apiVersion`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"apiVersion\":")
-    self.`apiVersion`.dump(s)
+proc dump*(self: StatefulSet, s: JsonStream) =
+  s.objectStart()
+  s.name("apiVersion"); s.value("apps/v1")
+  s.name("kind"); s.value("StatefulSet")
   if not self.`spec`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"spec\":")
+    s.name("spec")
     self.`spec`.dump(s)
   if not self.`status`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"status\":")
+    s.name("status")
     self.`status`.dump(s)
-  if not self.`kind`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"kind\":")
-    self.`kind`.dump(s)
   if not self.`metadata`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"metadata\":")
+    s.name("metadata")
     self.`metadata`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: StatefulSet): bool =
   if not self.`apiVersion`.isEmpty: return false
@@ -1070,9 +839,7 @@ proc get*(client: Client, t: typedesc[StatefulSet], name: string, namespace = "d
   return await client.get("/apis/apps/v1", t, name, namespace, loadStatefulSet)
 
 proc create*(client: Client, t: StatefulSet, namespace = "default"): Future[StatefulSet] {.async.}=
-  t.apiVersion = "/apis/apps/v1"
-  t.kind = "StatefulSet"
-  return await client.get("/apis/apps/v1", t, name, namespace, loadStatefulSet)
+  return await client.create("/apis/apps/v1", t, namespace, loadStatefulSet)
 
 type
   StatefulSetList* = object
@@ -1103,34 +870,17 @@ proc load*(self: var StatefulSetList, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: StatefulSetList, s: Stream) =
-  s.write("{")
-  var firstIteration = true
-  if not self.`apiVersion`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"apiVersion\":")
-    self.`apiVersion`.dump(s)
+proc dump*(self: StatefulSetList, s: JsonStream) =
+  s.objectStart()
+  s.name("apiVersion"); s.value("apps/v1")
+  s.name("kind"); s.value("StatefulSetList")
   if not self.`items`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"items\":")
+    s.name("items")
     self.`items`.dump(s)
-  if not self.`kind`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"kind\":")
-    self.`kind`.dump(s)
   if not self.`metadata`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"metadata\":")
+    s.name("metadata")
     self.`metadata`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: StatefulSetList): bool =
   if not self.`apiVersion`.isEmpty: return false
@@ -1176,34 +926,21 @@ proc load*(self: var ReplicaSetSpec, parser: var JsonParser) =
             load(self.`minReadySeconds`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ReplicaSetSpec, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: ReplicaSetSpec, s: JsonStream) =
+  s.objectStart()
   if not self.`replicas`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"replicas\":")
+    s.name("replicas")
     self.`replicas`.dump(s)
   if not self.`template`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"template\":")
+    s.name("template")
     self.`template`.dump(s)
   if not self.`selector`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"selector\":")
+    s.name("selector")
     self.`selector`.dump(s)
   if not self.`minReadySeconds`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"minReadySeconds\":")
+    s.name("minReadySeconds")
     self.`minReadySeconds`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: ReplicaSetSpec): bool =
   if not self.`replicas`.isEmpty: return false
@@ -1244,40 +981,20 @@ proc load*(self: var ReplicaSet, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ReplicaSet, s: Stream) =
-  s.write("{")
-  var firstIteration = true
-  if not self.`apiVersion`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"apiVersion\":")
-    self.`apiVersion`.dump(s)
+proc dump*(self: ReplicaSet, s: JsonStream) =
+  s.objectStart()
+  s.name("apiVersion"); s.value("apps/v1")
+  s.name("kind"); s.value("ReplicaSet")
   if not self.`spec`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"spec\":")
+    s.name("spec")
     self.`spec`.dump(s)
   if not self.`status`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"status\":")
+    s.name("status")
     self.`status`.dump(s)
-  if not self.`kind`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"kind\":")
-    self.`kind`.dump(s)
   if not self.`metadata`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"metadata\":")
+    s.name("metadata")
     self.`metadata`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: ReplicaSet): bool =
   if not self.`apiVersion`.isEmpty: return false
@@ -1296,9 +1013,7 @@ proc get*(client: Client, t: typedesc[ReplicaSet], name: string, namespace = "de
   return await client.get("/apis/apps/v1", t, name, namespace, loadReplicaSet)
 
 proc create*(client: Client, t: ReplicaSet, namespace = "default"): Future[ReplicaSet] {.async.}=
-  t.apiVersion = "/apis/apps/v1"
-  t.kind = "ReplicaSet"
-  return await client.get("/apis/apps/v1", t, name, namespace, loadReplicaSet)
+  return await client.create("/apis/apps/v1", t, namespace, loadReplicaSet)
 
 type
   ReplicaSetList* = object
@@ -1329,34 +1044,17 @@ proc load*(self: var ReplicaSetList, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ReplicaSetList, s: Stream) =
-  s.write("{")
-  var firstIteration = true
-  if not self.`apiVersion`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"apiVersion\":")
-    self.`apiVersion`.dump(s)
+proc dump*(self: ReplicaSetList, s: JsonStream) =
+  s.objectStart()
+  s.name("apiVersion"); s.value("apps/v1")
+  s.name("kind"); s.value("ReplicaSetList")
   if not self.`items`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"items\":")
+    s.name("items")
     self.`items`.dump(s)
-  if not self.`kind`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"kind\":")
-    self.`kind`.dump(s)
   if not self.`metadata`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"metadata\":")
+    s.name("metadata")
     self.`metadata`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: ReplicaSetList): bool =
   if not self.`apiVersion`.isEmpty: return false
@@ -1396,22 +1094,15 @@ proc load*(self: var RollingUpdateDeployment, parser: var JsonParser) =
             load(self.`maxSurge`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: RollingUpdateDeployment, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: RollingUpdateDeployment, s: JsonStream) =
+  s.objectStart()
   if not self.`maxUnavailable`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"maxUnavailable\":")
+    s.name("maxUnavailable")
     self.`maxUnavailable`.dump(s)
   if not self.`maxSurge`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"maxSurge\":")
+    s.name("maxSurge")
     self.`maxSurge`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: RollingUpdateDeployment): bool =
   if not self.`maxUnavailable`.isEmpty: return false
@@ -1441,22 +1132,15 @@ proc load*(self: var DeploymentStrategy, parser: var JsonParser) =
             load(self.`rollingUpdate`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: DeploymentStrategy, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: DeploymentStrategy, s: JsonStream) =
+  s.objectStart()
   if not self.`type`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"type\":")
+    s.name("type")
     self.`type`.dump(s)
   if not self.`rollingUpdate`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"rollingUpdate\":")
+    s.name("rollingUpdate")
     self.`rollingUpdate`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: DeploymentStrategy): bool =
   if not self.`type`.isEmpty: return false
@@ -1504,58 +1188,33 @@ proc load*(self: var DeploymentSpec, parser: var JsonParser) =
             load(self.`revisionHistoryLimit`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: DeploymentSpec, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: DeploymentSpec, s: JsonStream) =
+  s.objectStart()
   if not self.`replicas`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"replicas\":")
+    s.name("replicas")
     self.`replicas`.dump(s)
   if not self.`paused`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"paused\":")
+    s.name("paused")
     self.`paused`.dump(s)
   if not self.`strategy`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"strategy\":")
+    s.name("strategy")
     self.`strategy`.dump(s)
   if not self.`progressDeadlineSeconds`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"progressDeadlineSeconds\":")
+    s.name("progressDeadlineSeconds")
     self.`progressDeadlineSeconds`.dump(s)
   if not self.`template`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"template\":")
+    s.name("template")
     self.`template`.dump(s)
   if not self.`selector`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"selector\":")
+    s.name("selector")
     self.`selector`.dump(s)
   if not self.`minReadySeconds`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"minReadySeconds\":")
+    s.name("minReadySeconds")
     self.`minReadySeconds`.dump(s)
   if not self.`revisionHistoryLimit`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"revisionHistoryLimit\":")
+    s.name("revisionHistoryLimit")
     self.`revisionHistoryLimit`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: DeploymentSpec): bool =
   if not self.`replicas`.isEmpty: return false
@@ -1603,46 +1262,27 @@ proc load*(self: var DeploymentCondition, parser: var JsonParser) =
             load(self.`status`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: DeploymentCondition, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: DeploymentCondition, s: JsonStream) =
+  s.objectStart()
   if not self.`lastTransitionTime`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"lastTransitionTime\":")
+    s.name("lastTransitionTime")
     self.`lastTransitionTime`.dump(s)
   if not self.`type`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"type\":")
+    s.name("type")
     self.`type`.dump(s)
   if not self.`message`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"message\":")
+    s.name("message")
     self.`message`.dump(s)
   if not self.`lastUpdateTime`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"lastUpdateTime\":")
+    s.name("lastUpdateTime")
     self.`lastUpdateTime`.dump(s)
   if not self.`reason`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"reason\":")
+    s.name("reason")
     self.`reason`.dump(s)
   if not self.`status`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"status\":")
+    s.name("status")
     self.`status`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: DeploymentCondition): bool =
   if not self.`lastTransitionTime`.isEmpty: return false
@@ -1694,58 +1334,33 @@ proc load*(self: var DeploymentStatus, parser: var JsonParser) =
             load(self.`availableReplicas`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: DeploymentStatus, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: DeploymentStatus, s: JsonStream) =
+  s.objectStart()
   if not self.`replicas`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"replicas\":")
+    s.name("replicas")
     self.`replicas`.dump(s)
   if not self.`observedGeneration`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"observedGeneration\":")
+    s.name("observedGeneration")
     self.`observedGeneration`.dump(s)
   if not self.`collisionCount`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"collisionCount\":")
+    s.name("collisionCount")
     self.`collisionCount`.dump(s)
   if not self.`conditions`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"conditions\":")
+    s.name("conditions")
     self.`conditions`.dump(s)
   if not self.`updatedReplicas`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"updatedReplicas\":")
+    s.name("updatedReplicas")
     self.`updatedReplicas`.dump(s)
   if not self.`unavailableReplicas`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"unavailableReplicas\":")
+    s.name("unavailableReplicas")
     self.`unavailableReplicas`.dump(s)
   if not self.`readyReplicas`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"readyReplicas\":")
+    s.name("readyReplicas")
     self.`readyReplicas`.dump(s)
   if not self.`availableReplicas`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"availableReplicas\":")
+    s.name("availableReplicas")
     self.`availableReplicas`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: DeploymentStatus): bool =
   if not self.`replicas`.isEmpty: return false
@@ -1790,40 +1405,20 @@ proc load*(self: var Deployment, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: Deployment, s: Stream) =
-  s.write("{")
-  var firstIteration = true
-  if not self.`apiVersion`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"apiVersion\":")
-    self.`apiVersion`.dump(s)
+proc dump*(self: Deployment, s: JsonStream) =
+  s.objectStart()
+  s.name("apiVersion"); s.value("apps/v1")
+  s.name("kind"); s.value("Deployment")
   if not self.`spec`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"spec\":")
+    s.name("spec")
     self.`spec`.dump(s)
   if not self.`status`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"status\":")
+    s.name("status")
     self.`status`.dump(s)
-  if not self.`kind`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"kind\":")
-    self.`kind`.dump(s)
   if not self.`metadata`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"metadata\":")
+    s.name("metadata")
     self.`metadata`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: Deployment): bool =
   if not self.`apiVersion`.isEmpty: return false
@@ -1842,9 +1437,7 @@ proc get*(client: Client, t: typedesc[Deployment], name: string, namespace = "de
   return await client.get("/apis/apps/v1", t, name, namespace, loadDeployment)
 
 proc create*(client: Client, t: Deployment, namespace = "default"): Future[Deployment] {.async.}=
-  t.apiVersion = "/apis/apps/v1"
-  t.kind = "Deployment"
-  return await client.get("/apis/apps/v1", t, name, namespace, loadDeployment)
+  return await client.create("/apis/apps/v1", t, namespace, loadDeployment)
 
 type
   ControllerRevision* = object
@@ -1878,40 +1471,20 @@ proc load*(self: var ControllerRevision, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ControllerRevision, s: Stream) =
-  s.write("{")
-  var firstIteration = true
-  if not self.`apiVersion`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"apiVersion\":")
-    self.`apiVersion`.dump(s)
+proc dump*(self: ControllerRevision, s: JsonStream) =
+  s.objectStart()
+  s.name("apiVersion"); s.value("apps/v1")
+  s.name("kind"); s.value("ControllerRevision")
   if not self.`data`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"data\":")
+    s.name("data")
     self.`data`.dump(s)
-  if not self.`kind`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"kind\":")
-    self.`kind`.dump(s)
   if not self.`revision`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"revision\":")
+    s.name("revision")
     self.`revision`.dump(s)
   if not self.`metadata`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"metadata\":")
+    s.name("metadata")
     self.`metadata`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: ControllerRevision): bool =
   if not self.`apiVersion`.isEmpty: return false
@@ -1930,9 +1503,7 @@ proc get*(client: Client, t: typedesc[ControllerRevision], name: string, namespa
   return await client.get("/apis/apps/v1", t, name, namespace, loadControllerRevision)
 
 proc create*(client: Client, t: ControllerRevision, namespace = "default"): Future[ControllerRevision] {.async.}=
-  t.apiVersion = "/apis/apps/v1"
-  t.kind = "ControllerRevision"
-  return await client.get("/apis/apps/v1", t, name, namespace, loadControllerRevision)
+  return await client.create("/apis/apps/v1", t, namespace, loadControllerRevision)
 
 type
   ControllerRevisionList* = object
@@ -1963,34 +1534,17 @@ proc load*(self: var ControllerRevisionList, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ControllerRevisionList, s: Stream) =
-  s.write("{")
-  var firstIteration = true
-  if not self.`apiVersion`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"apiVersion\":")
-    self.`apiVersion`.dump(s)
+proc dump*(self: ControllerRevisionList, s: JsonStream) =
+  s.objectStart()
+  s.name("apiVersion"); s.value("apps/v1")
+  s.name("kind"); s.value("ControllerRevisionList")
   if not self.`items`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"items\":")
+    s.name("items")
     self.`items`.dump(s)
-  if not self.`kind`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"kind\":")
-    self.`kind`.dump(s)
   if not self.`metadata`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"metadata\":")
+    s.name("metadata")
     self.`metadata`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: ControllerRevisionList): bool =
   if not self.`apiVersion`.isEmpty: return false
@@ -2036,34 +1590,17 @@ proc load*(self: var DeploymentList, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: DeploymentList, s: Stream) =
-  s.write("{")
-  var firstIteration = true
-  if not self.`apiVersion`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"apiVersion\":")
-    self.`apiVersion`.dump(s)
+proc dump*(self: DeploymentList, s: JsonStream) =
+  s.objectStart()
+  s.name("apiVersion"); s.value("apps/v1")
+  s.name("kind"); s.value("DeploymentList")
   if not self.`items`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"items\":")
+    s.name("items")
     self.`items`.dump(s)
-  if not self.`kind`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"kind\":")
-    self.`kind`.dump(s)
   if not self.`metadata`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"metadata\":")
+    s.name("metadata")
     self.`metadata`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: DeploymentList): bool =
   if not self.`apiVersion`.isEmpty: return false
@@ -2109,34 +1646,17 @@ proc load*(self: var DaemonSetList, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: DaemonSetList, s: Stream) =
-  s.write("{")
-  var firstIteration = true
-  if not self.`apiVersion`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"apiVersion\":")
-    self.`apiVersion`.dump(s)
+proc dump*(self: DaemonSetList, s: JsonStream) =
+  s.objectStart()
+  s.name("apiVersion"); s.value("apps/v1")
+  s.name("kind"); s.value("DaemonSetList")
   if not self.`items`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"items\":")
+    s.name("items")
     self.`items`.dump(s)
-  if not self.`kind`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"kind\":")
-    self.`kind`.dump(s)
   if not self.`metadata`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"metadata\":")
+    s.name("metadata")
     self.`metadata`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: DaemonSetList): bool =
   if not self.`apiVersion`.isEmpty: return false

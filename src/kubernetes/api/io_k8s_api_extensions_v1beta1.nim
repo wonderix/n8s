@@ -1,7 +1,7 @@
 import ../client
 import ../base_types
 import parsejson
-import streams
+import ../jsonstream
 import io_k8s_apimachinery_pkg_util_intstr
 import io_k8s_apimachinery_pkg_apis_meta_v1
 import asyncdispatch
@@ -30,22 +30,15 @@ proc load*(self: var IngressBackend, parser: var JsonParser) =
             load(self.`servicePort`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: IngressBackend, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: IngressBackend, s: JsonStream) =
+  s.objectStart()
   if not self.`serviceName`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"serviceName\":")
+    s.name("serviceName")
     self.`serviceName`.dump(s)
   if not self.`servicePort`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"servicePort\":")
+    s.name("servicePort")
     self.`servicePort`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: IngressBackend): bool =
   if not self.`serviceName`.isEmpty: return false
@@ -75,22 +68,15 @@ proc load*(self: var HTTPIngressPath, parser: var JsonParser) =
             load(self.`backend`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: HTTPIngressPath, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: HTTPIngressPath, s: JsonStream) =
+  s.objectStart()
   if not self.`path`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"path\":")
+    s.name("path")
     self.`path`.dump(s)
   if not self.`backend`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"backend\":")
+    s.name("backend")
     self.`backend`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: HTTPIngressPath): bool =
   if not self.`path`.isEmpty: return false
@@ -120,22 +106,15 @@ proc load*(self: var IngressTLS, parser: var JsonParser) =
             load(self.`hosts`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: IngressTLS, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: IngressTLS, s: JsonStream) =
+  s.objectStart()
   if not self.`secretName`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"secretName\":")
+    s.name("secretName")
     self.`secretName`.dump(s)
   if not self.`hosts`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"hosts\":")
+    s.name("hosts")
     self.`hosts`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: IngressTLS): bool =
   if not self.`secretName`.isEmpty: return false
@@ -162,16 +141,12 @@ proc load*(self: var HTTPIngressRuleValue, parser: var JsonParser) =
             load(self.`paths`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: HTTPIngressRuleValue, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: HTTPIngressRuleValue, s: JsonStream) =
+  s.objectStart()
   if not self.`paths`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"paths\":")
+    s.name("paths")
     self.`paths`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: HTTPIngressRuleValue): bool =
   if not self.`paths`.isEmpty: return false
@@ -200,22 +175,15 @@ proc load*(self: var IngressRule, parser: var JsonParser) =
             load(self.`host`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: IngressRule, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: IngressRule, s: JsonStream) =
+  s.objectStart()
   if not self.`http`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"http\":")
+    s.name("http")
     self.`http`.dump(s)
   if not self.`host`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"host\":")
+    s.name("host")
     self.`host`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: IngressRule): bool =
   if not self.`http`.isEmpty: return false
@@ -248,28 +216,18 @@ proc load*(self: var IngressSpec, parser: var JsonParser) =
             load(self.`backend`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: IngressSpec, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: IngressSpec, s: JsonStream) =
+  s.objectStart()
   if not self.`tls`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"tls\":")
+    s.name("tls")
     self.`tls`.dump(s)
   if not self.`rules`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"rules\":")
+    s.name("rules")
     self.`rules`.dump(s)
   if not self.`backend`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"backend\":")
+    s.name("backend")
     self.`backend`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: IngressSpec): bool =
   if not self.`tls`.isEmpty: return false
@@ -297,16 +255,12 @@ proc load*(self: var IngressStatus, parser: var JsonParser) =
             load(self.`loadBalancer`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: IngressStatus, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: IngressStatus, s: JsonStream) =
+  s.objectStart()
   if not self.`loadBalancer`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"loadBalancer\":")
+    s.name("loadBalancer")
     self.`loadBalancer`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: IngressStatus): bool =
   if not self.`loadBalancer`.isEmpty: return false
@@ -344,40 +298,20 @@ proc load*(self: var Ingress, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: Ingress, s: Stream) =
-  s.write("{")
-  var firstIteration = true
-  if not self.`apiVersion`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"apiVersion\":")
-    self.`apiVersion`.dump(s)
+proc dump*(self: Ingress, s: JsonStream) =
+  s.objectStart()
+  s.name("apiVersion"); s.value("extensions/v1beta1")
+  s.name("kind"); s.value("Ingress")
   if not self.`spec`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"spec\":")
+    s.name("spec")
     self.`spec`.dump(s)
   if not self.`status`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"status\":")
+    s.name("status")
     self.`status`.dump(s)
-  if not self.`kind`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"kind\":")
-    self.`kind`.dump(s)
   if not self.`metadata`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"metadata\":")
+    s.name("metadata")
     self.`metadata`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: Ingress): bool =
   if not self.`apiVersion`.isEmpty: return false
@@ -396,9 +330,7 @@ proc get*(client: Client, t: typedesc[Ingress], name: string, namespace = "defau
   return await client.get("/apis/extensions/v1beta1", t, name, namespace, loadIngress)
 
 proc create*(client: Client, t: Ingress, namespace = "default"): Future[Ingress] {.async.}=
-  t.apiVersion = "/apis/extensions/v1beta1"
-  t.kind = "Ingress"
-  return await client.get("/apis/extensions/v1beta1", t, name, namespace, loadIngress)
+  return await client.create("/apis/extensions/v1beta1", t, namespace, loadIngress)
 
 type
   IngressList* = object
@@ -429,34 +361,17 @@ proc load*(self: var IngressList, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: IngressList, s: Stream) =
-  s.write("{")
-  var firstIteration = true
-  if not self.`apiVersion`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"apiVersion\":")
-    self.`apiVersion`.dump(s)
+proc dump*(self: IngressList, s: JsonStream) =
+  s.objectStart()
+  s.name("apiVersion"); s.value("extensions/v1beta1")
+  s.name("kind"); s.value("IngressList")
   if not self.`items`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"items\":")
+    s.name("items")
     self.`items`.dump(s)
-  if not self.`kind`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"kind\":")
-    self.`kind`.dump(s)
   if not self.`metadata`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"metadata\":")
+    s.name("metadata")
     self.`metadata`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: IngressList): bool =
   if not self.`apiVersion`.isEmpty: return false

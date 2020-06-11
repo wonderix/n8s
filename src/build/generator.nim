@@ -156,6 +156,22 @@ proc nimImport(ts: ExtendedTypeSpec, modulename: string, imports: var OrderedSet
     if refname.modulename != modulename:
       imports.incl(refname.modulename)
 
+proc apiPath(definition: Definition): Option[string] =
+  proc mapper(gvk: seq[GroupVersionKind]):string =
+    if gvk[0].group == "": 
+      return "/api/" & gvk[0].version
+    else:
+      return  "/apis/" & gvk[0].group & "/" & gvk[0].version
+  definition.`x-kubernetes-group-version-kind`.map(mapper) 
+
+proc apiVersion(definition: Definition): Option[string] =
+  proc mapper(gvk: seq[GroupVersionKind]):string =
+    if gvk[0].group == "": 
+      return gvk[0].version
+    else:
+      return  gvk[0].group & "/" & gvk[0].version
+  definition.`x-kubernetes-group-version-kind`.map(mapper) 
+
 proc generate(definition: Definition, name: string, f: File) =
   f.writeLine("")
   f.writeLine("type")
@@ -182,30 +198,28 @@ proc generate(definition: Definition, name: string, f: File) =
       f.writeLine(fmt"            load(self.`{propertyName}`,parser)")
     f.writeLine("      else: raiseParseErr(parser,\"string not \" & $(parser.kind))")
     f.writeLine("")
-    f.writeLine("proc dump*(self: ", name.typename, ", s: Stream) =")
-    f.writeLine("  s.write(\"{\")")
-    f.writeLine("  var firstIteration = true")
+    f.writeLine("proc dump*(self: ", name.typename, ", s: JsonStream) =")
+    f.writeLine("  s.objectStart()")
+    let apiVersion = definition.apiVersion
+    if apiVersion.isSome:
+      f.writeLine(&"""  s.name("apiVersion"); s.value("{apiVersion.get}")""")
+      f.writeLine(&"""  s.name("kind"); s.value("{name.typename}")""")
+
     for propertyName, property in definition.properties.get.pairs:
+      if apiVersion.isSome and (propertyName == "kind" or propertyName == "apiVersion"):
+        continue
       f.writeLine(&"""  if not self.`{propertyName}`.isEmpty:""")
-      f.writeLine(&"""    if not firstIteration:""")
-      f.writeLine(&"""      s.write(",")""")
-      f.writeLine(&"""    firstIteration = false""")
-      f.writeLine(&"""    s.write("\"{propertyName}\":")""")
+      f.writeLine(&"""    s.name("{propertyName}")""")
       f.writeLine(&"""    self.`{propertyName}`.dump(s)""")
-    f.writeLine("  s.write(\"}\")")
+    f.writeLine("  s.objectEnd()")
     f.writeLine("")
     f.writeLine("proc isEmpty*(self: ", name.typename, "): bool =")
     for propertyName, property in definition.properties.get.pairs:
       f.writeLine(&"""  if not self.`{propertyName}`.isEmpty: return false""")
     f.writeLine(&"""  true""")
 
-    if definition.`x-kubernetes-group-version-kind`.isSome:
-      let groupVersionKind = definition.`x-kubernetes-group-version-kind`.get[0]
-      var groupVersion: string
-      if groupVersionKind.group == "": 
-        groupVersion = "/api/" & groupVersionKind.version
-      else:
-        groupVersion =  "/apis/" & groupVersionKind.group & "/" & groupVersionKind.version
+    let apiPath = definition.apiPath
+    if apiPath.isSome:
       f.writeLine("")
       f.writeLine("proc load", name.typename, "(parser: var JsonParser):", name.typename, " = ")
       f.writeLine("  var ret: ", name.typename, "")
@@ -215,16 +229,15 @@ proc generate(definition: Definition, name: string, f: File) =
         let itemName = name.typename[0..^5]
         f.writeLine("")
         f.writeLine("proc list*(client: Client, t: typedesc[", itemName, "], namespace = \"default\"): Future[seq[", itemName, "]] {.async.}=")
-        f.writeLine("  return (await client.list(\"" & groupVersion & "\", ", name.typename, ", namespace, load", name.typename, ")).items")
+        f.writeLine("  return (await client.list(\"" & apiPath.get & "\", ", name.typename, ", namespace, load", name.typename, ")).items")
       else:
         f.writeLine("")
         f.writeLine("proc get*(client: Client, t: typedesc[", name.typename, "], name: string, namespace = \"default\"): Future[", name.typename, "] {.async.}=")
-        f.writeLine("  return await client.get(\"" & groupVersion & "\", t, name, namespace, load", name.typename, ")")
+        f.writeLine("  return await client.get(\"" & apiPath.get & "\", t, name, namespace, load", name.typename, ")")
         f.writeLine("")
         f.writeLine("proc create*(client: Client, t: ", name.typename, ", namespace = \"default\"): Future[", name.typename, "] {.async.}=")
-        f.writeLine("  t.apiVersion = \"" & groupVersion & "\"")
-        f.writeLine("  t.kind = \"" & name.typename & "\"")
-        f.writeLine("  return await client.get(\"" & groupVersion & "\", t, name, namespace, load", name.typename, ")")
+        f.writeLine("  return await client.create(\"" & apiPath.get & "\", t, namespace, load", name.typename, ")")
+
   else:
     if name.typename == "IntOrString":
       f.writeLine("  ", name.typename, "* = distinct base_types.IntOrString")
@@ -232,7 +245,7 @@ proc generate(definition: Definition, name: string, f: File) =
       f.writeLine("proc load*(self: var ", name.typename, ", parser: var JsonParser) =")
       f.writeLine("  load(base_types.IntOrString(self),parser)")
       f.writeLine("")
-      f.writeLine("proc dump*(self: ", name.typename, ", s: Stream) =")
+      f.writeLine("proc dump*(self: ", name.typename, ", s: JsonStream) =")
       f.writeLine("  dump(base_types.IntOrString(self),s)")
       f.writeLine("")
       f.writeLine("proc isEmpty*(self: ", name.typename, "): bool = base_types.IntOrString(self).isEmpty")
@@ -243,7 +256,7 @@ proc generate(definition: Definition, name: string, f: File) =
       f.writeLine("proc load*(self: var ", name.typename, ", parser: var JsonParser) =")
       f.writeLine(fmt"  load({subtype}(self),parser)")
       f.writeLine("")
-      f.writeLine("proc dump*(self: ", name.typename, ", s: Stream) =")
+      f.writeLine("proc dump*(self: ", name.typename, ", s: JsonStream) =")
       f.writeLine(fmt"  dump({subtype}(self),s)")
       f.writeLine("")
       f.writeLine("proc isEmpty*(self: ", name.typename, "): bool = ",subtype,"(self).isEmpty")
@@ -279,7 +292,7 @@ proc generate(self: Module, output: string) =
   imports.incl("../client")
   imports.incl("../base_types")
   imports.incl("parsejson")
-  imports.incl("streams")
+  imports.incl("../jsonstream")
   for name, definition in self.definitions.pairs:
     fillReferences(name,self.definitions,refs, imports)
 

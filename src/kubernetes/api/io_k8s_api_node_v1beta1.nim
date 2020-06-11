@@ -1,7 +1,7 @@
 import ../client
 import ../base_types
 import parsejson
-import streams
+import ../jsonstream
 import io_k8s_apimachinery_pkg_apis_meta_v1
 import asyncdispatch
 import io_k8s_api_core_v1
@@ -31,22 +31,15 @@ proc load*(self: var Scheduling, parser: var JsonParser) =
             load(self.`nodeSelector`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: Scheduling, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: Scheduling, s: JsonStream) =
+  s.objectStart()
   if not self.`tolerations`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"tolerations\":")
+    s.name("tolerations")
     self.`tolerations`.dump(s)
   if not self.`nodeSelector`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"nodeSelector\":")
+    s.name("nodeSelector")
     self.`nodeSelector`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: Scheduling): bool =
   if not self.`tolerations`.isEmpty: return false
@@ -73,16 +66,12 @@ proc load*(self: var Overhead, parser: var JsonParser) =
             load(self.`podFixed`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: Overhead, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: Overhead, s: JsonStream) =
+  s.objectStart()
   if not self.`podFixed`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"podFixed\":")
+    s.name("podFixed")
     self.`podFixed`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: Overhead): bool =
   if not self.`podFixed`.isEmpty: return false
@@ -123,46 +112,23 @@ proc load*(self: var RuntimeClass, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: RuntimeClass, s: Stream) =
-  s.write("{")
-  var firstIteration = true
-  if not self.`apiVersion`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"apiVersion\":")
-    self.`apiVersion`.dump(s)
+proc dump*(self: RuntimeClass, s: JsonStream) =
+  s.objectStart()
+  s.name("apiVersion"); s.value("node.k8s.io/v1beta1")
+  s.name("kind"); s.value("RuntimeClass")
   if not self.`scheduling`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"scheduling\":")
+    s.name("scheduling")
     self.`scheduling`.dump(s)
   if not self.`handler`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"handler\":")
+    s.name("handler")
     self.`handler`.dump(s)
   if not self.`overhead`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"overhead\":")
+    s.name("overhead")
     self.`overhead`.dump(s)
-  if not self.`kind`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"kind\":")
-    self.`kind`.dump(s)
   if not self.`metadata`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"metadata\":")
+    s.name("metadata")
     self.`metadata`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: RuntimeClass): bool =
   if not self.`apiVersion`.isEmpty: return false
@@ -182,9 +148,7 @@ proc get*(client: Client, t: typedesc[RuntimeClass], name: string, namespace = "
   return await client.get("/apis/node.k8s.io/v1beta1", t, name, namespace, loadRuntimeClass)
 
 proc create*(client: Client, t: RuntimeClass, namespace = "default"): Future[RuntimeClass] {.async.}=
-  t.apiVersion = "/apis/node.k8s.io/v1beta1"
-  t.kind = "RuntimeClass"
-  return await client.get("/apis/node.k8s.io/v1beta1", t, name, namespace, loadRuntimeClass)
+  return await client.create("/apis/node.k8s.io/v1beta1", t, namespace, loadRuntimeClass)
 
 type
   RuntimeClassList* = object
@@ -215,34 +179,17 @@ proc load*(self: var RuntimeClassList, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: RuntimeClassList, s: Stream) =
-  s.write("{")
-  var firstIteration = true
-  if not self.`apiVersion`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"apiVersion\":")
-    self.`apiVersion`.dump(s)
+proc dump*(self: RuntimeClassList, s: JsonStream) =
+  s.objectStart()
+  s.name("apiVersion"); s.value("node.k8s.io/v1beta1")
+  s.name("kind"); s.value("RuntimeClassList")
   if not self.`items`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"items\":")
+    s.name("items")
     self.`items`.dump(s)
-  if not self.`kind`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"kind\":")
-    self.`kind`.dump(s)
   if not self.`metadata`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"metadata\":")
+    s.name("metadata")
     self.`metadata`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: RuntimeClassList): bool =
   if not self.`apiVersion`.isEmpty: return false

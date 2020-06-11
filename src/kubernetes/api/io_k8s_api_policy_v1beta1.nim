@@ -1,7 +1,7 @@
 import ../client
 import ../base_types
 import parsejson
-import streams
+import ../jsonstream
 import io_k8s_apimachinery_pkg_util_intstr
 import io_k8s_apimachinery_pkg_apis_meta_v1
 import asyncdispatch
@@ -31,22 +31,15 @@ proc load*(self: var HostPortRange, parser: var JsonParser) =
             load(self.`min`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: HostPortRange, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: HostPortRange, s: JsonStream) =
+  s.objectStart()
   if not self.`max`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"max\":")
+    s.name("max")
     self.`max`.dump(s)
   if not self.`min`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"min\":")
+    s.name("min")
     self.`min`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: HostPortRange): bool =
   if not self.`max`.isEmpty: return false
@@ -79,28 +72,18 @@ proc load*(self: var PodDisruptionBudgetSpec, parser: var JsonParser) =
             load(self.`minAvailable`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: PodDisruptionBudgetSpec, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: PodDisruptionBudgetSpec, s: JsonStream) =
+  s.objectStart()
   if not self.`maxUnavailable`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"maxUnavailable\":")
+    s.name("maxUnavailable")
     self.`maxUnavailable`.dump(s)
   if not self.`selector`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"selector\":")
+    s.name("selector")
     self.`selector`.dump(s)
   if not self.`minAvailable`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"minAvailable\":")
+    s.name("minAvailable")
     self.`minAvailable`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: PodDisruptionBudgetSpec): bool =
   if not self.`maxUnavailable`.isEmpty: return false
@@ -128,16 +111,12 @@ proc load*(self: var AllowedFlexVolume, parser: var JsonParser) =
             load(self.`driver`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: AllowedFlexVolume, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: AllowedFlexVolume, s: JsonStream) =
+  s.objectStart()
   if not self.`driver`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"driver\":")
+    s.name("driver")
     self.`driver`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: AllowedFlexVolume): bool =
   if not self.`driver`.isEmpty: return false
@@ -166,22 +145,15 @@ proc load*(self: var RuntimeClassStrategyOptions, parser: var JsonParser) =
             load(self.`defaultRuntimeClassName`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: RuntimeClassStrategyOptions, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: RuntimeClassStrategyOptions, s: JsonStream) =
+  s.objectStart()
   if not self.`allowedRuntimeClassNames`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"allowedRuntimeClassNames\":")
+    s.name("allowedRuntimeClassNames")
     self.`allowedRuntimeClassNames`.dump(s)
   if not self.`defaultRuntimeClassName`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"defaultRuntimeClassName\":")
+    s.name("defaultRuntimeClassName")
     self.`defaultRuntimeClassName`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: RuntimeClassStrategyOptions): bool =
   if not self.`allowedRuntimeClassNames`.isEmpty: return false
@@ -211,22 +183,15 @@ proc load*(self: var IDRange, parser: var JsonParser) =
             load(self.`min`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: IDRange, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: IDRange, s: JsonStream) =
+  s.objectStart()
   if not self.`max`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"max\":")
+    s.name("max")
     self.`max`.dump(s)
   if not self.`min`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"min\":")
+    s.name("min")
     self.`min`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: IDRange): bool =
   if not self.`max`.isEmpty: return false
@@ -256,22 +221,15 @@ proc load*(self: var FSGroupStrategyOptions, parser: var JsonParser) =
             load(self.`ranges`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: FSGroupStrategyOptions, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: FSGroupStrategyOptions, s: JsonStream) =
+  s.objectStart()
   if not self.`rule`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"rule\":")
+    s.name("rule")
     self.`rule`.dump(s)
   if not self.`ranges`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"ranges\":")
+    s.name("ranges")
     self.`ranges`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: FSGroupStrategyOptions): bool =
   if not self.`rule`.isEmpty: return false
@@ -301,22 +259,15 @@ proc load*(self: var SupplementalGroupsStrategyOptions, parser: var JsonParser) 
             load(self.`ranges`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: SupplementalGroupsStrategyOptions, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: SupplementalGroupsStrategyOptions, s: JsonStream) =
+  s.objectStart()
   if not self.`rule`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"rule\":")
+    s.name("rule")
     self.`rule`.dump(s)
   if not self.`ranges`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"ranges\":")
+    s.name("ranges")
     self.`ranges`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: SupplementalGroupsStrategyOptions): bool =
   if not self.`rule`.isEmpty: return false
@@ -346,22 +297,15 @@ proc load*(self: var SELinuxStrategyOptions, parser: var JsonParser) =
             load(self.`seLinuxOptions`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: SELinuxStrategyOptions, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: SELinuxStrategyOptions, s: JsonStream) =
+  s.objectStart()
   if not self.`rule`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"rule\":")
+    s.name("rule")
     self.`rule`.dump(s)
   if not self.`seLinuxOptions`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"seLinuxOptions\":")
+    s.name("seLinuxOptions")
     self.`seLinuxOptions`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: SELinuxStrategyOptions): bool =
   if not self.`rule`.isEmpty: return false
@@ -391,22 +335,15 @@ proc load*(self: var AllowedHostPath, parser: var JsonParser) =
             load(self.`readOnly`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: AllowedHostPath, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: AllowedHostPath, s: JsonStream) =
+  s.objectStart()
   if not self.`pathPrefix`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"pathPrefix\":")
+    s.name("pathPrefix")
     self.`pathPrefix`.dump(s)
   if not self.`readOnly`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"readOnly\":")
+    s.name("readOnly")
     self.`readOnly`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: AllowedHostPath): bool =
   if not self.`pathPrefix`.isEmpty: return false
@@ -433,16 +370,12 @@ proc load*(self: var AllowedCSIDriver, parser: var JsonParser) =
             load(self.`name`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: AllowedCSIDriver, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: AllowedCSIDriver, s: JsonStream) =
+  s.objectStart()
   if not self.`name`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"name\":")
+    s.name("name")
     self.`name`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: AllowedCSIDriver): bool =
   if not self.`name`.isEmpty: return false
@@ -471,22 +404,15 @@ proc load*(self: var RunAsGroupStrategyOptions, parser: var JsonParser) =
             load(self.`ranges`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: RunAsGroupStrategyOptions, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: RunAsGroupStrategyOptions, s: JsonStream) =
+  s.objectStart()
   if not self.`rule`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"rule\":")
+    s.name("rule")
     self.`rule`.dump(s)
   if not self.`ranges`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"ranges\":")
+    s.name("ranges")
     self.`ranges`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: RunAsGroupStrategyOptions): bool =
   if not self.`rule`.isEmpty: return false
@@ -516,22 +442,15 @@ proc load*(self: var RunAsUserStrategyOptions, parser: var JsonParser) =
             load(self.`ranges`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: RunAsUserStrategyOptions, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: RunAsUserStrategyOptions, s: JsonStream) =
+  s.objectStart()
   if not self.`rule`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"rule\":")
+    s.name("rule")
     self.`rule`.dump(s)
   if not self.`ranges`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"ranges\":")
+    s.name("ranges")
     self.`ranges`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: RunAsUserStrategyOptions): bool =
   if not self.`rule`.isEmpty: return false
@@ -627,154 +546,81 @@ proc load*(self: var PodSecurityPolicySpec, parser: var JsonParser) =
             load(self.`runAsUser`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: PodSecurityPolicySpec, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: PodSecurityPolicySpec, s: JsonStream) =
+  s.objectStart()
   if not self.`allowedProcMountTypes`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"allowedProcMountTypes\":")
+    s.name("allowedProcMountTypes")
     self.`allowedProcMountTypes`.dump(s)
   if not self.`allowedCapabilities`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"allowedCapabilities\":")
+    s.name("allowedCapabilities")
     self.`allowedCapabilities`.dump(s)
   if not self.`runtimeClass`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"runtimeClass\":")
+    s.name("runtimeClass")
     self.`runtimeClass`.dump(s)
   if not self.`readOnlyRootFilesystem`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"readOnlyRootFilesystem\":")
+    s.name("readOnlyRootFilesystem")
     self.`readOnlyRootFilesystem`.dump(s)
   if not self.`fsGroup`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"fsGroup\":")
+    s.name("fsGroup")
     self.`fsGroup`.dump(s)
   if not self.`supplementalGroups`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"supplementalGroups\":")
+    s.name("supplementalGroups")
     self.`supplementalGroups`.dump(s)
   if not self.`seLinux`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"seLinux\":")
+    s.name("seLinux")
     self.`seLinux`.dump(s)
   if not self.`defaultAddCapabilities`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"defaultAddCapabilities\":")
+    s.name("defaultAddCapabilities")
     self.`defaultAddCapabilities`.dump(s)
   if not self.`allowedHostPaths`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"allowedHostPaths\":")
+    s.name("allowedHostPaths")
     self.`allowedHostPaths`.dump(s)
   if not self.`defaultAllowPrivilegeEscalation`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"defaultAllowPrivilegeEscalation\":")
+    s.name("defaultAllowPrivilegeEscalation")
     self.`defaultAllowPrivilegeEscalation`.dump(s)
   if not self.`allowPrivilegeEscalation`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"allowPrivilegeEscalation\":")
+    s.name("allowPrivilegeEscalation")
     self.`allowPrivilegeEscalation`.dump(s)
   if not self.`allowedUnsafeSysctls`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"allowedUnsafeSysctls\":")
+    s.name("allowedUnsafeSysctls")
     self.`allowedUnsafeSysctls`.dump(s)
   if not self.`allowedCSIDrivers`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"allowedCSIDrivers\":")
+    s.name("allowedCSIDrivers")
     self.`allowedCSIDrivers`.dump(s)
   if not self.`hostPID`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"hostPID\":")
+    s.name("hostPID")
     self.`hostPID`.dump(s)
   if not self.`hostPorts`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"hostPorts\":")
+    s.name("hostPorts")
     self.`hostPorts`.dump(s)
   if not self.`runAsGroup`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"runAsGroup\":")
+    s.name("runAsGroup")
     self.`runAsGroup`.dump(s)
   if not self.`hostIPC`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"hostIPC\":")
+    s.name("hostIPC")
     self.`hostIPC`.dump(s)
   if not self.`hostNetwork`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"hostNetwork\":")
+    s.name("hostNetwork")
     self.`hostNetwork`.dump(s)
   if not self.`requiredDropCapabilities`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"requiredDropCapabilities\":")
+    s.name("requiredDropCapabilities")
     self.`requiredDropCapabilities`.dump(s)
   if not self.`volumes`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"volumes\":")
+    s.name("volumes")
     self.`volumes`.dump(s)
   if not self.`allowedFlexVolumes`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"allowedFlexVolumes\":")
+    s.name("allowedFlexVolumes")
     self.`allowedFlexVolumes`.dump(s)
   if not self.`privileged`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"privileged\":")
+    s.name("privileged")
     self.`privileged`.dump(s)
   if not self.`forbiddenSysctls`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"forbiddenSysctls\":")
+    s.name("forbiddenSysctls")
     self.`forbiddenSysctls`.dump(s)
   if not self.`runAsUser`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"runAsUser\":")
+    s.name("runAsUser")
     self.`runAsUser`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: PodSecurityPolicySpec): bool =
   if not self.`allowedProcMountTypes`.isEmpty: return false
@@ -832,34 +678,17 @@ proc load*(self: var PodSecurityPolicy, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: PodSecurityPolicy, s: Stream) =
-  s.write("{")
-  var firstIteration = true
-  if not self.`apiVersion`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"apiVersion\":")
-    self.`apiVersion`.dump(s)
+proc dump*(self: PodSecurityPolicy, s: JsonStream) =
+  s.objectStart()
+  s.name("apiVersion"); s.value("policy/v1beta1")
+  s.name("kind"); s.value("PodSecurityPolicy")
   if not self.`spec`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"spec\":")
+    s.name("spec")
     self.`spec`.dump(s)
-  if not self.`kind`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"kind\":")
-    self.`kind`.dump(s)
   if not self.`metadata`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"metadata\":")
+    s.name("metadata")
     self.`metadata`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: PodSecurityPolicy): bool =
   if not self.`apiVersion`.isEmpty: return false
@@ -877,9 +706,7 @@ proc get*(client: Client, t: typedesc[PodSecurityPolicy], name: string, namespac
   return await client.get("/apis/policy/v1beta1", t, name, namespace, loadPodSecurityPolicy)
 
 proc create*(client: Client, t: PodSecurityPolicy, namespace = "default"): Future[PodSecurityPolicy] {.async.}=
-  t.apiVersion = "/apis/policy/v1beta1"
-  t.kind = "PodSecurityPolicy"
-  return await client.get("/apis/policy/v1beta1", t, name, namespace, loadPodSecurityPolicy)
+  return await client.create("/apis/policy/v1beta1", t, namespace, loadPodSecurityPolicy)
 
 type
   PodDisruptionBudgetStatus* = object
@@ -916,46 +743,27 @@ proc load*(self: var PodDisruptionBudgetStatus, parser: var JsonParser) =
             load(self.`desiredHealthy`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: PodDisruptionBudgetStatus, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: PodDisruptionBudgetStatus, s: JsonStream) =
+  s.objectStart()
   if not self.`expectedPods`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"expectedPods\":")
+    s.name("expectedPods")
     self.`expectedPods`.dump(s)
   if not self.`disruptedPods`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"disruptedPods\":")
+    s.name("disruptedPods")
     self.`disruptedPods`.dump(s)
   if not self.`observedGeneration`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"observedGeneration\":")
+    s.name("observedGeneration")
     self.`observedGeneration`.dump(s)
   if not self.`currentHealthy`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"currentHealthy\":")
+    s.name("currentHealthy")
     self.`currentHealthy`.dump(s)
   if not self.`disruptionsAllowed`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"disruptionsAllowed\":")
+    s.name("disruptionsAllowed")
     self.`disruptionsAllowed`.dump(s)
   if not self.`desiredHealthy`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"desiredHealthy\":")
+    s.name("desiredHealthy")
     self.`desiredHealthy`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: PodDisruptionBudgetStatus): bool =
   if not self.`expectedPods`.isEmpty: return false
@@ -998,40 +806,20 @@ proc load*(self: var PodDisruptionBudget, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: PodDisruptionBudget, s: Stream) =
-  s.write("{")
-  var firstIteration = true
-  if not self.`apiVersion`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"apiVersion\":")
-    self.`apiVersion`.dump(s)
+proc dump*(self: PodDisruptionBudget, s: JsonStream) =
+  s.objectStart()
+  s.name("apiVersion"); s.value("policy/v1beta1")
+  s.name("kind"); s.value("PodDisruptionBudget")
   if not self.`spec`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"spec\":")
+    s.name("spec")
     self.`spec`.dump(s)
   if not self.`status`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"status\":")
+    s.name("status")
     self.`status`.dump(s)
-  if not self.`kind`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"kind\":")
-    self.`kind`.dump(s)
   if not self.`metadata`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"metadata\":")
+    s.name("metadata")
     self.`metadata`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: PodDisruptionBudget): bool =
   if not self.`apiVersion`.isEmpty: return false
@@ -1050,9 +838,7 @@ proc get*(client: Client, t: typedesc[PodDisruptionBudget], name: string, namesp
   return await client.get("/apis/policy/v1beta1", t, name, namespace, loadPodDisruptionBudget)
 
 proc create*(client: Client, t: PodDisruptionBudget, namespace = "default"): Future[PodDisruptionBudget] {.async.}=
-  t.apiVersion = "/apis/policy/v1beta1"
-  t.kind = "PodDisruptionBudget"
-  return await client.get("/apis/policy/v1beta1", t, name, namespace, loadPodDisruptionBudget)
+  return await client.create("/apis/policy/v1beta1", t, namespace, loadPodDisruptionBudget)
 
 type
   Eviction* = object
@@ -1083,34 +869,17 @@ proc load*(self: var Eviction, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: Eviction, s: Stream) =
-  s.write("{")
-  var firstIteration = true
-  if not self.`apiVersion`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"apiVersion\":")
-    self.`apiVersion`.dump(s)
+proc dump*(self: Eviction, s: JsonStream) =
+  s.objectStart()
+  s.name("apiVersion"); s.value("policy/v1beta1")
+  s.name("kind"); s.value("Eviction")
   if not self.`deleteOptions`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"deleteOptions\":")
+    s.name("deleteOptions")
     self.`deleteOptions`.dump(s)
-  if not self.`kind`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"kind\":")
-    self.`kind`.dump(s)
   if not self.`metadata`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"metadata\":")
+    s.name("metadata")
     self.`metadata`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: Eviction): bool =
   if not self.`apiVersion`.isEmpty: return false
@@ -1128,9 +897,7 @@ proc get*(client: Client, t: typedesc[Eviction], name: string, namespace = "defa
   return await client.get("/apis/policy/v1beta1", t, name, namespace, loadEviction)
 
 proc create*(client: Client, t: Eviction, namespace = "default"): Future[Eviction] {.async.}=
-  t.apiVersion = "/apis/policy/v1beta1"
-  t.kind = "Eviction"
-  return await client.get("/apis/policy/v1beta1", t, name, namespace, loadEviction)
+  return await client.create("/apis/policy/v1beta1", t, namespace, loadEviction)
 
 type
   PodDisruptionBudgetList* = object
@@ -1161,34 +928,17 @@ proc load*(self: var PodDisruptionBudgetList, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: PodDisruptionBudgetList, s: Stream) =
-  s.write("{")
-  var firstIteration = true
-  if not self.`apiVersion`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"apiVersion\":")
-    self.`apiVersion`.dump(s)
+proc dump*(self: PodDisruptionBudgetList, s: JsonStream) =
+  s.objectStart()
+  s.name("apiVersion"); s.value("policy/v1beta1")
+  s.name("kind"); s.value("PodDisruptionBudgetList")
   if not self.`items`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"items\":")
+    s.name("items")
     self.`items`.dump(s)
-  if not self.`kind`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"kind\":")
-    self.`kind`.dump(s)
   if not self.`metadata`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"metadata\":")
+    s.name("metadata")
     self.`metadata`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: PodDisruptionBudgetList): bool =
   if not self.`apiVersion`.isEmpty: return false
@@ -1234,34 +984,17 @@ proc load*(self: var PodSecurityPolicyList, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: PodSecurityPolicyList, s: Stream) =
-  s.write("{")
-  var firstIteration = true
-  if not self.`apiVersion`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"apiVersion\":")
-    self.`apiVersion`.dump(s)
+proc dump*(self: PodSecurityPolicyList, s: JsonStream) =
+  s.objectStart()
+  s.name("apiVersion"); s.value("policy/v1beta1")
+  s.name("kind"); s.value("PodSecurityPolicyList")
   if not self.`items`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"items\":")
+    s.name("items")
     self.`items`.dump(s)
-  if not self.`kind`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"kind\":")
-    self.`kind`.dump(s)
   if not self.`metadata`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"metadata\":")
+    s.name("metadata")
     self.`metadata`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: PodSecurityPolicyList): bool =
   if not self.`apiVersion`.isEmpty: return false

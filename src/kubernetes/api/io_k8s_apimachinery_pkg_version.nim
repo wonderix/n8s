@@ -1,7 +1,7 @@
 import ../client
 import ../base_types
 import parsejson
-import streams
+import ../jsonstream
 
 type
   Info* = object
@@ -47,64 +47,36 @@ proc load*(self: var Info, parser: var JsonParser) =
             load(self.`minor`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: Info, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: Info, s: JsonStream) =
+  s.objectStart()
   if not self.`gitTreeState`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"gitTreeState\":")
+    s.name("gitTreeState")
     self.`gitTreeState`.dump(s)
   if not self.`gitVersion`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"gitVersion\":")
+    s.name("gitVersion")
     self.`gitVersion`.dump(s)
   if not self.`platform`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"platform\":")
+    s.name("platform")
     self.`platform`.dump(s)
   if not self.`buildDate`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"buildDate\":")
+    s.name("buildDate")
     self.`buildDate`.dump(s)
   if not self.`major`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"major\":")
+    s.name("major")
     self.`major`.dump(s)
   if not self.`goVersion`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"goVersion\":")
+    s.name("goVersion")
     self.`goVersion`.dump(s)
   if not self.`gitCommit`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"gitCommit\":")
+    s.name("gitCommit")
     self.`gitCommit`.dump(s)
   if not self.`compiler`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"compiler\":")
+    s.name("compiler")
     self.`compiler`.dump(s)
   if not self.`minor`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"minor\":")
+    s.name("minor")
     self.`minor`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: Info): bool =
   if not self.`gitTreeState`.isEmpty: return false

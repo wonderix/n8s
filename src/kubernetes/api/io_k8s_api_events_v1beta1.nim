@@ -1,7 +1,7 @@
 import ../client
 import ../base_types
 import parsejson
-import streams
+import ../jsonstream
 import io_k8s_apimachinery_pkg_apis_meta_v1
 import asyncdispatch
 import io_k8s_api_core_v1
@@ -32,28 +32,18 @@ proc load*(self: var EventSeries, parser: var JsonParser) =
             load(self.`state`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: EventSeries, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: EventSeries, s: JsonStream) =
+  s.objectStart()
   if not self.`count`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"count\":")
+    s.name("count")
     self.`count`.dump(s)
   if not self.`lastObservedTime`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"lastObservedTime\":")
+    s.name("lastObservedTime")
     self.`lastObservedTime`.dump(s)
   if not self.`state`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"state\":")
+    s.name("state")
     self.`state`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: EventSeries): bool =
   if not self.`count`.isEmpty: return false
@@ -129,112 +119,56 @@ proc load*(self: var Event, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: Event, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: Event, s: JsonStream) =
+  s.objectStart()
+  s.name("apiVersion"); s.value("events.k8s.io/v1beta1")
+  s.name("kind"); s.value("Event")
   if not self.`deprecatedLastTimestamp`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"deprecatedLastTimestamp\":")
+    s.name("deprecatedLastTimestamp")
     self.`deprecatedLastTimestamp`.dump(s)
-  if not self.`apiVersion`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"apiVersion\":")
-    self.`apiVersion`.dump(s)
   if not self.`deprecatedFirstTimestamp`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"deprecatedFirstTimestamp\":")
+    s.name("deprecatedFirstTimestamp")
     self.`deprecatedFirstTimestamp`.dump(s)
   if not self.`reportingInstance`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"reportingInstance\":")
+    s.name("reportingInstance")
     self.`reportingInstance`.dump(s)
   if not self.`type`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"type\":")
+    s.name("type")
     self.`type`.dump(s)
   if not self.`eventTime`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"eventTime\":")
+    s.name("eventTime")
     self.`eventTime`.dump(s)
   if not self.`series`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"series\":")
+    s.name("series")
     self.`series`.dump(s)
   if not self.`deprecatedCount`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"deprecatedCount\":")
+    s.name("deprecatedCount")
     self.`deprecatedCount`.dump(s)
   if not self.`note`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"note\":")
+    s.name("note")
     self.`note`.dump(s)
   if not self.`action`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"action\":")
+    s.name("action")
     self.`action`.dump(s)
   if not self.`deprecatedSource`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"deprecatedSource\":")
+    s.name("deprecatedSource")
     self.`deprecatedSource`.dump(s)
   if not self.`regarding`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"regarding\":")
+    s.name("regarding")
     self.`regarding`.dump(s)
   if not self.`reportingController`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"reportingController\":")
+    s.name("reportingController")
     self.`reportingController`.dump(s)
   if not self.`reason`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"reason\":")
+    s.name("reason")
     self.`reason`.dump(s)
-  if not self.`kind`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"kind\":")
-    self.`kind`.dump(s)
   if not self.`related`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"related\":")
+    s.name("related")
     self.`related`.dump(s)
   if not self.`metadata`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"metadata\":")
+    s.name("metadata")
     self.`metadata`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: Event): bool =
   if not self.`deprecatedLastTimestamp`.isEmpty: return false
@@ -265,9 +199,7 @@ proc get*(client: Client, t: typedesc[Event], name: string, namespace = "default
   return await client.get("/apis/events.k8s.io/v1beta1", t, name, namespace, loadEvent)
 
 proc create*(client: Client, t: Event, namespace = "default"): Future[Event] {.async.}=
-  t.apiVersion = "/apis/events.k8s.io/v1beta1"
-  t.kind = "Event"
-  return await client.get("/apis/events.k8s.io/v1beta1", t, name, namespace, loadEvent)
+  return await client.create("/apis/events.k8s.io/v1beta1", t, namespace, loadEvent)
 
 type
   EventList* = object
@@ -298,34 +230,17 @@ proc load*(self: var EventList, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: EventList, s: Stream) =
-  s.write("{")
-  var firstIteration = true
-  if not self.`apiVersion`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"apiVersion\":")
-    self.`apiVersion`.dump(s)
+proc dump*(self: EventList, s: JsonStream) =
+  s.objectStart()
+  s.name("apiVersion"); s.value("events.k8s.io/v1beta1")
+  s.name("kind"); s.value("EventList")
   if not self.`items`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"items\":")
+    s.name("items")
     self.`items`.dump(s)
-  if not self.`kind`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"kind\":")
-    self.`kind`.dump(s)
   if not self.`metadata`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"metadata\":")
+    s.name("metadata")
     self.`metadata`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: EventList): bool =
   if not self.`apiVersion`.isEmpty: return false

@@ -1,7 +1,7 @@
 import ../client
 import ../base_types
 import parsejson
-import streams
+import ../jsonstream
 import io_k8s_apimachinery_pkg_apis_meta_v1
 import asyncdispatch
 
@@ -31,28 +31,18 @@ proc load*(self: var ServiceReference, parser: var JsonParser) =
             load(self.`name`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ServiceReference, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: ServiceReference, s: JsonStream) =
+  s.objectStart()
   if not self.`namespace`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"namespace\":")
+    s.name("namespace")
     self.`namespace`.dump(s)
   if not self.`port`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"port\":")
+    s.name("port")
     self.`port`.dump(s)
   if not self.`name`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"name\":")
+    s.name("name")
     self.`name`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: ServiceReference): bool =
   if not self.`namespace`.isEmpty: return false
@@ -98,52 +88,30 @@ proc load*(self: var APIServiceSpec, parser: var JsonParser) =
             load(self.`insecureSkipTLSVerify`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: APIServiceSpec, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: APIServiceSpec, s: JsonStream) =
+  s.objectStart()
   if not self.`version`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"version\":")
+    s.name("version")
     self.`version`.dump(s)
   if not self.`caBundle`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"caBundle\":")
+    s.name("caBundle")
     self.`caBundle`.dump(s)
   if not self.`group`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"group\":")
+    s.name("group")
     self.`group`.dump(s)
   if not self.`groupPriorityMinimum`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"groupPriorityMinimum\":")
+    s.name("groupPriorityMinimum")
     self.`groupPriorityMinimum`.dump(s)
   if not self.`versionPriority`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"versionPriority\":")
+    s.name("versionPriority")
     self.`versionPriority`.dump(s)
   if not self.`service`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"service\":")
+    s.name("service")
     self.`service`.dump(s)
   if not self.`insecureSkipTLSVerify`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"insecureSkipTLSVerify\":")
+    s.name("insecureSkipTLSVerify")
     self.`insecureSkipTLSVerify`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: APIServiceSpec): bool =
   if not self.`version`.isEmpty: return false
@@ -187,40 +155,24 @@ proc load*(self: var APIServiceCondition, parser: var JsonParser) =
             load(self.`status`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: APIServiceCondition, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: APIServiceCondition, s: JsonStream) =
+  s.objectStart()
   if not self.`lastTransitionTime`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"lastTransitionTime\":")
+    s.name("lastTransitionTime")
     self.`lastTransitionTime`.dump(s)
   if not self.`type`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"type\":")
+    s.name("type")
     self.`type`.dump(s)
   if not self.`message`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"message\":")
+    s.name("message")
     self.`message`.dump(s)
   if not self.`reason`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"reason\":")
+    s.name("reason")
     self.`reason`.dump(s)
   if not self.`status`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"status\":")
+    s.name("status")
     self.`status`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: APIServiceCondition): bool =
   if not self.`lastTransitionTime`.isEmpty: return false
@@ -250,16 +202,12 @@ proc load*(self: var APIServiceStatus, parser: var JsonParser) =
             load(self.`conditions`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: APIServiceStatus, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: APIServiceStatus, s: JsonStream) =
+  s.objectStart()
   if not self.`conditions`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"conditions\":")
+    s.name("conditions")
     self.`conditions`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: APIServiceStatus): bool =
   if not self.`conditions`.isEmpty: return false
@@ -297,40 +245,20 @@ proc load*(self: var APIService, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: APIService, s: Stream) =
-  s.write("{")
-  var firstIteration = true
-  if not self.`apiVersion`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"apiVersion\":")
-    self.`apiVersion`.dump(s)
+proc dump*(self: APIService, s: JsonStream) =
+  s.objectStart()
+  s.name("apiVersion"); s.value("apiregistration.k8s.io/v1beta1")
+  s.name("kind"); s.value("APIService")
   if not self.`spec`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"spec\":")
+    s.name("spec")
     self.`spec`.dump(s)
   if not self.`status`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"status\":")
+    s.name("status")
     self.`status`.dump(s)
-  if not self.`kind`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"kind\":")
-    self.`kind`.dump(s)
   if not self.`metadata`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"metadata\":")
+    s.name("metadata")
     self.`metadata`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: APIService): bool =
   if not self.`apiVersion`.isEmpty: return false
@@ -349,9 +277,7 @@ proc get*(client: Client, t: typedesc[APIService], name: string, namespace = "de
   return await client.get("/apis/apiregistration.k8s.io/v1beta1", t, name, namespace, loadAPIService)
 
 proc create*(client: Client, t: APIService, namespace = "default"): Future[APIService] {.async.}=
-  t.apiVersion = "/apis/apiregistration.k8s.io/v1beta1"
-  t.kind = "APIService"
-  return await client.get("/apis/apiregistration.k8s.io/v1beta1", t, name, namespace, loadAPIService)
+  return await client.create("/apis/apiregistration.k8s.io/v1beta1", t, namespace, loadAPIService)
 
 type
   APIServiceList* = object
@@ -382,34 +308,17 @@ proc load*(self: var APIServiceList, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: APIServiceList, s: Stream) =
-  s.write("{")
-  var firstIteration = true
-  if not self.`apiVersion`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"apiVersion\":")
-    self.`apiVersion`.dump(s)
+proc dump*(self: APIServiceList, s: JsonStream) =
+  s.objectStart()
+  s.name("apiVersion"); s.value("apiregistration.k8s.io/v1beta1")
+  s.name("kind"); s.value("APIServiceList")
   if not self.`items`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"items\":")
+    s.name("items")
     self.`items`.dump(s)
-  if not self.`kind`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"kind\":")
-    self.`kind`.dump(s)
   if not self.`metadata`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"metadata\":")
+    s.name("metadata")
     self.`metadata`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: APIServiceList): bool =
   if not self.`apiVersion`.isEmpty: return false

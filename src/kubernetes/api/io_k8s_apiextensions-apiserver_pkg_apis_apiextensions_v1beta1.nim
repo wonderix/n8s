@@ -1,7 +1,7 @@
 import ../client
 import ../base_types
 import parsejson
-import streams
+import ../jsonstream
 import tables
 import io_k8s_apimachinery_pkg_apis_meta_v1
 import asyncdispatch
@@ -41,46 +41,27 @@ proc load*(self: var CustomResourceColumnDefinition, parser: var JsonParser) =
             load(self.`name`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: CustomResourceColumnDefinition, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: CustomResourceColumnDefinition, s: JsonStream) =
+  s.objectStart()
   if not self.`format`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"format\":")
+    s.name("format")
     self.`format`.dump(s)
   if not self.`type`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"type\":")
+    s.name("type")
     self.`type`.dump(s)
   if not self.`priority`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"priority\":")
+    s.name("priority")
     self.`priority`.dump(s)
   if not self.`JSONPath`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"JSONPath\":")
+    s.name("JSONPath")
     self.`JSONPath`.dump(s)
   if not self.`description`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"description\":")
+    s.name("description")
     self.`description`.dump(s)
   if not self.`name`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"name\":")
+    s.name("name")
     self.`name`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: CustomResourceColumnDefinition): bool =
   if not self.`format`.isEmpty: return false
@@ -117,28 +98,18 @@ proc load*(self: var CustomResourceSubresourceScale, parser: var JsonParser) =
             load(self.`statusReplicasPath`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: CustomResourceSubresourceScale, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: CustomResourceSubresourceScale, s: JsonStream) =
+  s.objectStart()
   if not self.`specReplicasPath`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"specReplicasPath\":")
+    s.name("specReplicasPath")
     self.`specReplicasPath`.dump(s)
   if not self.`labelSelectorPath`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"labelSelectorPath\":")
+    s.name("labelSelectorPath")
     self.`labelSelectorPath`.dump(s)
   if not self.`statusReplicasPath`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"statusReplicasPath\":")
+    s.name("statusReplicasPath")
     self.`statusReplicasPath`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: CustomResourceSubresourceScale): bool =
   if not self.`specReplicasPath`.isEmpty: return false
@@ -152,7 +123,7 @@ type
 proc load*(self: var CustomResourceSubresourceStatus, parser: var JsonParser) =
   load(Table[string,string](self),parser)
 
-proc dump*(self: CustomResourceSubresourceStatus, s: Stream) =
+proc dump*(self: CustomResourceSubresourceStatus, s: JsonStream) =
   dump(Table[string,string](self),s)
 
 proc isEmpty*(self: CustomResourceSubresourceStatus): bool = Table[string,string](self).isEmpty
@@ -180,22 +151,15 @@ proc load*(self: var CustomResourceSubresources, parser: var JsonParser) =
             load(self.`status`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: CustomResourceSubresources, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: CustomResourceSubresources, s: JsonStream) =
+  s.objectStart()
   if not self.`scale`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"scale\":")
+    s.name("scale")
     self.`scale`.dump(s)
   if not self.`status`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"status\":")
+    s.name("status")
     self.`status`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: CustomResourceSubresources): bool =
   if not self.`scale`.isEmpty: return false
@@ -208,7 +172,7 @@ type
 proc load*(self: var JSON, parser: var JsonParser) =
   load(string(self),parser)
 
-proc dump*(self: JSON, s: Stream) =
+proc dump*(self: JSON, s: JsonStream) =
   dump(string(self),s)
 
 proc isEmpty*(self: JSON): bool = string(self).isEmpty
@@ -219,7 +183,7 @@ type
 proc load*(self: var JSONSchemaPropsOrArray, parser: var JsonParser) =
   load(string(self),parser)
 
-proc dump*(self: JSONSchemaPropsOrArray, s: Stream) =
+proc dump*(self: JSONSchemaPropsOrArray, s: JsonStream) =
   dump(string(self),s)
 
 proc isEmpty*(self: JSONSchemaPropsOrArray): bool = string(self).isEmpty
@@ -247,22 +211,15 @@ proc load*(self: var ExternalDocumentation, parser: var JsonParser) =
             load(self.`description`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ExternalDocumentation, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: ExternalDocumentation, s: JsonStream) =
+  s.objectStart()
   if not self.`url`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"url\":")
+    s.name("url")
     self.`url`.dump(s)
   if not self.`description`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"description\":")
+    s.name("description")
     self.`description`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: ExternalDocumentation): bool =
   if not self.`url`.isEmpty: return false
@@ -275,7 +232,7 @@ type
 proc load*(self: var JSONSchemaPropsOrBool, parser: var JsonParser) =
   load(string(self),parser)
 
-proc dump*(self: JSONSchemaPropsOrBool, s: Stream) =
+proc dump*(self: JSONSchemaPropsOrBool, s: JsonStream) =
   dump(string(self),s)
 
 proc isEmpty*(self: JSONSchemaPropsOrBool): bool = string(self).isEmpty
@@ -423,262 +380,135 @@ proc load*(self: var JSONSchemaProps, parser: var JsonParser) =
             load(self.`minItems`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: JSONSchemaProps, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: JSONSchemaProps, s: JsonStream) =
+  s.objectStart()
   if not self.`maxLength`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"maxLength\":")
+    s.name("maxLength")
     self.`maxLength`.dump(s)
   if not self.`definitions`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"definitions\":")
+    s.name("definitions")
     self.`definitions`.dump(s)
   if not self.`properties`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"properties\":")
+    s.name("properties")
     self.`properties`.dump(s)
   if not self.`example`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"example\":")
+    s.name("example")
     self.`example`.dump(s)
   if not self.`nullable`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"nullable\":")
+    s.name("nullable")
     self.`nullable`.dump(s)
   if not self.`enum`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"enum\":")
+    s.name("enum")
     self.`enum`.dump(s)
   if not self.`exclusiveMinimum`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"exclusiveMinimum\":")
+    s.name("exclusiveMinimum")
     self.`exclusiveMinimum`.dump(s)
   if not self.`format`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"format\":")
+    s.name("format")
     self.`format`.dump(s)
   if not self.`multipleOf`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"multipleOf\":")
+    s.name("multipleOf")
     self.`multipleOf`.dump(s)
   if not self.`x-kubernetes-list-map-keys`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"x-kubernetes-list-map-keys\":")
+    s.name("x-kubernetes-list-map-keys")
     self.`x-kubernetes-list-map-keys`.dump(s)
   if not self.`type`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"type\":")
+    s.name("type")
     self.`type`.dump(s)
   if not self.`allOf`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"allOf\":")
+    s.name("allOf")
     self.`allOf`.dump(s)
   if not self.`x-kubernetes-embedded-resource`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"x-kubernetes-embedded-resource\":")
+    s.name("x-kubernetes-embedded-resource")
     self.`x-kubernetes-embedded-resource`.dump(s)
   if not self.`minProperties`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"minProperties\":")
+    s.name("minProperties")
     self.`minProperties`.dump(s)
   if not self.`items`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"items\":")
+    s.name("items")
     self.`items`.dump(s)
   if not self.`externalDocs`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"externalDocs\":")
+    s.name("externalDocs")
     self.`externalDocs`.dump(s)
   if not self.`patternProperties`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"patternProperties\":")
+    s.name("patternProperties")
     self.`patternProperties`.dump(s)
   if not self.`default`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"default\":")
+    s.name("default")
     self.`default`.dump(s)
   if not self.`required`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"required\":")
+    s.name("required")
     self.`required`.dump(s)
   if not self.`id`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"id\":")
+    s.name("id")
     self.`id`.dump(s)
   if not self.`dependencies`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"dependencies\":")
+    s.name("dependencies")
     self.`dependencies`.dump(s)
   if not self.`minimum`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"minimum\":")
+    s.name("minimum")
     self.`minimum`.dump(s)
   if not self.`$schema`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"$schema\":")
+    s.name("$schema")
     self.`$schema`.dump(s)
   if not self.`maxProperties`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"maxProperties\":")
+    s.name("maxProperties")
     self.`maxProperties`.dump(s)
   if not self.`minLength`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"minLength\":")
+    s.name("minLength")
     self.`minLength`.dump(s)
   if not self.`additionalItems`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"additionalItems\":")
+    s.name("additionalItems")
     self.`additionalItems`.dump(s)
   if not self.`oneOf`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"oneOf\":")
+    s.name("oneOf")
     self.`oneOf`.dump(s)
   if not self.`uniqueItems`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"uniqueItems\":")
+    s.name("uniqueItems")
     self.`uniqueItems`.dump(s)
   if not self.`maximum`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"maximum\":")
+    s.name("maximum")
     self.`maximum`.dump(s)
   if not self.`x-kubernetes-list-type`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"x-kubernetes-list-type\":")
+    s.name("x-kubernetes-list-type")
     self.`x-kubernetes-list-type`.dump(s)
   if not self.`description`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"description\":")
+    s.name("description")
     self.`description`.dump(s)
   if not self.`exclusiveMaximum`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"exclusiveMaximum\":")
+    s.name("exclusiveMaximum")
     self.`exclusiveMaximum`.dump(s)
   if not self.`x-kubernetes-preserve-unknown-fields`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"x-kubernetes-preserve-unknown-fields\":")
+    s.name("x-kubernetes-preserve-unknown-fields")
     self.`x-kubernetes-preserve-unknown-fields`.dump(s)
   if not self.`additionalProperties`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"additionalProperties\":")
+    s.name("additionalProperties")
     self.`additionalProperties`.dump(s)
   if not self.`pattern`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"pattern\":")
+    s.name("pattern")
     self.`pattern`.dump(s)
   if not self.`maxItems`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"maxItems\":")
+    s.name("maxItems")
     self.`maxItems`.dump(s)
   if not self.`not`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"not\":")
+    s.name("not")
     self.`not`.dump(s)
   if not self.`$ref`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"$ref\":")
+    s.name("$ref")
     self.`$ref`.dump(s)
   if not self.`title`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"title\":")
+    s.name("title")
     self.`title`.dump(s)
   if not self.`x-kubernetes-int-or-string`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"x-kubernetes-int-or-string\":")
+    s.name("x-kubernetes-int-or-string")
     self.`x-kubernetes-int-or-string`.dump(s)
   if not self.`anyOf`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"anyOf\":")
+    s.name("anyOf")
     self.`anyOf`.dump(s)
   if not self.`minItems`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"minItems\":")
+    s.name("minItems")
     self.`minItems`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: JSONSchemaProps): bool =
   if not self.`maxLength`.isEmpty: return false
@@ -745,16 +575,12 @@ proc load*(self: var CustomResourceValidation, parser: var JsonParser) =
             load(self.`openAPIV3Schema`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: CustomResourceValidation, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: CustomResourceValidation, s: JsonStream) =
+  s.objectStart()
   if not self.`openAPIV3Schema`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"openAPIV3Schema\":")
+    s.name("openAPIV3Schema")
     self.`openAPIV3Schema`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: CustomResourceValidation): bool =
   if not self.`openAPIV3Schema`.isEmpty: return false
@@ -795,46 +621,27 @@ proc load*(self: var CustomResourceDefinitionVersion, parser: var JsonParser) =
             load(self.`schema`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: CustomResourceDefinitionVersion, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: CustomResourceDefinitionVersion, s: JsonStream) =
+  s.objectStart()
   if not self.`served`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"served\":")
+    s.name("served")
     self.`served`.dump(s)
   if not self.`additionalPrinterColumns`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"additionalPrinterColumns\":")
+    s.name("additionalPrinterColumns")
     self.`additionalPrinterColumns`.dump(s)
   if not self.`storage`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"storage\":")
+    s.name("storage")
     self.`storage`.dump(s)
   if not self.`subresources`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"subresources\":")
+    s.name("subresources")
     self.`subresources`.dump(s)
   if not self.`name`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"name\":")
+    s.name("name")
     self.`name`.dump(s)
   if not self.`schema`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"schema\":")
+    s.name("schema")
     self.`schema`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: CustomResourceDefinitionVersion): bool =
   if not self.`served`.isEmpty: return false
@@ -874,34 +681,21 @@ proc load*(self: var ServiceReference, parser: var JsonParser) =
             load(self.`name`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ServiceReference, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: ServiceReference, s: JsonStream) =
+  s.objectStart()
   if not self.`path`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"path\":")
+    s.name("path")
     self.`path`.dump(s)
   if not self.`namespace`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"namespace\":")
+    s.name("namespace")
     self.`namespace`.dump(s)
   if not self.`port`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"port\":")
+    s.name("port")
     self.`port`.dump(s)
   if not self.`name`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"name\":")
+    s.name("name")
     self.`name`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: ServiceReference): bool =
   if not self.`path`.isEmpty: return false
@@ -936,28 +730,18 @@ proc load*(self: var WebhookClientConfig, parser: var JsonParser) =
             load(self.`service`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: WebhookClientConfig, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: WebhookClientConfig, s: JsonStream) =
+  s.objectStart()
   if not self.`caBundle`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"caBundle\":")
+    s.name("caBundle")
     self.`caBundle`.dump(s)
   if not self.`url`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"url\":")
+    s.name("url")
     self.`url`.dump(s)
   if not self.`service`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"service\":")
+    s.name("service")
     self.`service`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: WebhookClientConfig): bool =
   if not self.`caBundle`.isEmpty: return false
@@ -991,28 +775,18 @@ proc load*(self: var CustomResourceConversion, parser: var JsonParser) =
             load(self.`conversionReviewVersions`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: CustomResourceConversion, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: CustomResourceConversion, s: JsonStream) =
+  s.objectStart()
   if not self.`strategy`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"strategy\":")
+    s.name("strategy")
     self.`strategy`.dump(s)
   if not self.`webhookClientConfig`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"webhookClientConfig\":")
+    s.name("webhookClientConfig")
     self.`webhookClientConfig`.dump(s)
   if not self.`conversionReviewVersions`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"conversionReviewVersions\":")
+    s.name("conversionReviewVersions")
     self.`conversionReviewVersions`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: CustomResourceConversion): bool =
   if not self.`strategy`.isEmpty: return false
@@ -1026,7 +800,7 @@ type
 proc load*(self: var JSONSchemaPropsOrStringArray, parser: var JsonParser) =
   load(string(self),parser)
 
-proc dump*(self: JSONSchemaPropsOrStringArray, s: Stream) =
+proc dump*(self: JSONSchemaPropsOrStringArray, s: JsonStream) =
   dump(string(self),s)
 
 proc isEmpty*(self: JSONSchemaPropsOrStringArray): bool = string(self).isEmpty
@@ -1066,46 +840,27 @@ proc load*(self: var CustomResourceDefinitionNames, parser: var JsonParser) =
             load(self.`kind`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: CustomResourceDefinitionNames, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: CustomResourceDefinitionNames, s: JsonStream) =
+  s.objectStart()
   if not self.`shortNames`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"shortNames\":")
+    s.name("shortNames")
     self.`shortNames`.dump(s)
   if not self.`categories`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"categories\":")
+    s.name("categories")
     self.`categories`.dump(s)
   if not self.`plural`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"plural\":")
+    s.name("plural")
     self.`plural`.dump(s)
   if not self.`singular`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"singular\":")
+    s.name("singular")
     self.`singular`.dump(s)
   if not self.`listKind`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"listKind\":")
+    s.name("listKind")
     self.`listKind`.dump(s)
   if not self.`kind`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"kind\":")
+    s.name("kind")
     self.`kind`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: CustomResourceDefinitionNames): bool =
   if not self.`shortNames`.isEmpty: return false
@@ -1148,40 +903,24 @@ proc load*(self: var CustomResourceDefinitionCondition, parser: var JsonParser) 
             load(self.`status`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: CustomResourceDefinitionCondition, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: CustomResourceDefinitionCondition, s: JsonStream) =
+  s.objectStart()
   if not self.`lastTransitionTime`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"lastTransitionTime\":")
+    s.name("lastTransitionTime")
     self.`lastTransitionTime`.dump(s)
   if not self.`type`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"type\":")
+    s.name("type")
     self.`type`.dump(s)
   if not self.`message`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"message\":")
+    s.name("message")
     self.`message`.dump(s)
   if not self.`reason`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"reason\":")
+    s.name("reason")
     self.`reason`.dump(s)
   if not self.`status`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"status\":")
+    s.name("status")
     self.`status`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: CustomResourceDefinitionCondition): bool =
   if not self.`lastTransitionTime`.isEmpty: return false
@@ -1217,28 +956,18 @@ proc load*(self: var CustomResourceDefinitionStatus, parser: var JsonParser) =
             load(self.`conditions`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: CustomResourceDefinitionStatus, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: CustomResourceDefinitionStatus, s: JsonStream) =
+  s.objectStart()
   if not self.`storedVersions`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"storedVersions\":")
+    s.name("storedVersions")
     self.`storedVersions`.dump(s)
   if not self.`acceptedNames`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"acceptedNames\":")
+    s.name("acceptedNames")
     self.`acceptedNames`.dump(s)
   if not self.`conditions`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"conditions\":")
+    s.name("conditions")
     self.`conditions`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: CustomResourceDefinitionStatus): bool =
   if not self.`storedVersions`.isEmpty: return false
@@ -1293,70 +1022,39 @@ proc load*(self: var CustomResourceDefinitionSpec, parser: var JsonParser) =
             load(self.`conversion`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: CustomResourceDefinitionSpec, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: CustomResourceDefinitionSpec, s: JsonStream) =
+  s.objectStart()
   if not self.`version`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"version\":")
+    s.name("version")
     self.`version`.dump(s)
   if not self.`names`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"names\":")
+    s.name("names")
     self.`names`.dump(s)
   if not self.`additionalPrinterColumns`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"additionalPrinterColumns\":")
+    s.name("additionalPrinterColumns")
     self.`additionalPrinterColumns`.dump(s)
   if not self.`group`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"group\":")
+    s.name("group")
     self.`group`.dump(s)
   if not self.`subresources`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"subresources\":")
+    s.name("subresources")
     self.`subresources`.dump(s)
   if not self.`versions`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"versions\":")
+    s.name("versions")
     self.`versions`.dump(s)
   if not self.`validation`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"validation\":")
+    s.name("validation")
     self.`validation`.dump(s)
   if not self.`preserveUnknownFields`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"preserveUnknownFields\":")
+    s.name("preserveUnknownFields")
     self.`preserveUnknownFields`.dump(s)
   if not self.`scope`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"scope\":")
+    s.name("scope")
     self.`scope`.dump(s)
   if not self.`conversion`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"conversion\":")
+    s.name("conversion")
     self.`conversion`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: CustomResourceDefinitionSpec): bool =
   if not self.`version`.isEmpty: return false
@@ -1403,40 +1101,20 @@ proc load*(self: var CustomResourceDefinition, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: CustomResourceDefinition, s: Stream) =
-  s.write("{")
-  var firstIteration = true
-  if not self.`apiVersion`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"apiVersion\":")
-    self.`apiVersion`.dump(s)
+proc dump*(self: CustomResourceDefinition, s: JsonStream) =
+  s.objectStart()
+  s.name("apiVersion"); s.value("apiextensions.k8s.io/v1beta1")
+  s.name("kind"); s.value("CustomResourceDefinition")
   if not self.`spec`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"spec\":")
+    s.name("spec")
     self.`spec`.dump(s)
   if not self.`status`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"status\":")
+    s.name("status")
     self.`status`.dump(s)
-  if not self.`kind`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"kind\":")
-    self.`kind`.dump(s)
   if not self.`metadata`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"metadata\":")
+    s.name("metadata")
     self.`metadata`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: CustomResourceDefinition): bool =
   if not self.`apiVersion`.isEmpty: return false
@@ -1455,9 +1133,7 @@ proc get*(client: Client, t: typedesc[CustomResourceDefinition], name: string, n
   return await client.get("/apis/apiextensions.k8s.io/v1beta1", t, name, namespace, loadCustomResourceDefinition)
 
 proc create*(client: Client, t: CustomResourceDefinition, namespace = "default"): Future[CustomResourceDefinition] {.async.}=
-  t.apiVersion = "/apis/apiextensions.k8s.io/v1beta1"
-  t.kind = "CustomResourceDefinition"
-  return await client.get("/apis/apiextensions.k8s.io/v1beta1", t, name, namespace, loadCustomResourceDefinition)
+  return await client.create("/apis/apiextensions.k8s.io/v1beta1", t, namespace, loadCustomResourceDefinition)
 
 type
   CustomResourceDefinitionList* = object
@@ -1488,34 +1164,17 @@ proc load*(self: var CustomResourceDefinitionList, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: CustomResourceDefinitionList, s: Stream) =
-  s.write("{")
-  var firstIteration = true
-  if not self.`apiVersion`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"apiVersion\":")
-    self.`apiVersion`.dump(s)
+proc dump*(self: CustomResourceDefinitionList, s: JsonStream) =
+  s.objectStart()
+  s.name("apiVersion"); s.value("apiextensions.k8s.io/v1beta1")
+  s.name("kind"); s.value("CustomResourceDefinitionList")
   if not self.`items`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"items\":")
+    s.name("items")
     self.`items`.dump(s)
-  if not self.`kind`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"kind\":")
-    self.`kind`.dump(s)
   if not self.`metadata`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"metadata\":")
+    s.name("metadata")
     self.`metadata`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: CustomResourceDefinitionList): bool =
   if not self.`apiVersion`.isEmpty: return false

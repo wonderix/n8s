@@ -1,4 +1,4 @@
-import httpClient, asyncdispatch, config, json, sequtils, options, strutils, streams
+import httpClient, asyncdispatch, config, json, sequtils, options, strutils, streams, jsonstream
 from sugar import `=>`
 
 type
@@ -56,7 +56,7 @@ proc create*(client: Client, path: string, content: string): Future[Stream] {.as
 proc create*[T](client: Client, groupVersion: string, t: T, namespace: string, load: proc(parser: var JsonParser): T): Future[T] {.async.}=
   let path = groupVersion & "/namespaces/" & namespace & "/" & ($(typedesc[T])).toLowerAscii() & "s"
   let stream = newStringStream()
-  t.dump(stream)
+  t.dump(newJsonStream(stream))
   return loadJson(await client.create(path,stream.readAll()),path,load)
 
 proc apiResources*(client: Client): Future[seq[APIResource]] {.async.}=

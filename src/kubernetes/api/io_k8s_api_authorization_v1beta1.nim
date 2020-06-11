@@ -1,7 +1,7 @@
 import ../client
 import ../base_types
 import parsejson
-import streams
+import ../jsonstream
 import io_k8s_apimachinery_pkg_apis_meta_v1
 import asyncdispatch
 import tables
@@ -44,52 +44,30 @@ proc load*(self: var ResourceAttributes, parser: var JsonParser) =
             load(self.`verb`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ResourceAttributes, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: ResourceAttributes, s: JsonStream) =
+  s.objectStart()
   if not self.`version`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"version\":")
+    s.name("version")
     self.`version`.dump(s)
   if not self.`resource`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"resource\":")
+    s.name("resource")
     self.`resource`.dump(s)
   if not self.`namespace`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"namespace\":")
+    s.name("namespace")
     self.`namespace`.dump(s)
   if not self.`group`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"group\":")
+    s.name("group")
     self.`group`.dump(s)
   if not self.`subresource`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"subresource\":")
+    s.name("subresource")
     self.`subresource`.dump(s)
   if not self.`name`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"name\":")
+    s.name("name")
     self.`name`.dump(s)
   if not self.`verb`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"verb\":")
+    s.name("verb")
     self.`verb`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: ResourceAttributes): bool =
   if not self.`version`.isEmpty: return false
@@ -124,22 +102,15 @@ proc load*(self: var NonResourceAttributes, parser: var JsonParser) =
             load(self.`verb`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: NonResourceAttributes, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: NonResourceAttributes, s: JsonStream) =
+  s.objectStart()
   if not self.`path`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"path\":")
+    s.name("path")
     self.`path`.dump(s)
   if not self.`verb`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"verb\":")
+    s.name("verb")
     self.`verb`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: NonResourceAttributes): bool =
   if not self.`path`.isEmpty: return false
@@ -181,46 +152,27 @@ proc load*(self: var SubjectAccessReviewSpec, parser: var JsonParser) =
             load(self.`nonResourceAttributes`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: SubjectAccessReviewSpec, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: SubjectAccessReviewSpec, s: JsonStream) =
+  s.objectStart()
   if not self.`uid`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"uid\":")
+    s.name("uid")
     self.`uid`.dump(s)
   if not self.`user`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"user\":")
+    s.name("user")
     self.`user`.dump(s)
   if not self.`resourceAttributes`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"resourceAttributes\":")
+    s.name("resourceAttributes")
     self.`resourceAttributes`.dump(s)
   if not self.`group`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"group\":")
+    s.name("group")
     self.`group`.dump(s)
   if not self.`extra`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"extra\":")
+    s.name("extra")
     self.`extra`.dump(s)
   if not self.`nonResourceAttributes`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"nonResourceAttributes\":")
+    s.name("nonResourceAttributes")
     self.`nonResourceAttributes`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: SubjectAccessReviewSpec): bool =
   if not self.`uid`.isEmpty: return false
@@ -260,34 +212,21 @@ proc load*(self: var SubjectAccessReviewStatus, parser: var JsonParser) =
             load(self.`allowed`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: SubjectAccessReviewStatus, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: SubjectAccessReviewStatus, s: JsonStream) =
+  s.objectStart()
   if not self.`denied`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"denied\":")
+    s.name("denied")
     self.`denied`.dump(s)
   if not self.`evaluationError`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"evaluationError\":")
+    s.name("evaluationError")
     self.`evaluationError`.dump(s)
   if not self.`reason`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"reason\":")
+    s.name("reason")
     self.`reason`.dump(s)
   if not self.`allowed`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"allowed\":")
+    s.name("allowed")
     self.`allowed`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: SubjectAccessReviewStatus): bool =
   if not self.`denied`.isEmpty: return false
@@ -328,40 +267,20 @@ proc load*(self: var SubjectAccessReview, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: SubjectAccessReview, s: Stream) =
-  s.write("{")
-  var firstIteration = true
-  if not self.`apiVersion`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"apiVersion\":")
-    self.`apiVersion`.dump(s)
+proc dump*(self: SubjectAccessReview, s: JsonStream) =
+  s.objectStart()
+  s.name("apiVersion"); s.value("authorization.k8s.io/v1beta1")
+  s.name("kind"); s.value("SubjectAccessReview")
   if not self.`spec`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"spec\":")
+    s.name("spec")
     self.`spec`.dump(s)
   if not self.`status`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"status\":")
+    s.name("status")
     self.`status`.dump(s)
-  if not self.`kind`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"kind\":")
-    self.`kind`.dump(s)
   if not self.`metadata`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"metadata\":")
+    s.name("metadata")
     self.`metadata`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: SubjectAccessReview): bool =
   if not self.`apiVersion`.isEmpty: return false
@@ -380,9 +299,7 @@ proc get*(client: Client, t: typedesc[SubjectAccessReview], name: string, namesp
   return await client.get("/apis/authorization.k8s.io/v1beta1", t, name, namespace, loadSubjectAccessReview)
 
 proc create*(client: Client, t: SubjectAccessReview, namespace = "default"): Future[SubjectAccessReview] {.async.}=
-  t.apiVersion = "/apis/authorization.k8s.io/v1beta1"
-  t.kind = "SubjectAccessReview"
-  return await client.get("/apis/authorization.k8s.io/v1beta1", t, name, namespace, loadSubjectAccessReview)
+  return await client.create("/apis/authorization.k8s.io/v1beta1", t, namespace, loadSubjectAccessReview)
 
 type
   SelfSubjectAccessReviewSpec* = object
@@ -407,22 +324,15 @@ proc load*(self: var SelfSubjectAccessReviewSpec, parser: var JsonParser) =
             load(self.`nonResourceAttributes`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: SelfSubjectAccessReviewSpec, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: SelfSubjectAccessReviewSpec, s: JsonStream) =
+  s.objectStart()
   if not self.`resourceAttributes`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"resourceAttributes\":")
+    s.name("resourceAttributes")
     self.`resourceAttributes`.dump(s)
   if not self.`nonResourceAttributes`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"nonResourceAttributes\":")
+    s.name("nonResourceAttributes")
     self.`nonResourceAttributes`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: SelfSubjectAccessReviewSpec): bool =
   if not self.`resourceAttributes`.isEmpty: return false
@@ -452,22 +362,15 @@ proc load*(self: var NonResourceRule, parser: var JsonParser) =
             load(self.`nonResourceURLs`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: NonResourceRule, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: NonResourceRule, s: JsonStream) =
+  s.objectStart()
   if not self.`verbs`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"verbs\":")
+    s.name("verbs")
     self.`verbs`.dump(s)
   if not self.`nonResourceURLs`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"nonResourceURLs\":")
+    s.name("nonResourceURLs")
     self.`nonResourceURLs`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: NonResourceRule): bool =
   if not self.`verbs`.isEmpty: return false
@@ -494,16 +397,12 @@ proc load*(self: var SelfSubjectRulesReviewSpec, parser: var JsonParser) =
             load(self.`namespace`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: SelfSubjectRulesReviewSpec, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: SelfSubjectRulesReviewSpec, s: JsonStream) =
+  s.objectStart()
   if not self.`namespace`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"namespace\":")
+    s.name("namespace")
     self.`namespace`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: SelfSubjectRulesReviewSpec): bool =
   if not self.`namespace`.isEmpty: return false
@@ -538,34 +437,21 @@ proc load*(self: var ResourceRule, parser: var JsonParser) =
             load(self.`resourceNames`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ResourceRule, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: ResourceRule, s: JsonStream) =
+  s.objectStart()
   if not self.`resources`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"resources\":")
+    s.name("resources")
     self.`resources`.dump(s)
   if not self.`apiGroups`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"apiGroups\":")
+    s.name("apiGroups")
     self.`apiGroups`.dump(s)
   if not self.`verbs`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"verbs\":")
+    s.name("verbs")
     self.`verbs`.dump(s)
   if not self.`resourceNames`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"resourceNames\":")
+    s.name("resourceNames")
     self.`resourceNames`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: ResourceRule): bool =
   if not self.`resources`.isEmpty: return false
@@ -603,34 +489,21 @@ proc load*(self: var SubjectRulesReviewStatus, parser: var JsonParser) =
             load(self.`evaluationError`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: SubjectRulesReviewStatus, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: SubjectRulesReviewStatus, s: JsonStream) =
+  s.objectStart()
   if not self.`nonResourceRules`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"nonResourceRules\":")
+    s.name("nonResourceRules")
     self.`nonResourceRules`.dump(s)
   if not self.`resourceRules`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"resourceRules\":")
+    s.name("resourceRules")
     self.`resourceRules`.dump(s)
   if not self.`incomplete`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"incomplete\":")
+    s.name("incomplete")
     self.`incomplete`.dump(s)
   if not self.`evaluationError`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"evaluationError\":")
+    s.name("evaluationError")
     self.`evaluationError`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: SubjectRulesReviewStatus): bool =
   if not self.`nonResourceRules`.isEmpty: return false
@@ -671,40 +544,20 @@ proc load*(self: var SelfSubjectRulesReview, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: SelfSubjectRulesReview, s: Stream) =
-  s.write("{")
-  var firstIteration = true
-  if not self.`apiVersion`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"apiVersion\":")
-    self.`apiVersion`.dump(s)
+proc dump*(self: SelfSubjectRulesReview, s: JsonStream) =
+  s.objectStart()
+  s.name("apiVersion"); s.value("authorization.k8s.io/v1beta1")
+  s.name("kind"); s.value("SelfSubjectRulesReview")
   if not self.`spec`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"spec\":")
+    s.name("spec")
     self.`spec`.dump(s)
   if not self.`status`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"status\":")
+    s.name("status")
     self.`status`.dump(s)
-  if not self.`kind`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"kind\":")
-    self.`kind`.dump(s)
   if not self.`metadata`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"metadata\":")
+    s.name("metadata")
     self.`metadata`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: SelfSubjectRulesReview): bool =
   if not self.`apiVersion`.isEmpty: return false
@@ -723,9 +576,7 @@ proc get*(client: Client, t: typedesc[SelfSubjectRulesReview], name: string, nam
   return await client.get("/apis/authorization.k8s.io/v1beta1", t, name, namespace, loadSelfSubjectRulesReview)
 
 proc create*(client: Client, t: SelfSubjectRulesReview, namespace = "default"): Future[SelfSubjectRulesReview] {.async.}=
-  t.apiVersion = "/apis/authorization.k8s.io/v1beta1"
-  t.kind = "SelfSubjectRulesReview"
-  return await client.get("/apis/authorization.k8s.io/v1beta1", t, name, namespace, loadSelfSubjectRulesReview)
+  return await client.create("/apis/authorization.k8s.io/v1beta1", t, namespace, loadSelfSubjectRulesReview)
 
 type
   SelfSubjectAccessReview* = object
@@ -759,40 +610,20 @@ proc load*(self: var SelfSubjectAccessReview, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: SelfSubjectAccessReview, s: Stream) =
-  s.write("{")
-  var firstIteration = true
-  if not self.`apiVersion`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"apiVersion\":")
-    self.`apiVersion`.dump(s)
+proc dump*(self: SelfSubjectAccessReview, s: JsonStream) =
+  s.objectStart()
+  s.name("apiVersion"); s.value("authorization.k8s.io/v1beta1")
+  s.name("kind"); s.value("SelfSubjectAccessReview")
   if not self.`spec`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"spec\":")
+    s.name("spec")
     self.`spec`.dump(s)
   if not self.`status`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"status\":")
+    s.name("status")
     self.`status`.dump(s)
-  if not self.`kind`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"kind\":")
-    self.`kind`.dump(s)
   if not self.`metadata`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"metadata\":")
+    s.name("metadata")
     self.`metadata`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: SelfSubjectAccessReview): bool =
   if not self.`apiVersion`.isEmpty: return false
@@ -811,9 +642,7 @@ proc get*(client: Client, t: typedesc[SelfSubjectAccessReview], name: string, na
   return await client.get("/apis/authorization.k8s.io/v1beta1", t, name, namespace, loadSelfSubjectAccessReview)
 
 proc create*(client: Client, t: SelfSubjectAccessReview, namespace = "default"): Future[SelfSubjectAccessReview] {.async.}=
-  t.apiVersion = "/apis/authorization.k8s.io/v1beta1"
-  t.kind = "SelfSubjectAccessReview"
-  return await client.get("/apis/authorization.k8s.io/v1beta1", t, name, namespace, loadSelfSubjectAccessReview)
+  return await client.create("/apis/authorization.k8s.io/v1beta1", t, namespace, loadSelfSubjectAccessReview)
 
 type
   LocalSubjectAccessReview* = object
@@ -847,40 +676,20 @@ proc load*(self: var LocalSubjectAccessReview, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: LocalSubjectAccessReview, s: Stream) =
-  s.write("{")
-  var firstIteration = true
-  if not self.`apiVersion`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"apiVersion\":")
-    self.`apiVersion`.dump(s)
+proc dump*(self: LocalSubjectAccessReview, s: JsonStream) =
+  s.objectStart()
+  s.name("apiVersion"); s.value("authorization.k8s.io/v1beta1")
+  s.name("kind"); s.value("LocalSubjectAccessReview")
   if not self.`spec`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"spec\":")
+    s.name("spec")
     self.`spec`.dump(s)
   if not self.`status`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"status\":")
+    s.name("status")
     self.`status`.dump(s)
-  if not self.`kind`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"kind\":")
-    self.`kind`.dump(s)
   if not self.`metadata`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"metadata\":")
+    s.name("metadata")
     self.`metadata`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: LocalSubjectAccessReview): bool =
   if not self.`apiVersion`.isEmpty: return false
@@ -899,6 +708,4 @@ proc get*(client: Client, t: typedesc[LocalSubjectAccessReview], name: string, n
   return await client.get("/apis/authorization.k8s.io/v1beta1", t, name, namespace, loadLocalSubjectAccessReview)
 
 proc create*(client: Client, t: LocalSubjectAccessReview, namespace = "default"): Future[LocalSubjectAccessReview] {.async.}=
-  t.apiVersion = "/apis/authorization.k8s.io/v1beta1"
-  t.kind = "LocalSubjectAccessReview"
-  return await client.get("/apis/authorization.k8s.io/v1beta1", t, name, namespace, loadLocalSubjectAccessReview)
+  return await client.create("/apis/authorization.k8s.io/v1beta1", t, namespace, loadLocalSubjectAccessReview)

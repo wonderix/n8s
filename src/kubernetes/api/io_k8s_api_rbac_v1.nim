@@ -1,7 +1,7 @@
 import ../client
 import ../base_types
 import parsejson
-import streams
+import ../jsonstream
 import io_k8s_apimachinery_pkg_apis_meta_v1
 import asyncdispatch
 
@@ -34,34 +34,21 @@ proc load*(self: var Subject, parser: var JsonParser) =
             load(self.`kind`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: Subject, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: Subject, s: JsonStream) =
+  s.objectStart()
   if not self.`namespace`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"namespace\":")
+    s.name("namespace")
     self.`namespace`.dump(s)
   if not self.`apiGroup`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"apiGroup\":")
+    s.name("apiGroup")
     self.`apiGroup`.dump(s)
   if not self.`name`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"name\":")
+    s.name("name")
     self.`name`.dump(s)
   if not self.`kind`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"kind\":")
+    s.name("kind")
     self.`kind`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: Subject): bool =
   if not self.`namespace`.isEmpty: return false
@@ -96,28 +83,18 @@ proc load*(self: var RoleRef, parser: var JsonParser) =
             load(self.`kind`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: RoleRef, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: RoleRef, s: JsonStream) =
+  s.objectStart()
   if not self.`apiGroup`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"apiGroup\":")
+    s.name("apiGroup")
     self.`apiGroup`.dump(s)
   if not self.`name`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"name\":")
+    s.name("name")
     self.`name`.dump(s)
   if not self.`kind`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"kind\":")
+    s.name("kind")
     self.`kind`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: RoleRef): bool =
   if not self.`apiGroup`.isEmpty: return false
@@ -157,40 +134,20 @@ proc load*(self: var RoleBinding, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: RoleBinding, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: RoleBinding, s: JsonStream) =
+  s.objectStart()
+  s.name("apiVersion"); s.value("rbac.authorization.k8s.io/v1")
+  s.name("kind"); s.value("RoleBinding")
   if not self.`roleRef`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"roleRef\":")
+    s.name("roleRef")
     self.`roleRef`.dump(s)
-  if not self.`apiVersion`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"apiVersion\":")
-    self.`apiVersion`.dump(s)
   if not self.`subjects`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"subjects\":")
+    s.name("subjects")
     self.`subjects`.dump(s)
-  if not self.`kind`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"kind\":")
-    self.`kind`.dump(s)
   if not self.`metadata`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"metadata\":")
+    s.name("metadata")
     self.`metadata`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: RoleBinding): bool =
   if not self.`roleRef`.isEmpty: return false
@@ -209,9 +166,7 @@ proc get*(client: Client, t: typedesc[RoleBinding], name: string, namespace = "d
   return await client.get("/apis/rbac.authorization.k8s.io/v1", t, name, namespace, loadRoleBinding)
 
 proc create*(client: Client, t: RoleBinding, namespace = "default"): Future[RoleBinding] {.async.}=
-  t.apiVersion = "/apis/rbac.authorization.k8s.io/v1"
-  t.kind = "RoleBinding"
-  return await client.get("/apis/rbac.authorization.k8s.io/v1", t, name, namespace, loadRoleBinding)
+  return await client.create("/apis/rbac.authorization.k8s.io/v1", t, namespace, loadRoleBinding)
 
 type
   ClusterRoleBinding* = object
@@ -245,40 +200,20 @@ proc load*(self: var ClusterRoleBinding, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ClusterRoleBinding, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: ClusterRoleBinding, s: JsonStream) =
+  s.objectStart()
+  s.name("apiVersion"); s.value("rbac.authorization.k8s.io/v1")
+  s.name("kind"); s.value("ClusterRoleBinding")
   if not self.`roleRef`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"roleRef\":")
+    s.name("roleRef")
     self.`roleRef`.dump(s)
-  if not self.`apiVersion`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"apiVersion\":")
-    self.`apiVersion`.dump(s)
   if not self.`subjects`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"subjects\":")
+    s.name("subjects")
     self.`subjects`.dump(s)
-  if not self.`kind`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"kind\":")
-    self.`kind`.dump(s)
   if not self.`metadata`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"metadata\":")
+    s.name("metadata")
     self.`metadata`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: ClusterRoleBinding): bool =
   if not self.`roleRef`.isEmpty: return false
@@ -297,9 +232,7 @@ proc get*(client: Client, t: typedesc[ClusterRoleBinding], name: string, namespa
   return await client.get("/apis/rbac.authorization.k8s.io/v1", t, name, namespace, loadClusterRoleBinding)
 
 proc create*(client: Client, t: ClusterRoleBinding, namespace = "default"): Future[ClusterRoleBinding] {.async.}=
-  t.apiVersion = "/apis/rbac.authorization.k8s.io/v1"
-  t.kind = "ClusterRoleBinding"
-  return await client.get("/apis/rbac.authorization.k8s.io/v1", t, name, namespace, loadClusterRoleBinding)
+  return await client.create("/apis/rbac.authorization.k8s.io/v1", t, namespace, loadClusterRoleBinding)
 
 type
   ClusterRoleBindingList* = object
@@ -330,34 +263,17 @@ proc load*(self: var ClusterRoleBindingList, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ClusterRoleBindingList, s: Stream) =
-  s.write("{")
-  var firstIteration = true
-  if not self.`apiVersion`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"apiVersion\":")
-    self.`apiVersion`.dump(s)
+proc dump*(self: ClusterRoleBindingList, s: JsonStream) =
+  s.objectStart()
+  s.name("apiVersion"); s.value("rbac.authorization.k8s.io/v1")
+  s.name("kind"); s.value("ClusterRoleBindingList")
   if not self.`items`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"items\":")
+    s.name("items")
     self.`items`.dump(s)
-  if not self.`kind`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"kind\":")
-    self.`kind`.dump(s)
   if not self.`metadata`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"metadata\":")
+    s.name("metadata")
     self.`metadata`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: ClusterRoleBindingList): bool =
   if not self.`apiVersion`.isEmpty: return false
@@ -406,40 +322,24 @@ proc load*(self: var PolicyRule, parser: var JsonParser) =
             load(self.`resourceNames`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: PolicyRule, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: PolicyRule, s: JsonStream) =
+  s.objectStart()
   if not self.`resources`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"resources\":")
+    s.name("resources")
     self.`resources`.dump(s)
   if not self.`apiGroups`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"apiGroups\":")
+    s.name("apiGroups")
     self.`apiGroups`.dump(s)
   if not self.`verbs`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"verbs\":")
+    s.name("verbs")
     self.`verbs`.dump(s)
   if not self.`nonResourceURLs`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"nonResourceURLs\":")
+    s.name("nonResourceURLs")
     self.`nonResourceURLs`.dump(s)
   if not self.`resourceNames`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"resourceNames\":")
+    s.name("resourceNames")
     self.`resourceNames`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: PolicyRule): bool =
   if not self.`resources`.isEmpty: return false
@@ -478,34 +378,17 @@ proc load*(self: var RoleBindingList, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: RoleBindingList, s: Stream) =
-  s.write("{")
-  var firstIteration = true
-  if not self.`apiVersion`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"apiVersion\":")
-    self.`apiVersion`.dump(s)
+proc dump*(self: RoleBindingList, s: JsonStream) =
+  s.objectStart()
+  s.name("apiVersion"); s.value("rbac.authorization.k8s.io/v1")
+  s.name("kind"); s.value("RoleBindingList")
   if not self.`items`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"items\":")
+    s.name("items")
     self.`items`.dump(s)
-  if not self.`kind`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"kind\":")
-    self.`kind`.dump(s)
   if not self.`metadata`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"metadata\":")
+    s.name("metadata")
     self.`metadata`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: RoleBindingList): bool =
   if not self.`apiVersion`.isEmpty: return false
@@ -551,34 +434,17 @@ proc load*(self: var Role, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: Role, s: Stream) =
-  s.write("{")
-  var firstIteration = true
-  if not self.`apiVersion`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"apiVersion\":")
-    self.`apiVersion`.dump(s)
+proc dump*(self: Role, s: JsonStream) =
+  s.objectStart()
+  s.name("apiVersion"); s.value("rbac.authorization.k8s.io/v1")
+  s.name("kind"); s.value("Role")
   if not self.`rules`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"rules\":")
+    s.name("rules")
     self.`rules`.dump(s)
-  if not self.`kind`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"kind\":")
-    self.`kind`.dump(s)
   if not self.`metadata`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"metadata\":")
+    s.name("metadata")
     self.`metadata`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: Role): bool =
   if not self.`apiVersion`.isEmpty: return false
@@ -596,9 +462,7 @@ proc get*(client: Client, t: typedesc[Role], name: string, namespace = "default"
   return await client.get("/apis/rbac.authorization.k8s.io/v1", t, name, namespace, loadRole)
 
 proc create*(client: Client, t: Role, namespace = "default"): Future[Role] {.async.}=
-  t.apiVersion = "/apis/rbac.authorization.k8s.io/v1"
-  t.kind = "Role"
-  return await client.get("/apis/rbac.authorization.k8s.io/v1", t, name, namespace, loadRole)
+  return await client.create("/apis/rbac.authorization.k8s.io/v1", t, namespace, loadRole)
 
 type
   AggregationRule* = object
@@ -620,16 +484,12 @@ proc load*(self: var AggregationRule, parser: var JsonParser) =
             load(self.`clusterRoleSelectors`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: AggregationRule, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: AggregationRule, s: JsonStream) =
+  s.objectStart()
   if not self.`clusterRoleSelectors`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"clusterRoleSelectors\":")
+    s.name("clusterRoleSelectors")
     self.`clusterRoleSelectors`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: AggregationRule): bool =
   if not self.`clusterRoleSelectors`.isEmpty: return false
@@ -667,40 +527,20 @@ proc load*(self: var ClusterRole, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ClusterRole, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: ClusterRole, s: JsonStream) =
+  s.objectStart()
+  s.name("apiVersion"); s.value("rbac.authorization.k8s.io/v1")
+  s.name("kind"); s.value("ClusterRole")
   if not self.`aggregationRule`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"aggregationRule\":")
+    s.name("aggregationRule")
     self.`aggregationRule`.dump(s)
-  if not self.`apiVersion`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"apiVersion\":")
-    self.`apiVersion`.dump(s)
   if not self.`rules`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"rules\":")
+    s.name("rules")
     self.`rules`.dump(s)
-  if not self.`kind`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"kind\":")
-    self.`kind`.dump(s)
   if not self.`metadata`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"metadata\":")
+    s.name("metadata")
     self.`metadata`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: ClusterRole): bool =
   if not self.`aggregationRule`.isEmpty: return false
@@ -719,9 +559,7 @@ proc get*(client: Client, t: typedesc[ClusterRole], name: string, namespace = "d
   return await client.get("/apis/rbac.authorization.k8s.io/v1", t, name, namespace, loadClusterRole)
 
 proc create*(client: Client, t: ClusterRole, namespace = "default"): Future[ClusterRole] {.async.}=
-  t.apiVersion = "/apis/rbac.authorization.k8s.io/v1"
-  t.kind = "ClusterRole"
-  return await client.get("/apis/rbac.authorization.k8s.io/v1", t, name, namespace, loadClusterRole)
+  return await client.create("/apis/rbac.authorization.k8s.io/v1", t, namespace, loadClusterRole)
 
 type
   ClusterRoleList* = object
@@ -752,34 +590,17 @@ proc load*(self: var ClusterRoleList, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ClusterRoleList, s: Stream) =
-  s.write("{")
-  var firstIteration = true
-  if not self.`apiVersion`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"apiVersion\":")
-    self.`apiVersion`.dump(s)
+proc dump*(self: ClusterRoleList, s: JsonStream) =
+  s.objectStart()
+  s.name("apiVersion"); s.value("rbac.authorization.k8s.io/v1")
+  s.name("kind"); s.value("ClusterRoleList")
   if not self.`items`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"items\":")
+    s.name("items")
     self.`items`.dump(s)
-  if not self.`kind`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"kind\":")
-    self.`kind`.dump(s)
   if not self.`metadata`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"metadata\":")
+    s.name("metadata")
     self.`metadata`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: ClusterRoleList): bool =
   if not self.`apiVersion`.isEmpty: return false
@@ -825,34 +646,17 @@ proc load*(self: var RoleList, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: RoleList, s: Stream) =
-  s.write("{")
-  var firstIteration = true
-  if not self.`apiVersion`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"apiVersion\":")
-    self.`apiVersion`.dump(s)
+proc dump*(self: RoleList, s: JsonStream) =
+  s.objectStart()
+  s.name("apiVersion"); s.value("rbac.authorization.k8s.io/v1")
+  s.name("kind"); s.value("RoleList")
   if not self.`items`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"items\":")
+    s.name("items")
     self.`items`.dump(s)
-  if not self.`kind`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"kind\":")
-    self.`kind`.dump(s)
   if not self.`metadata`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"metadata\":")
+    s.name("metadata")
     self.`metadata`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: RoleList): bool =
   if not self.`apiVersion`.isEmpty: return false

@@ -1,7 +1,7 @@
 import ../client
 import ../base_types
 import parsejson
-import streams
+import ../jsonstream
 import io_k8s_api_batch_v1
 import io_k8s_apimachinery_pkg_apis_meta_v1
 import io_k8s_api_core_v1
@@ -30,22 +30,15 @@ proc load*(self: var JobTemplateSpec, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: JobTemplateSpec, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: JobTemplateSpec, s: JsonStream) =
+  s.objectStart()
   if not self.`spec`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"spec\":")
+    s.name("spec")
     self.`spec`.dump(s)
   if not self.`metadata`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"metadata\":")
+    s.name("metadata")
     self.`metadata`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: JobTemplateSpec): bool =
   if not self.`spec`.isEmpty: return false
@@ -90,52 +83,30 @@ proc load*(self: var CronJobSpec, parser: var JsonParser) =
             load(self.`startingDeadlineSeconds`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: CronJobSpec, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: CronJobSpec, s: JsonStream) =
+  s.objectStart()
   if not self.`failedJobsHistoryLimit`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"failedJobsHistoryLimit\":")
+    s.name("failedJobsHistoryLimit")
     self.`failedJobsHistoryLimit`.dump(s)
   if not self.`suspend`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"suspend\":")
+    s.name("suspend")
     self.`suspend`.dump(s)
   if not self.`concurrencyPolicy`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"concurrencyPolicy\":")
+    s.name("concurrencyPolicy")
     self.`concurrencyPolicy`.dump(s)
   if not self.`jobTemplate`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"jobTemplate\":")
+    s.name("jobTemplate")
     self.`jobTemplate`.dump(s)
   if not self.`successfulJobsHistoryLimit`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"successfulJobsHistoryLimit\":")
+    s.name("successfulJobsHistoryLimit")
     self.`successfulJobsHistoryLimit`.dump(s)
   if not self.`schedule`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"schedule\":")
+    s.name("schedule")
     self.`schedule`.dump(s)
   if not self.`startingDeadlineSeconds`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"startingDeadlineSeconds\":")
+    s.name("startingDeadlineSeconds")
     self.`startingDeadlineSeconds`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: CronJobSpec): bool =
   if not self.`failedJobsHistoryLimit`.isEmpty: return false
@@ -170,22 +141,15 @@ proc load*(self: var CronJobStatus, parser: var JsonParser) =
             load(self.`active`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: CronJobStatus, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: CronJobStatus, s: JsonStream) =
+  s.objectStart()
   if not self.`lastScheduleTime`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"lastScheduleTime\":")
+    s.name("lastScheduleTime")
     self.`lastScheduleTime`.dump(s)
   if not self.`active`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"active\":")
+    s.name("active")
     self.`active`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: CronJobStatus): bool =
   if not self.`lastScheduleTime`.isEmpty: return false
@@ -224,40 +188,20 @@ proc load*(self: var CronJob, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: CronJob, s: Stream) =
-  s.write("{")
-  var firstIteration = true
-  if not self.`apiVersion`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"apiVersion\":")
-    self.`apiVersion`.dump(s)
+proc dump*(self: CronJob, s: JsonStream) =
+  s.objectStart()
+  s.name("apiVersion"); s.value("batch/v1beta1")
+  s.name("kind"); s.value("CronJob")
   if not self.`spec`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"spec\":")
+    s.name("spec")
     self.`spec`.dump(s)
   if not self.`status`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"status\":")
+    s.name("status")
     self.`status`.dump(s)
-  if not self.`kind`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"kind\":")
-    self.`kind`.dump(s)
   if not self.`metadata`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"metadata\":")
+    s.name("metadata")
     self.`metadata`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: CronJob): bool =
   if not self.`apiVersion`.isEmpty: return false
@@ -276,9 +220,7 @@ proc get*(client: Client, t: typedesc[CronJob], name: string, namespace = "defau
   return await client.get("/apis/batch/v1beta1", t, name, namespace, loadCronJob)
 
 proc create*(client: Client, t: CronJob, namespace = "default"): Future[CronJob] {.async.}=
-  t.apiVersion = "/apis/batch/v1beta1"
-  t.kind = "CronJob"
-  return await client.get("/apis/batch/v1beta1", t, name, namespace, loadCronJob)
+  return await client.create("/apis/batch/v1beta1", t, namespace, loadCronJob)
 
 type
   CronJobList* = object
@@ -309,34 +251,17 @@ proc load*(self: var CronJobList, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: CronJobList, s: Stream) =
-  s.write("{")
-  var firstIteration = true
-  if not self.`apiVersion`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"apiVersion\":")
-    self.`apiVersion`.dump(s)
+proc dump*(self: CronJobList, s: JsonStream) =
+  s.objectStart()
+  s.name("apiVersion"); s.value("batch/v1beta1")
+  s.name("kind"); s.value("CronJobList")
   if not self.`items`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"items\":")
+    s.name("items")
     self.`items`.dump(s)
-  if not self.`kind`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"kind\":")
-    self.`kind`.dump(s)
   if not self.`metadata`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"metadata\":")
+    s.name("metadata")
     self.`metadata`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: CronJobList): bool =
   if not self.`apiVersion`.isEmpty: return false

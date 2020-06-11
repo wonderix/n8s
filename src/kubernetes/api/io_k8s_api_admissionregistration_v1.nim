@@ -1,7 +1,7 @@
 import ../client
 import ../base_types
 import parsejson
-import streams
+import ../jsonstream
 import io_k8s_apimachinery_pkg_apis_meta_v1
 import asyncdispatch
 
@@ -34,34 +34,21 @@ proc load*(self: var ServiceReference, parser: var JsonParser) =
             load(self.`name`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ServiceReference, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: ServiceReference, s: JsonStream) =
+  s.objectStart()
   if not self.`path`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"path\":")
+    s.name("path")
     self.`path`.dump(s)
   if not self.`namespace`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"namespace\":")
+    s.name("namespace")
     self.`namespace`.dump(s)
   if not self.`port`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"port\":")
+    s.name("port")
     self.`port`.dump(s)
   if not self.`name`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"name\":")
+    s.name("name")
     self.`name`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: ServiceReference): bool =
   if not self.`path`.isEmpty: return false
@@ -96,28 +83,18 @@ proc load*(self: var WebhookClientConfig, parser: var JsonParser) =
             load(self.`service`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: WebhookClientConfig, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: WebhookClientConfig, s: JsonStream) =
+  s.objectStart()
   if not self.`caBundle`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"caBundle\":")
+    s.name("caBundle")
     self.`caBundle`.dump(s)
   if not self.`url`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"url\":")
+    s.name("url")
     self.`url`.dump(s)
   if not self.`service`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"service\":")
+    s.name("service")
     self.`service`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: WebhookClientConfig): bool =
   if not self.`caBundle`.isEmpty: return false
@@ -157,40 +134,24 @@ proc load*(self: var RuleWithOperations, parser: var JsonParser) =
             load(self.`scope`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: RuleWithOperations, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: RuleWithOperations, s: JsonStream) =
+  s.objectStart()
   if not self.`operations`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"operations\":")
+    s.name("operations")
     self.`operations`.dump(s)
   if not self.`apiVersions`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"apiVersions\":")
+    s.name("apiVersions")
     self.`apiVersions`.dump(s)
   if not self.`resources`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"resources\":")
+    s.name("resources")
     self.`resources`.dump(s)
   if not self.`apiGroups`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"apiGroups\":")
+    s.name("apiGroups")
     self.`apiGroups`.dump(s)
   if not self.`scope`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"scope\":")
+    s.name("scope")
     self.`scope`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: RuleWithOperations): bool =
   if not self.`operations`.isEmpty: return false
@@ -250,76 +211,42 @@ proc load*(self: var MutatingWebhook, parser: var JsonParser) =
             load(self.`reinvocationPolicy`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: MutatingWebhook, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: MutatingWebhook, s: JsonStream) =
+  s.objectStart()
   if not self.`objectSelector`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"objectSelector\":")
+    s.name("objectSelector")
     self.`objectSelector`.dump(s)
   if not self.`clientConfig`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"clientConfig\":")
+    s.name("clientConfig")
     self.`clientConfig`.dump(s)
   if not self.`timeoutSeconds`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"timeoutSeconds\":")
+    s.name("timeoutSeconds")
     self.`timeoutSeconds`.dump(s)
   if not self.`rules`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"rules\":")
+    s.name("rules")
     self.`rules`.dump(s)
   if not self.`admissionReviewVersions`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"admissionReviewVersions\":")
+    s.name("admissionReviewVersions")
     self.`admissionReviewVersions`.dump(s)
   if not self.`namespaceSelector`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"namespaceSelector\":")
+    s.name("namespaceSelector")
     self.`namespaceSelector`.dump(s)
   if not self.`matchPolicy`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"matchPolicy\":")
+    s.name("matchPolicy")
     self.`matchPolicy`.dump(s)
   if not self.`name`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"name\":")
+    s.name("name")
     self.`name`.dump(s)
   if not self.`failurePolicy`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"failurePolicy\":")
+    s.name("failurePolicy")
     self.`failurePolicy`.dump(s)
   if not self.`sideEffects`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"sideEffects\":")
+    s.name("sideEffects")
     self.`sideEffects`.dump(s)
   if not self.`reinvocationPolicy`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"reinvocationPolicy\":")
+    s.name("reinvocationPolicy")
     self.`reinvocationPolicy`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: MutatingWebhook): bool =
   if not self.`objectSelector`.isEmpty: return false
@@ -364,34 +291,17 @@ proc load*(self: var MutatingWebhookConfiguration, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: MutatingWebhookConfiguration, s: Stream) =
-  s.write("{")
-  var firstIteration = true
-  if not self.`apiVersion`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"apiVersion\":")
-    self.`apiVersion`.dump(s)
+proc dump*(self: MutatingWebhookConfiguration, s: JsonStream) =
+  s.objectStart()
+  s.name("apiVersion"); s.value("admissionregistration.k8s.io/v1")
+  s.name("kind"); s.value("MutatingWebhookConfiguration")
   if not self.`webhooks`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"webhooks\":")
+    s.name("webhooks")
     self.`webhooks`.dump(s)
-  if not self.`kind`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"kind\":")
-    self.`kind`.dump(s)
   if not self.`metadata`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"metadata\":")
+    s.name("metadata")
     self.`metadata`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: MutatingWebhookConfiguration): bool =
   if not self.`apiVersion`.isEmpty: return false
@@ -409,9 +319,7 @@ proc get*(client: Client, t: typedesc[MutatingWebhookConfiguration], name: strin
   return await client.get("/apis/admissionregistration.k8s.io/v1", t, name, namespace, loadMutatingWebhookConfiguration)
 
 proc create*(client: Client, t: MutatingWebhookConfiguration, namespace = "default"): Future[MutatingWebhookConfiguration] {.async.}=
-  t.apiVersion = "/apis/admissionregistration.k8s.io/v1"
-  t.kind = "MutatingWebhookConfiguration"
-  return await client.get("/apis/admissionregistration.k8s.io/v1", t, name, namespace, loadMutatingWebhookConfiguration)
+  return await client.create("/apis/admissionregistration.k8s.io/v1", t, namespace, loadMutatingWebhookConfiguration)
 
 type
   MutatingWebhookConfigurationList* = object
@@ -442,34 +350,17 @@ proc load*(self: var MutatingWebhookConfigurationList, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: MutatingWebhookConfigurationList, s: Stream) =
-  s.write("{")
-  var firstIteration = true
-  if not self.`apiVersion`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"apiVersion\":")
-    self.`apiVersion`.dump(s)
+proc dump*(self: MutatingWebhookConfigurationList, s: JsonStream) =
+  s.objectStart()
+  s.name("apiVersion"); s.value("admissionregistration.k8s.io/v1")
+  s.name("kind"); s.value("MutatingWebhookConfigurationList")
   if not self.`items`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"items\":")
+    s.name("items")
     self.`items`.dump(s)
-  if not self.`kind`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"kind\":")
-    self.`kind`.dump(s)
   if not self.`metadata`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"metadata\":")
+    s.name("metadata")
     self.`metadata`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: MutatingWebhookConfigurationList): bool =
   if not self.`apiVersion`.isEmpty: return false
@@ -533,70 +424,39 @@ proc load*(self: var ValidatingWebhook, parser: var JsonParser) =
             load(self.`sideEffects`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ValidatingWebhook, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: ValidatingWebhook, s: JsonStream) =
+  s.objectStart()
   if not self.`objectSelector`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"objectSelector\":")
+    s.name("objectSelector")
     self.`objectSelector`.dump(s)
   if not self.`clientConfig`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"clientConfig\":")
+    s.name("clientConfig")
     self.`clientConfig`.dump(s)
   if not self.`timeoutSeconds`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"timeoutSeconds\":")
+    s.name("timeoutSeconds")
     self.`timeoutSeconds`.dump(s)
   if not self.`rules`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"rules\":")
+    s.name("rules")
     self.`rules`.dump(s)
   if not self.`admissionReviewVersions`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"admissionReviewVersions\":")
+    s.name("admissionReviewVersions")
     self.`admissionReviewVersions`.dump(s)
   if not self.`namespaceSelector`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"namespaceSelector\":")
+    s.name("namespaceSelector")
     self.`namespaceSelector`.dump(s)
   if not self.`matchPolicy`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"matchPolicy\":")
+    s.name("matchPolicy")
     self.`matchPolicy`.dump(s)
   if not self.`name`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"name\":")
+    s.name("name")
     self.`name`.dump(s)
   if not self.`failurePolicy`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"failurePolicy\":")
+    s.name("failurePolicy")
     self.`failurePolicy`.dump(s)
   if not self.`sideEffects`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"sideEffects\":")
+    s.name("sideEffects")
     self.`sideEffects`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: ValidatingWebhook): bool =
   if not self.`objectSelector`.isEmpty: return false
@@ -640,34 +500,17 @@ proc load*(self: var ValidatingWebhookConfiguration, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ValidatingWebhookConfiguration, s: Stream) =
-  s.write("{")
-  var firstIteration = true
-  if not self.`apiVersion`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"apiVersion\":")
-    self.`apiVersion`.dump(s)
+proc dump*(self: ValidatingWebhookConfiguration, s: JsonStream) =
+  s.objectStart()
+  s.name("apiVersion"); s.value("admissionregistration.k8s.io/v1")
+  s.name("kind"); s.value("ValidatingWebhookConfiguration")
   if not self.`webhooks`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"webhooks\":")
+    s.name("webhooks")
     self.`webhooks`.dump(s)
-  if not self.`kind`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"kind\":")
-    self.`kind`.dump(s)
   if not self.`metadata`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"metadata\":")
+    s.name("metadata")
     self.`metadata`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: ValidatingWebhookConfiguration): bool =
   if not self.`apiVersion`.isEmpty: return false
@@ -685,9 +528,7 @@ proc get*(client: Client, t: typedesc[ValidatingWebhookConfiguration], name: str
   return await client.get("/apis/admissionregistration.k8s.io/v1", t, name, namespace, loadValidatingWebhookConfiguration)
 
 proc create*(client: Client, t: ValidatingWebhookConfiguration, namespace = "default"): Future[ValidatingWebhookConfiguration] {.async.}=
-  t.apiVersion = "/apis/admissionregistration.k8s.io/v1"
-  t.kind = "ValidatingWebhookConfiguration"
-  return await client.get("/apis/admissionregistration.k8s.io/v1", t, name, namespace, loadValidatingWebhookConfiguration)
+  return await client.create("/apis/admissionregistration.k8s.io/v1", t, namespace, loadValidatingWebhookConfiguration)
 
 type
   ValidatingWebhookConfigurationList* = object
@@ -718,34 +559,17 @@ proc load*(self: var ValidatingWebhookConfigurationList, parser: var JsonParser)
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ValidatingWebhookConfigurationList, s: Stream) =
-  s.write("{")
-  var firstIteration = true
-  if not self.`apiVersion`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"apiVersion\":")
-    self.`apiVersion`.dump(s)
+proc dump*(self: ValidatingWebhookConfigurationList, s: JsonStream) =
+  s.objectStart()
+  s.name("apiVersion"); s.value("admissionregistration.k8s.io/v1")
+  s.name("kind"); s.value("ValidatingWebhookConfigurationList")
   if not self.`items`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"items\":")
+    s.name("items")
     self.`items`.dump(s)
-  if not self.`kind`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"kind\":")
-    self.`kind`.dump(s)
   if not self.`metadata`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"metadata\":")
+    s.name("metadata")
     self.`metadata`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: ValidatingWebhookConfigurationList): bool =
   if not self.`apiVersion`.isEmpty: return false

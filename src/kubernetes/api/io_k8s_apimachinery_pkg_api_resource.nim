@@ -1,7 +1,7 @@
 import ../client
 import ../base_types
 import parsejson
-import streams
+import ../jsonstream
 
 type
   Quantity* = distinct string
@@ -9,7 +9,7 @@ type
 proc load*(self: var Quantity, parser: var JsonParser) =
   load(string(self),parser)
 
-proc dump*(self: Quantity, s: Stream) =
+proc dump*(self: Quantity, s: JsonStream) =
   dump(string(self),s)
 
 proc isEmpty*(self: Quantity): bool = string(self).isEmpty

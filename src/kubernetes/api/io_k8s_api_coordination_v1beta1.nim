@@ -1,7 +1,7 @@
 import ../client
 import ../base_types
 import parsejson
-import streams
+import ../jsonstream
 import io_k8s_apimachinery_pkg_apis_meta_v1
 import asyncdispatch
 
@@ -37,40 +37,24 @@ proc load*(self: var LeaseSpec, parser: var JsonParser) =
             load(self.`holderIdentity`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: LeaseSpec, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: LeaseSpec, s: JsonStream) =
+  s.objectStart()
   if not self.`acquireTime`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"acquireTime\":")
+    s.name("acquireTime")
     self.`acquireTime`.dump(s)
   if not self.`leaseDurationSeconds`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"leaseDurationSeconds\":")
+    s.name("leaseDurationSeconds")
     self.`leaseDurationSeconds`.dump(s)
   if not self.`renewTime`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"renewTime\":")
+    s.name("renewTime")
     self.`renewTime`.dump(s)
   if not self.`leaseTransitions`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"leaseTransitions\":")
+    s.name("leaseTransitions")
     self.`leaseTransitions`.dump(s)
   if not self.`holderIdentity`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"holderIdentity\":")
+    s.name("holderIdentity")
     self.`holderIdentity`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: LeaseSpec): bool =
   if not self.`acquireTime`.isEmpty: return false
@@ -109,34 +93,17 @@ proc load*(self: var Lease, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: Lease, s: Stream) =
-  s.write("{")
-  var firstIteration = true
-  if not self.`apiVersion`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"apiVersion\":")
-    self.`apiVersion`.dump(s)
+proc dump*(self: Lease, s: JsonStream) =
+  s.objectStart()
+  s.name("apiVersion"); s.value("coordination.k8s.io/v1beta1")
+  s.name("kind"); s.value("Lease")
   if not self.`spec`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"spec\":")
+    s.name("spec")
     self.`spec`.dump(s)
-  if not self.`kind`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"kind\":")
-    self.`kind`.dump(s)
   if not self.`metadata`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"metadata\":")
+    s.name("metadata")
     self.`metadata`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: Lease): bool =
   if not self.`apiVersion`.isEmpty: return false
@@ -154,9 +121,7 @@ proc get*(client: Client, t: typedesc[Lease], name: string, namespace = "default
   return await client.get("/apis/coordination.k8s.io/v1beta1", t, name, namespace, loadLease)
 
 proc create*(client: Client, t: Lease, namespace = "default"): Future[Lease] {.async.}=
-  t.apiVersion = "/apis/coordination.k8s.io/v1beta1"
-  t.kind = "Lease"
-  return await client.get("/apis/coordination.k8s.io/v1beta1", t, name, namespace, loadLease)
+  return await client.create("/apis/coordination.k8s.io/v1beta1", t, namespace, loadLease)
 
 type
   LeaseList* = object
@@ -187,34 +152,17 @@ proc load*(self: var LeaseList, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: LeaseList, s: Stream) =
-  s.write("{")
-  var firstIteration = true
-  if not self.`apiVersion`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"apiVersion\":")
-    self.`apiVersion`.dump(s)
+proc dump*(self: LeaseList, s: JsonStream) =
+  s.objectStart()
+  s.name("apiVersion"); s.value("coordination.k8s.io/v1beta1")
+  s.name("kind"); s.value("LeaseList")
   if not self.`items`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"items\":")
+    s.name("items")
     self.`items`.dump(s)
-  if not self.`kind`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"kind\":")
-    self.`kind`.dump(s)
   if not self.`metadata`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"metadata\":")
+    s.name("metadata")
     self.`metadata`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: LeaseList): bool =
   if not self.`apiVersion`.isEmpty: return false

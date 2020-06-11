@@ -1,7 +1,7 @@
 import ../client
 import ../base_types
 import parsejson
-import streams
+import ../jsonstream
 import io_k8s_apimachinery_pkg_apis_meta_v1
 import asyncdispatch
 import io_k8s_apimachinery_pkg_util_intstr
@@ -29,22 +29,15 @@ proc load*(self: var NetworkPolicyPort, parser: var JsonParser) =
             load(self.`port`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: NetworkPolicyPort, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: NetworkPolicyPort, s: JsonStream) =
+  s.objectStart()
   if not self.`protocol`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"protocol\":")
+    s.name("protocol")
     self.`protocol`.dump(s)
   if not self.`port`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"port\":")
+    s.name("port")
     self.`port`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: NetworkPolicyPort): bool =
   if not self.`protocol`.isEmpty: return false
@@ -74,22 +67,15 @@ proc load*(self: var IPBlock, parser: var JsonParser) =
             load(self.`cidr`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: IPBlock, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: IPBlock, s: JsonStream) =
+  s.objectStart()
   if not self.`except`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"except\":")
+    s.name("except")
     self.`except`.dump(s)
   if not self.`cidr`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"cidr\":")
+    s.name("cidr")
     self.`cidr`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: IPBlock): bool =
   if not self.`except`.isEmpty: return false
@@ -122,28 +108,18 @@ proc load*(self: var NetworkPolicyPeer, parser: var JsonParser) =
             load(self.`podSelector`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: NetworkPolicyPeer, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: NetworkPolicyPeer, s: JsonStream) =
+  s.objectStart()
   if not self.`ipBlock`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"ipBlock\":")
+    s.name("ipBlock")
     self.`ipBlock`.dump(s)
   if not self.`namespaceSelector`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"namespaceSelector\":")
+    s.name("namespaceSelector")
     self.`namespaceSelector`.dump(s)
   if not self.`podSelector`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"podSelector\":")
+    s.name("podSelector")
     self.`podSelector`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: NetworkPolicyPeer): bool =
   if not self.`ipBlock`.isEmpty: return false
@@ -174,22 +150,15 @@ proc load*(self: var NetworkPolicyEgressRule, parser: var JsonParser) =
             load(self.`to`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: NetworkPolicyEgressRule, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: NetworkPolicyEgressRule, s: JsonStream) =
+  s.objectStart()
   if not self.`ports`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"ports\":")
+    s.name("ports")
     self.`ports`.dump(s)
   if not self.`to`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"to\":")
+    s.name("to")
     self.`to`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: NetworkPolicyEgressRule): bool =
   if not self.`ports`.isEmpty: return false
@@ -219,22 +188,15 @@ proc load*(self: var NetworkPolicyIngressRule, parser: var JsonParser) =
             load(self.`ports`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: NetworkPolicyIngressRule, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: NetworkPolicyIngressRule, s: JsonStream) =
+  s.objectStart()
   if not self.`from`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"from\":")
+    s.name("from")
     self.`from`.dump(s)
   if not self.`ports`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"ports\":")
+    s.name("ports")
     self.`ports`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: NetworkPolicyIngressRule): bool =
   if not self.`from`.isEmpty: return false
@@ -270,34 +232,21 @@ proc load*(self: var NetworkPolicySpec, parser: var JsonParser) =
             load(self.`podSelector`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: NetworkPolicySpec, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: NetworkPolicySpec, s: JsonStream) =
+  s.objectStart()
   if not self.`policyTypes`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"policyTypes\":")
+    s.name("policyTypes")
     self.`policyTypes`.dump(s)
   if not self.`egress`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"egress\":")
+    s.name("egress")
     self.`egress`.dump(s)
   if not self.`ingress`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"ingress\":")
+    s.name("ingress")
     self.`ingress`.dump(s)
   if not self.`podSelector`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"podSelector\":")
+    s.name("podSelector")
     self.`podSelector`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: NetworkPolicySpec): bool =
   if not self.`policyTypes`.isEmpty: return false
@@ -335,34 +284,17 @@ proc load*(self: var NetworkPolicy, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: NetworkPolicy, s: Stream) =
-  s.write("{")
-  var firstIteration = true
-  if not self.`apiVersion`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"apiVersion\":")
-    self.`apiVersion`.dump(s)
+proc dump*(self: NetworkPolicy, s: JsonStream) =
+  s.objectStart()
+  s.name("apiVersion"); s.value("networking.k8s.io/v1")
+  s.name("kind"); s.value("NetworkPolicy")
   if not self.`spec`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"spec\":")
+    s.name("spec")
     self.`spec`.dump(s)
-  if not self.`kind`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"kind\":")
-    self.`kind`.dump(s)
   if not self.`metadata`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"metadata\":")
+    s.name("metadata")
     self.`metadata`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: NetworkPolicy): bool =
   if not self.`apiVersion`.isEmpty: return false
@@ -380,9 +312,7 @@ proc get*(client: Client, t: typedesc[NetworkPolicy], name: string, namespace = 
   return await client.get("/apis/networking.k8s.io/v1", t, name, namespace, loadNetworkPolicy)
 
 proc create*(client: Client, t: NetworkPolicy, namespace = "default"): Future[NetworkPolicy] {.async.}=
-  t.apiVersion = "/apis/networking.k8s.io/v1"
-  t.kind = "NetworkPolicy"
-  return await client.get("/apis/networking.k8s.io/v1", t, name, namespace, loadNetworkPolicy)
+  return await client.create("/apis/networking.k8s.io/v1", t, namespace, loadNetworkPolicy)
 
 type
   NetworkPolicyList* = object
@@ -413,34 +343,17 @@ proc load*(self: var NetworkPolicyList, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: NetworkPolicyList, s: Stream) =
-  s.write("{")
-  var firstIteration = true
-  if not self.`apiVersion`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"apiVersion\":")
-    self.`apiVersion`.dump(s)
+proc dump*(self: NetworkPolicyList, s: JsonStream) =
+  s.objectStart()
+  s.name("apiVersion"); s.value("networking.k8s.io/v1")
+  s.name("kind"); s.value("NetworkPolicyList")
   if not self.`items`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"items\":")
+    s.name("items")
     self.`items`.dump(s)
-  if not self.`kind`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"kind\":")
-    self.`kind`.dump(s)
   if not self.`metadata`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"metadata\":")
+    s.name("metadata")
     self.`metadata`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: NetworkPolicyList): bool =
   if not self.`apiVersion`.isEmpty: return false

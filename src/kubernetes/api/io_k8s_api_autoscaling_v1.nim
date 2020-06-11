@@ -1,7 +1,7 @@
 import ../client
 import ../base_types
 import parsejson
-import streams
+import ../jsonstream
 import io_k8s_apimachinery_pkg_apis_meta_v1
 import asyncdispatch
 
@@ -31,28 +31,18 @@ proc load*(self: var CrossVersionObjectReference, parser: var JsonParser) =
             load(self.`kind`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: CrossVersionObjectReference, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: CrossVersionObjectReference, s: JsonStream) =
+  s.objectStart()
   if not self.`apiVersion`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"apiVersion\":")
+    s.name("apiVersion")
     self.`apiVersion`.dump(s)
   if not self.`name`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"name\":")
+    s.name("name")
     self.`name`.dump(s)
   if not self.`kind`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"kind\":")
+    s.name("kind")
     self.`kind`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: CrossVersionObjectReference): bool =
   if not self.`apiVersion`.isEmpty: return false
@@ -89,34 +79,21 @@ proc load*(self: var HorizontalPodAutoscalerSpec, parser: var JsonParser) =
             load(self.`minReplicas`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: HorizontalPodAutoscalerSpec, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: HorizontalPodAutoscalerSpec, s: JsonStream) =
+  s.objectStart()
   if not self.`maxReplicas`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"maxReplicas\":")
+    s.name("maxReplicas")
     self.`maxReplicas`.dump(s)
   if not self.`targetCPUUtilizationPercentage`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"targetCPUUtilizationPercentage\":")
+    s.name("targetCPUUtilizationPercentage")
     self.`targetCPUUtilizationPercentage`.dump(s)
   if not self.`scaleTargetRef`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"scaleTargetRef\":")
+    s.name("scaleTargetRef")
     self.`scaleTargetRef`.dump(s)
   if not self.`minReplicas`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"minReplicas\":")
+    s.name("minReplicas")
     self.`minReplicas`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: HorizontalPodAutoscalerSpec): bool =
   if not self.`maxReplicas`.isEmpty: return false
@@ -157,40 +134,24 @@ proc load*(self: var HorizontalPodAutoscalerStatus, parser: var JsonParser) =
             load(self.`currentReplicas`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: HorizontalPodAutoscalerStatus, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: HorizontalPodAutoscalerStatus, s: JsonStream) =
+  s.objectStart()
   if not self.`desiredReplicas`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"desiredReplicas\":")
+    s.name("desiredReplicas")
     self.`desiredReplicas`.dump(s)
   if not self.`observedGeneration`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"observedGeneration\":")
+    s.name("observedGeneration")
     self.`observedGeneration`.dump(s)
   if not self.`lastScaleTime`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"lastScaleTime\":")
+    s.name("lastScaleTime")
     self.`lastScaleTime`.dump(s)
   if not self.`currentCPUUtilizationPercentage`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"currentCPUUtilizationPercentage\":")
+    s.name("currentCPUUtilizationPercentage")
     self.`currentCPUUtilizationPercentage`.dump(s)
   if not self.`currentReplicas`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"currentReplicas\":")
+    s.name("currentReplicas")
     self.`currentReplicas`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: HorizontalPodAutoscalerStatus): bool =
   if not self.`desiredReplicas`.isEmpty: return false
@@ -232,40 +193,20 @@ proc load*(self: var HorizontalPodAutoscaler, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: HorizontalPodAutoscaler, s: Stream) =
-  s.write("{")
-  var firstIteration = true
-  if not self.`apiVersion`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"apiVersion\":")
-    self.`apiVersion`.dump(s)
+proc dump*(self: HorizontalPodAutoscaler, s: JsonStream) =
+  s.objectStart()
+  s.name("apiVersion"); s.value("autoscaling/v1")
+  s.name("kind"); s.value("HorizontalPodAutoscaler")
   if not self.`spec`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"spec\":")
+    s.name("spec")
     self.`spec`.dump(s)
   if not self.`status`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"status\":")
+    s.name("status")
     self.`status`.dump(s)
-  if not self.`kind`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"kind\":")
-    self.`kind`.dump(s)
   if not self.`metadata`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"metadata\":")
+    s.name("metadata")
     self.`metadata`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: HorizontalPodAutoscaler): bool =
   if not self.`apiVersion`.isEmpty: return false
@@ -284,9 +225,7 @@ proc get*(client: Client, t: typedesc[HorizontalPodAutoscaler], name: string, na
   return await client.get("/apis/autoscaling/v1", t, name, namespace, loadHorizontalPodAutoscaler)
 
 proc create*(client: Client, t: HorizontalPodAutoscaler, namespace = "default"): Future[HorizontalPodAutoscaler] {.async.}=
-  t.apiVersion = "/apis/autoscaling/v1"
-  t.kind = "HorizontalPodAutoscaler"
-  return await client.get("/apis/autoscaling/v1", t, name, namespace, loadHorizontalPodAutoscaler)
+  return await client.create("/apis/autoscaling/v1", t, namespace, loadHorizontalPodAutoscaler)
 
 type
   ScaleSpec* = object
@@ -308,16 +247,12 @@ proc load*(self: var ScaleSpec, parser: var JsonParser) =
             load(self.`replicas`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ScaleSpec, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: ScaleSpec, s: JsonStream) =
+  s.objectStart()
   if not self.`replicas`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"replicas\":")
+    s.name("replicas")
     self.`replicas`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: ScaleSpec): bool =
   if not self.`replicas`.isEmpty: return false
@@ -346,22 +281,15 @@ proc load*(self: var ScaleStatus, parser: var JsonParser) =
             load(self.`selector`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ScaleStatus, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: ScaleStatus, s: JsonStream) =
+  s.objectStart()
   if not self.`replicas`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"replicas\":")
+    s.name("replicas")
     self.`replicas`.dump(s)
   if not self.`selector`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"selector\":")
+    s.name("selector")
     self.`selector`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: ScaleStatus): bool =
   if not self.`replicas`.isEmpty: return false
@@ -400,40 +328,20 @@ proc load*(self: var Scale, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: Scale, s: Stream) =
-  s.write("{")
-  var firstIteration = true
-  if not self.`apiVersion`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"apiVersion\":")
-    self.`apiVersion`.dump(s)
+proc dump*(self: Scale, s: JsonStream) =
+  s.objectStart()
+  s.name("apiVersion"); s.value("autoscaling/v1")
+  s.name("kind"); s.value("Scale")
   if not self.`spec`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"spec\":")
+    s.name("spec")
     self.`spec`.dump(s)
   if not self.`status`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"status\":")
+    s.name("status")
     self.`status`.dump(s)
-  if not self.`kind`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"kind\":")
-    self.`kind`.dump(s)
   if not self.`metadata`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"metadata\":")
+    s.name("metadata")
     self.`metadata`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: Scale): bool =
   if not self.`apiVersion`.isEmpty: return false
@@ -452,9 +360,7 @@ proc get*(client: Client, t: typedesc[Scale], name: string, namespace = "default
   return await client.get("/apis/autoscaling/v1", t, name, namespace, loadScale)
 
 proc create*(client: Client, t: Scale, namespace = "default"): Future[Scale] {.async.}=
-  t.apiVersion = "/apis/autoscaling/v1"
-  t.kind = "Scale"
-  return await client.get("/apis/autoscaling/v1", t, name, namespace, loadScale)
+  return await client.create("/apis/autoscaling/v1", t, namespace, loadScale)
 
 type
   HorizontalPodAutoscalerList* = object
@@ -485,34 +391,17 @@ proc load*(self: var HorizontalPodAutoscalerList, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: HorizontalPodAutoscalerList, s: Stream) =
-  s.write("{")
-  var firstIteration = true
-  if not self.`apiVersion`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"apiVersion\":")
-    self.`apiVersion`.dump(s)
+proc dump*(self: HorizontalPodAutoscalerList, s: JsonStream) =
+  s.objectStart()
+  s.name("apiVersion"); s.value("autoscaling/v1")
+  s.name("kind"); s.value("HorizontalPodAutoscalerList")
   if not self.`items`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"items\":")
+    s.name("items")
     self.`items`.dump(s)
-  if not self.`kind`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"kind\":")
-    self.`kind`.dump(s)
   if not self.`metadata`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"metadata\":")
+    s.name("metadata")
     self.`metadata`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: HorizontalPodAutoscalerList): bool =
   if not self.`apiVersion`.isEmpty: return false

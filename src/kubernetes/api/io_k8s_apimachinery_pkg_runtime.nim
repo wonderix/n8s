@@ -1,7 +1,7 @@
 import ../client
 import ../base_types
 import parsejson
-import streams
+import ../jsonstream
 import tables
 
 type
@@ -10,7 +10,7 @@ type
 proc load*(self: var RawExtension, parser: var JsonParser) =
   load(Table[string,string](self),parser)
 
-proc dump*(self: RawExtension, s: Stream) =
+proc dump*(self: RawExtension, s: JsonStream) =
   dump(Table[string,string](self),s)
 
 proc isEmpty*(self: RawExtension): bool = Table[string,string](self).isEmpty
@@ -35,16 +35,12 @@ proc load*(self: var RawExtension_v2, parser: var JsonParser) =
             load(self.`Raw`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: RawExtension_v2, s: Stream) =
-  s.write("{")
-  var firstIteration = true
+proc dump*(self: RawExtension_v2, s: JsonStream) =
+  s.objectStart()
   if not self.`Raw`.isEmpty:
-    if not firstIteration:
-      s.write(",")
-    firstIteration = false
-    s.write("\"Raw\":")
+    s.name("Raw")
     self.`Raw`.dump(s)
-  s.write("}")
+  s.objectEnd()
 
 proc isEmpty*(self: RawExtension_v2): bool =
   if not self.`Raw`.isEmpty: return false
