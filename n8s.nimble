@@ -2,8 +2,8 @@
 
 version       = "0.1.0"
 author        = "Ulrich Kramer"
-description   = "Kubernetes client"
-license       = "MIT"
+description   = "Nim Kubernetes client"
+license       = "Apache"
 srcDir        = "src"
 
 

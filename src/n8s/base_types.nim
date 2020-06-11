@@ -103,7 +103,7 @@ proc dump*(bytes:  ByteArray, s: JsonStream) = s.value(encode(string(bytes)))
 
 proc isEmpty*(bytes: ByteArray): bool = string(bytes).len == 0
 
-proc `==`*(x, y: ByteArray): bool = string(x) == string(x)
+proc `==`*(x, y: ByteArray): bool = string(x) == string(y)
 
 let nullDateTime = initDateTime(1,mJan,0,0,0,0,utc())
 

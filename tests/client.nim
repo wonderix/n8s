@@ -1,6 +1,6 @@
 import asyncdispatch
-import ../src/kubernetes
-import ../src/kubernetes/api/io_k8s_api_core_v1
+import ../src/n8s
+import ../src/n8s/api/io_k8s_api_core_v1
 import tables
 
 proc createSecret() {.async.} = 
@@ -11,13 +11,12 @@ proc createSecret() {.async.} =
   except NotFoundError:
     discard
 
-  let secretData = "test".ByteArray
   var secret: Secret
-  secret.data["test"] = secretData
+  secret.data["test"] = "test".ByteArray
   secret.metadata.name = "test"
 
   secret = await client.create(secret)
-  doAssert secret.data["test"] == secretData
+  doAssert secret.data["test"] == "test".ByteArray
   
   secret.data["test"] = "hello".ByteArray
   secret = await client.replace(secret)

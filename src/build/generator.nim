@@ -1,5 +1,5 @@
 import asyncdispatch
-import ../kubernetes/client
+import ../n8s/client
 import json
 import tables
 import options
