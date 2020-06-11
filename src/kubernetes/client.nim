@@ -57,6 +57,7 @@ proc create*[T](client: Client, groupVersion: string, t: T, namespace: string, l
   let path = groupVersion & "/namespaces/" & namespace & "/" & ($(typedesc[T])).toLowerAscii() & "s"
   let stream = newStringStream()
   t.dump(newJsonStream(stream))
+  stream.setPosition(0)
   return loadJson(await client.create(path,stream.readAll()),path,load)
 
 proc apiResources*(client: Client): Future[seq[APIResource]] {.async.}=

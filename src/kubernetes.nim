@@ -5,6 +5,8 @@
 import kubernetes/client
 import kubernetes/config
 import kubernetes/base_types
+import kubernetes/jsonstream
 export client
 export config
 export base_types
+export jsonstream

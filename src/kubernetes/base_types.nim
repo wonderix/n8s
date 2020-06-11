@@ -2,9 +2,11 @@ import yaml, base64, parsejson, times, tables, json, jsonstream
 
 type 
     ByteArray* = distinct string
+
     IntOrStringKind* = enum 
         iosString,
         iosInt
+
     IntOrString* = object
         case kind: IntOrStringKind
         of iosString:

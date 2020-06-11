@@ -2,10 +2,12 @@ import streams, json
 
 type
   JsonStream* = ref object
-   stream: Stream
+   stream: owned Stream
    commaRequired: bool
 
-proc newJsonStream*(stream: Stream): JsonStream = JsonStream(stream: stream, commaRequired: false)
+proc newJsonStream*(stream: owned Stream): JsonStream = JsonStream(stream: stream, commaRequired: false)
+
+proc newJsonStream*(file: File): JsonStream =  JsonStream(stream: newFileStream(file), commaRequired: false)
 
 proc objectStart*(j: JsonStream) =
   if j.commaRequired:
