@@ -13,7 +13,7 @@ type
             svalue: string
         of iosInt:
             ivalue: int
-
+    
 setTagUri(ByteArray, "!string")
 
 proc constructObject*( s: var YamlStream, c: ConstructionContext, result: var ByteArray)
@@ -38,6 +38,7 @@ proc dump*(v: string, s: JsonStream)=
   s.value(v)
 
 proc isEmpty*(value: string): bool =  value.len == 0
+
 
 proc load*(value: var int,parser: var JsonParser )=
   if parser.kind != jsonInt: raiseParseErr(parser,"int")
@@ -167,3 +168,79 @@ proc dump*[T](sequence: seq[T], s: JsonStream)=
   s.arrayEnd()
 
 proc isEmpty*[T](sequence: seq[T]): bool = sequence.len == 0
+
+proc load*(value: var JsonNode, parser: var JsonParser )=
+  case parser.kind
+    of jsonObjectStart:
+      parser.next
+      value = newJObject()
+      while true:
+        case parser.kind:
+          of jsonObjectEnd:
+            parser.next
+            return
+          of jsonString:
+            let key = parser.str
+            parser.next
+            var item: JsonNode
+            load(item, parser)
+            value.add(key,item)
+          else: raiseParseErr(parser,"string not " & $(parser.kind))
+    of jsonError, jsonObjectEnd, jsonArrayEnd:
+      raiseParseErr(parser,"error")
+    of jsonEof:
+      return
+    of jsonString:
+      value = newJString(parser.str)
+      parser.next
+    of jsonInt:
+      value = newJInt(parser.getInt())
+      parser.next
+    of jsonFloat:
+      value = newJFloat(parser.getFloat())
+      parser.next
+    of jsonTrue:
+      value = newJBool(true)
+      parser.next
+    of jsonFalse:
+      value = newJBool(false)
+      parser.next
+    of jsonNull:
+      value = newJNull()
+      parser.next
+    of jsonArrayStart:
+      parser.next
+      value = newJArray()
+      while true:
+        case parser.kind:
+          of jsonArrayEnd:
+            parser.next
+            return
+          else:
+            var item: JsonNode
+            load(item, parser)
+            value.add(item)
+
+
+proc dump*(v: JsonNode, s: JsonStream)=
+  case v.kind:
+    of JObject:
+      s.objectStart()
+      for name, field in  v.fields.pairs:
+        s.name(name)
+        field.dump(s)
+      s.objectEnd()
+    of JArray:
+      dump(v.elems,s)
+    of JInt:
+      dump(int(v.num),s)
+    of JBool:
+      dump(v.bval,s)
+    of JFloat:
+      dump(v.fnum,s)
+    of JString:
+      dump(v.str,s)
+    of JNull:
+      s.null()
+
+proc isEmpty*(value: JsonNode): bool =  value.len == 0

@@ -269,6 +269,11 @@ proc generateIntOrString(name: string, f: File) =
   f.writeLine("")
   f.writeLine("proc isEmpty*(self: ", name.typename, "): bool = base_types.IntOrString(self).isEmpty")
 
+proc generateRawExtension(name: string, f: File) =
+  f.writeLine("")
+  f.writeLine("type")
+  f.writeLine("  ", name.typename, "* = JsonNode")
+
 proc generateTypedef(definition: Definition, name: string, f: File) =
   f.writeLine("")
   f.writeLine("type")
@@ -284,21 +289,24 @@ proc generateTypedef(definition: Definition, name: string, f: File) =
   f.writeLine("proc isEmpty*(self: ", name.typename, "): bool = ",subtype,"(self).isEmpty")
 
 proc generate(definition: Definition, name: string, f: File) =
-  if definition.properties.isSome:
-    definition.generateType(name,f)
-    definition.generateLoad(name,f)
-    definition.generateDump(name,f)
-    definition.generateIsEmpty(name,f)
-
-    let apiPath = definition.apiPath
-    if apiPath.isSome:
-      definition.generateApi(name,apiPath.get,f)
-
-  else:
-    if name.typename == "IntOrString":
+  case name:
+    of "io.k8s.apimachinery.pkg.runtime.RawExtension_v2", "io.k8s.apimachinery.pkg.runtime.RawExtension":
+      generateRawExtension(name,f)
+    of "io.k8s.apimachinery.pkg.util.intstr.IntOrString":
       generateIntOrString(name,f)
     else:
-      definition.generateTypedef(name,f)
+      if definition.properties.isSome:
+        definition.generateType(name,f)
+        definition.generateLoad(name,f)
+        definition.generateDump(name,f)
+        definition.generateIsEmpty(name,f)
+
+        let apiPath = definition.apiPath
+        if apiPath.isSome:
+          definition.generateApi(name,apiPath.get,f)
+
+      else:
+        definition.generateTypedef(name,f)
 
 
 
@@ -308,17 +316,23 @@ proc fillReferences(name: string, definitions: Table[string,Definition], refs: v
   if not definitions.hasKey(name):
     imports.incl(name.modulename)
     return
-  let definition = definitions[name]
-  if definition.properties.isSome:
-    for propertyName, property in definition.properties.get.pairs:
-      property.extendedTypeSpec.nimImport(name.modulename,imports)
-  elif definition.`type`.isSome:
-    definition.extendedTypeSpec.nimImport(name.modulename,imports)
-  if definition.`x-kubernetes-group-version-kind`.isSome:
-    imports.incl("asyncdispatch")
-  for reference in definition.references:
-    if reference != name:
-      fillReferences(reference,definitions,refs,imports)
+  case name:
+    of "io.k8s.apimachinery.pkg.runtime.RawExtension_v2", "io.k8s.apimachinery.pkg.runtime.RawExtension":
+      imports.incl("json")
+    of "io.k8s.apimachinery.pkg.util.intstr.IntOrString":
+      discard
+    else:
+      let definition = definitions[name]
+      if definition.properties.isSome:
+        for propertyName, property in definition.properties.get.pairs:
+          property.extendedTypeSpec.nimImport(name.modulename,imports)
+      elif definition.`type`.isSome:
+        definition.extendedTypeSpec.nimImport(name.modulename,imports)
+      if definition.`x-kubernetes-group-version-kind`.isSome:
+        imports.incl("asyncdispatch")
+      for reference in definition.references:
+        if reference != name:
+          fillReferences(reference,definitions,refs,imports)
   refs.incl(name)
 
 
@@ -347,7 +361,7 @@ when isMainModule:
 
     let json = await client.openapi()
     let definitions = json["definitions"]
-    # writeFile("api.json",pretty(definitions))
+    #writeFile("api.json",pretty(definitions))
     let schema = to(definitions,Definitions)
     let modules = schema.toModules()
     for module in modules:

@@ -67,3 +67,10 @@ proc value*(j: JsonStream, v: bool) =
   else:
     j.stream.write("false")
   j.commaRequired = true
+
+proc null*(j: JsonStream) =
+  if j.commaRequired:
+    j.stream.write(",")
+  j.stream.write("null")
+  j.commaRequired = true
+ 

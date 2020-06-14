@@ -1,28 +1,44 @@
 import asyncdispatch
 import ../src/n8s
 import ../src/n8s/api/io_k8s_api_core_v1
+import ../src/n8s/api/io_k8s_api_apps_v1
 import tables
+import json
+import unittest
 
-proc createSecret() {.async.} = 
+suite "n8s client":
   let client = newClient()
 
-  try:
-    await client.delete(Secret,"test")
-  except NotFoundError:
-    discard
+  test "modify secret":
 
-  var secret: Secret
-  secret.data["test"] = "test".ByteArray
-  secret.metadata.name = "test"
+    proc testSecret() {.async.} = 
 
-  secret = await client.create(secret)
-  doAssert secret.data["test"] == "test".ByteArray
+      try:
+        await client.delete(Secret,"test")
+      except NotFoundError:
+        discard
+
+      var secret: Secret
+      secret.data["test"] = "test".ByteArray
+      secret.metadata.name = "test"
+
+      secret = await client.create(secret)
+      doAssert secret.data["test"] == "test".ByteArray
+      
+      secret.data["test"] = "hello".ByteArray
+      secret = await client.replace(secret)
+      doAssert secret.data["test"] == "hello".ByteArray
+
+      await client.delete(Secret,"test")
+
+    waitFor testSecret()
   
-  secret.data["test"] = "hello".ByteArray
-  secret = await client.replace(secret)
-  doAssert secret.data["test"] == "hello".ByteArray
+  test "RawExtension":
 
-  await client.delete(Secret,"test")
+    proc testRawExtension() {.async.} = 
+      let controllerRevisions = await client.list(ControllerRevision,namespace="kube-system")
+      doAssert controllerRevisions.len == 1
+      for controllerRevision in controllerRevisions:
+        doAssert controllerRevision.data["spec"].kind == JObject
 
-
-waitFor createSecret()
+    waitFor testRawExtension()
