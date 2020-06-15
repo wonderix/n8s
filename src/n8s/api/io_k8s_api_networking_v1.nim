@@ -318,6 +318,9 @@ proc delete*(client: Client, t: typedesc[NetworkPolicy], name: string, namespace
 proc replace*(client: Client, t: NetworkPolicy, namespace = "default"): Future[NetworkPolicy] {.async.}=
   return await client.replace("/apis/networking.k8s.io/v1", t, t.metadata.name, namespace, loadNetworkPolicy)
 
+proc watch*(client: Client, t: typedesc[NetworkPolicy], name: string, namespace = "default"): Future[FutureStream[NetworkPolicy]] {.async.}=
+  return await client.watch("/apis/networking.k8s.io/v1", t, name, namespace, loadNetworkPolicy)
+
 type
   NetworkPolicyList* = object
     `apiVersion`*: string

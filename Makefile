@@ -17,6 +17,7 @@ bin/generator: src/build/generator.nim $(wildcard src/n8s/*.nim)
 
 test:: tests/test.log
 tests/test.log: src/n8s/api/generated $(wildcard src/n8s/*.nim) $(wildcard tests/*.nim)
-	nim c -r -d:ssl tests/test.nim | tee tests/test.log
+	nim c -r -d:ssl tests/test.nim
+	touch tests/test.log
 	rm tests/test
 

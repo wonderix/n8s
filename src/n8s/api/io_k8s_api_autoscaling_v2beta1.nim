@@ -793,6 +793,9 @@ proc delete*(client: Client, t: typedesc[HorizontalPodAutoscaler], name: string,
 proc replace*(client: Client, t: HorizontalPodAutoscaler, namespace = "default"): Future[HorizontalPodAutoscaler] {.async.}=
   return await client.replace("/apis/autoscaling/v2beta1", t, t.metadata.name, namespace, loadHorizontalPodAutoscaler)
 
+proc watch*(client: Client, t: typedesc[HorizontalPodAutoscaler], name: string, namespace = "default"): Future[FutureStream[HorizontalPodAutoscaler]] {.async.}=
+  return await client.watch("/apis/autoscaling/v2beta1", t, name, namespace, loadHorizontalPodAutoscaler)
+
 type
   HorizontalPodAutoscalerList* = object
     `apiVersion`*: string

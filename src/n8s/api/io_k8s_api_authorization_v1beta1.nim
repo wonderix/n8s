@@ -305,6 +305,9 @@ proc delete*(client: Client, t: typedesc[SubjectAccessReview], name: string, nam
 proc replace*(client: Client, t: SubjectAccessReview, namespace = "default"): Future[SubjectAccessReview] {.async.}=
   return await client.replace("/apis/authorization.k8s.io/v1beta1", t, t.metadata.name, namespace, loadSubjectAccessReview)
 
+proc watch*(client: Client, t: typedesc[SubjectAccessReview], name: string, namespace = "default"): Future[FutureStream[SubjectAccessReview]] {.async.}=
+  return await client.watch("/apis/authorization.k8s.io/v1beta1", t, name, namespace, loadSubjectAccessReview)
+
 type
   SelfSubjectAccessReviewSpec* = object
     `resourceAttributes`*: ResourceAttributes
@@ -582,6 +585,9 @@ proc delete*(client: Client, t: typedesc[SelfSubjectRulesReview], name: string, 
 proc replace*(client: Client, t: SelfSubjectRulesReview, namespace = "default"): Future[SelfSubjectRulesReview] {.async.}=
   return await client.replace("/apis/authorization.k8s.io/v1beta1", t, t.metadata.name, namespace, loadSelfSubjectRulesReview)
 
+proc watch*(client: Client, t: typedesc[SelfSubjectRulesReview], name: string, namespace = "default"): Future[FutureStream[SelfSubjectRulesReview]] {.async.}=
+  return await client.watch("/apis/authorization.k8s.io/v1beta1", t, name, namespace, loadSelfSubjectRulesReview)
+
 type
   SelfSubjectAccessReview* = object
     `apiVersion`*: string
@@ -653,6 +659,9 @@ proc delete*(client: Client, t: typedesc[SelfSubjectAccessReview], name: string,
 proc replace*(client: Client, t: SelfSubjectAccessReview, namespace = "default"): Future[SelfSubjectAccessReview] {.async.}=
   return await client.replace("/apis/authorization.k8s.io/v1beta1", t, t.metadata.name, namespace, loadSelfSubjectAccessReview)
 
+proc watch*(client: Client, t: typedesc[SelfSubjectAccessReview], name: string, namespace = "default"): Future[FutureStream[SelfSubjectAccessReview]] {.async.}=
+  return await client.watch("/apis/authorization.k8s.io/v1beta1", t, name, namespace, loadSelfSubjectAccessReview)
+
 type
   LocalSubjectAccessReview* = object
     `apiVersion`*: string
@@ -723,3 +732,6 @@ proc delete*(client: Client, t: typedesc[LocalSubjectAccessReview], name: string
 
 proc replace*(client: Client, t: LocalSubjectAccessReview, namespace = "default"): Future[LocalSubjectAccessReview] {.async.}=
   return await client.replace("/apis/authorization.k8s.io/v1beta1", t, t.metadata.name, namespace, loadLocalSubjectAccessReview)
+
+proc watch*(client: Client, t: typedesc[LocalSubjectAccessReview], name: string, namespace = "default"): Future[FutureStream[LocalSubjectAccessReview]] {.async.}=
+  return await client.watch("/apis/authorization.k8s.io/v1beta1", t, name, namespace, loadLocalSubjectAccessReview)

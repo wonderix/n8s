@@ -129,6 +129,9 @@ proc delete*(client: Client, t: typedesc[Lease], name: string, namespace = "defa
 proc replace*(client: Client, t: Lease, namespace = "default"): Future[Lease] {.async.}=
   return await client.replace("/apis/coordination.k8s.io/v1beta1", t, t.metadata.name, namespace, loadLease)
 
+proc watch*(client: Client, t: typedesc[Lease], name: string, namespace = "default"): Future[FutureStream[Lease]] {.async.}=
+  return await client.watch("/apis/coordination.k8s.io/v1beta1", t, name, namespace, loadLease)
+
 type
   LeaseList* = object
     `apiVersion`*: string

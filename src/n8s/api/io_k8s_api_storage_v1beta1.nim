@@ -247,6 +247,9 @@ proc delete*(client: Client, t: typedesc[VolumeAttachment], name: string, namesp
 proc replace*(client: Client, t: VolumeAttachment, namespace = "default"): Future[VolumeAttachment] {.async.}=
   return await client.replace("/apis/storage.k8s.io/v1beta1", t, t.metadata.name, namespace, loadVolumeAttachment)
 
+proc watch*(client: Client, t: typedesc[VolumeAttachment], name: string, namespace = "default"): Future[FutureStream[VolumeAttachment]] {.async.}=
+  return await client.watch("/apis/storage.k8s.io/v1beta1", t, name, namespace, loadVolumeAttachment)
+
 type
   VolumeAttachmentList* = object
     `apiVersion`*: string
@@ -477,6 +480,9 @@ proc delete*(client: Client, t: typedesc[CSINode], name: string, namespace = "de
 proc replace*(client: Client, t: CSINode, namespace = "default"): Future[CSINode] {.async.}=
   return await client.replace("/apis/storage.k8s.io/v1beta1", t, t.metadata.name, namespace, loadCSINode)
 
+proc watch*(client: Client, t: typedesc[CSINode], name: string, namespace = "default"): Future[FutureStream[CSINode]] {.async.}=
+  return await client.watch("/apis/storage.k8s.io/v1beta1", t, name, namespace, loadCSINode)
+
 type
   CSIDriverSpec* = object
     `attachRequired`*: bool
@@ -585,6 +591,9 @@ proc delete*(client: Client, t: typedesc[CSIDriver], name: string, namespace = "
 
 proc replace*(client: Client, t: CSIDriver, namespace = "default"): Future[CSIDriver] {.async.}=
   return await client.replace("/apis/storage.k8s.io/v1beta1", t, t.metadata.name, namespace, loadCSIDriver)
+
+proc watch*(client: Client, t: typedesc[CSIDriver], name: string, namespace = "default"): Future[FutureStream[CSIDriver]] {.async.}=
+  return await client.watch("/apis/storage.k8s.io/v1beta1", t, name, namespace, loadCSIDriver)
 
 type
   CSIDriverList* = object
@@ -801,6 +810,9 @@ proc delete*(client: Client, t: typedesc[StorageClass], name: string, namespace 
 
 proc replace*(client: Client, t: StorageClass, namespace = "default"): Future[StorageClass] {.async.}=
   return await client.replace("/apis/storage.k8s.io/v1beta1", t, t.metadata.name, namespace, loadStorageClass)
+
+proc watch*(client: Client, t: typedesc[StorageClass], name: string, namespace = "default"): Future[FutureStream[StorageClass]] {.async.}=
+  return await client.watch("/apis/storage.k8s.io/v1beta1", t, name, namespace, loadStorageClass)
 
 type
   StorageClassList* = object

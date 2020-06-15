@@ -19,16 +19,21 @@ suite "n8s client":
         discard
 
       var secret: Secret
-      secret.data["test"] = "test".ByteArray
+      secret.data["test"] = "test"
       secret.metadata.name = "test"
 
       secret = await client.create(secret)
-      doAssert secret.data["test"] == "test".ByteArray
+      doAssert secret.data["test"] == "test"
       
-      secret.data["test"] = "hello".ByteArray
+      secret.data["test"] = "hello"
       secret = await client.replace(secret)
-      doAssert secret.data["test"] == "hello".ByteArray
+      doAssert secret.data["test"] == "hello"
 
+      let fs = await client.watch(Secret,"test")
+      # while not fs.finished():
+      echo await fs.read()
+      echo await fs.read()
+      
       await client.delete(Secret,"test")
 
     waitFor testSecret()

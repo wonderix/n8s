@@ -39,6 +39,7 @@ proc dump*(v: string, s: JsonStream)=
 
 proc isEmpty*(value: string): bool =  value.len == 0
 
+converter toByteArray*(x: string): ByteArray = x.ByteArray
 
 proc load*(value: var int,parser: var JsonParser )=
   if parser.kind != jsonInt: raiseParseErr(parser,"int")

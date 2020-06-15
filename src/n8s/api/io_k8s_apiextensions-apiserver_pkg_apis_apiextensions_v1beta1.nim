@@ -1120,6 +1120,9 @@ proc delete*(client: Client, t: typedesc[CustomResourceDefinition], name: string
 proc replace*(client: Client, t: CustomResourceDefinition, namespace = "default"): Future[CustomResourceDefinition] {.async.}=
   return await client.replace("/apis/apiextensions.k8s.io/v1beta1", t, t.metadata.name, namespace, loadCustomResourceDefinition)
 
+proc watch*(client: Client, t: typedesc[CustomResourceDefinition], name: string, namespace = "default"): Future[FutureStream[CustomResourceDefinition]] {.async.}=
+  return await client.watch("/apis/apiextensions.k8s.io/v1beta1", t, name, namespace, loadCustomResourceDefinition)
+
 type
   CustomResourceDefinitionList* = object
     `apiVersion`*: string

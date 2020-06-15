@@ -255,6 +255,9 @@ proc generateApi(definition: Definition, name: string, apiPath: string, f: File)
       f.writeLine("")
       f.writeLine("proc replace*(client: Client, t: ", name.typename, ", namespace = \"default\"): Future[", name.typename, "] {.async.}=")
       f.writeLine("  return await client.replace(\"" & apiPath & "\", t, t.metadata.name, namespace, load", name.typename, ")")
+      f.writeLine("")
+      f.writeLine("proc watch*(client: Client, t: typedesc[", name.typename, "], name: string, namespace = \"default\"): Future[FutureStream[", name.typename, "]] {.async.}=")
+      f.writeLine("  return await client.watch(\"" & apiPath & "\", t, name, namespace, load", name.typename, ")")
 
 proc generateIntOrString(name: string, f: File) =
   f.writeLine("")

@@ -321,6 +321,9 @@ proc delete*(client: Client, t: typedesc[MutatingWebhookConfiguration], name: st
 proc replace*(client: Client, t: MutatingWebhookConfiguration, namespace = "default"): Future[MutatingWebhookConfiguration] {.async.}=
   return await client.replace("/apis/admissionregistration.k8s.io/v1", t, t.metadata.name, namespace, loadMutatingWebhookConfiguration)
 
+proc watch*(client: Client, t: typedesc[MutatingWebhookConfiguration], name: string, namespace = "default"): Future[FutureStream[MutatingWebhookConfiguration]] {.async.}=
+  return await client.watch("/apis/admissionregistration.k8s.io/v1", t, name, namespace, loadMutatingWebhookConfiguration)
+
 type
   MutatingWebhookConfigurationList* = object
     `apiVersion`*: string
@@ -530,6 +533,9 @@ proc delete*(client: Client, t: typedesc[ValidatingWebhookConfiguration], name: 
 
 proc replace*(client: Client, t: ValidatingWebhookConfiguration, namespace = "default"): Future[ValidatingWebhookConfiguration] {.async.}=
   return await client.replace("/apis/admissionregistration.k8s.io/v1", t, t.metadata.name, namespace, loadValidatingWebhookConfiguration)
+
+proc watch*(client: Client, t: typedesc[ValidatingWebhookConfiguration], name: string, namespace = "default"): Future[FutureStream[ValidatingWebhookConfiguration]] {.async.}=
+  return await client.watch("/apis/admissionregistration.k8s.io/v1", t, name, namespace, loadValidatingWebhookConfiguration)
 
 type
   ValidatingWebhookConfigurationList* = object
