@@ -1,7 +1,7 @@
 import ../client
 import ../base_types
 import parsejson
-import ../jsonstream
+import ../jsonwriter
 import tables
 import io_k8s_apimachinery_pkg_apis_meta_v1
 import asyncdispatch
@@ -35,7 +35,7 @@ proc load*(self: var UserInfo, parser: var JsonParser) =
             load(self.`extra`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: UserInfo, s: JsonStream) =
+proc dump*(self: UserInfo, s: JsonWriter) =
   s.objectStart()
   if not self.`uid`.isEmpty:
     s.name("uid")
@@ -87,7 +87,7 @@ proc load*(self: var TokenReviewStatus, parser: var JsonParser) =
             load(self.`audiences`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: TokenReviewStatus, s: JsonStream) =
+proc dump*(self: TokenReviewStatus, s: JsonWriter) =
   s.objectStart()
   if not self.`user`.isEmpty:
     s.name("user")
@@ -133,7 +133,7 @@ proc load*(self: var TokenReviewSpec, parser: var JsonParser) =
             load(self.`audiences`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: TokenReviewSpec, s: JsonStream) =
+proc dump*(self: TokenReviewSpec, s: JsonWriter) =
   s.objectStart()
   if not self.`token`.isEmpty:
     s.name("token")
@@ -180,7 +180,7 @@ proc load*(self: var TokenReview, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: TokenReview, s: JsonStream) =
+proc dump*(self: TokenReview, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("authentication.k8s.io/v1beta1")
   s.name("kind"); s.value("TokenReview")

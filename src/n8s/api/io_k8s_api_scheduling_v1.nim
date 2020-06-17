@@ -1,7 +1,7 @@
 import ../client
 import ../base_types
 import parsejson
-import ../jsonstream
+import ../jsonwriter
 import io_k8s_apimachinery_pkg_apis_meta_v1
 import asyncdispatch
 
@@ -43,7 +43,7 @@ proc load*(self: var PriorityClass, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: PriorityClass, s: JsonStream) =
+proc dump*(self: PriorityClass, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("scheduling.k8s.io/v1")
   s.name("kind"); s.value("PriorityClass")
@@ -122,7 +122,7 @@ proc load*(self: var PriorityClassList, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: PriorityClassList, s: JsonStream) =
+proc dump*(self: PriorityClassList, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("scheduling.k8s.io/v1")
   s.name("kind"); s.value("PriorityClassList")

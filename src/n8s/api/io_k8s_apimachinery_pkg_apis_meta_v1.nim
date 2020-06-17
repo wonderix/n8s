@@ -1,7 +1,7 @@
 import ../client
 import ../base_types
 import parsejson
-import ../jsonstream
+import ../jsonwriter
 import asyncdispatch
 import tables
 import times
@@ -33,7 +33,7 @@ proc load*(self: var StatusCause, parser: var JsonParser) =
             load(self.`reason`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: StatusCause, s: JsonStream) =
+proc dump*(self: StatusCause, s: JsonWriter) =
   s.objectStart()
   if not self.`field`.isEmpty:
     s.name("field")
@@ -87,7 +87,7 @@ proc load*(self: var StatusDetails, parser: var JsonParser) =
             load(self.`kind`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: StatusDetails, s: JsonStream) =
+proc dump*(self: StatusDetails, s: JsonWriter) =
   s.objectStart()
   if not self.`uid`.isEmpty:
     s.name("uid")
@@ -141,7 +141,7 @@ proc load*(self: var Preconditions, parser: var JsonParser) =
             load(self.`resourceVersion`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: Preconditions, s: JsonStream) =
+proc dump*(self: Preconditions, s: JsonWriter) =
   s.objectStart()
   if not self.`uid`.isEmpty:
     s.name("uid")
@@ -179,7 +179,7 @@ proc load*(self: var ServerAddressByClientCIDR_v2, parser: var JsonParser) =
             load(self.`clientCIDR`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ServerAddressByClientCIDR_v2, s: JsonStream) =
+proc dump*(self: ServerAddressByClientCIDR_v2, s: JsonWriter) =
   s.objectStart()
   s.name("serverAddress")
   self.`serverAddress`.dump(s)
@@ -198,7 +198,7 @@ type
 proc load*(self: var Patch_v2, parser: var JsonParser) =
   load(string(self),parser)
 
-proc dump*(self: Patch_v2, s: JsonStream) =
+proc dump*(self: Patch_v2, s: JsonWriter) =
   dump(string(self),s)
 
 proc isEmpty*(self: Patch_v2): bool = string(self).isEmpty
@@ -223,7 +223,7 @@ proc load*(self: var Initializer, parser: var JsonParser) =
             load(self.`name`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: Initializer, s: JsonStream) =
+proc dump*(self: Initializer, s: JsonWriter) =
   s.objectStart()
   s.name("name")
   self.`name`.dump(s)
@@ -259,7 +259,7 @@ proc load*(self: var StatusCause_v2, parser: var JsonParser) =
             load(self.`reason`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: StatusCause_v2, s: JsonStream) =
+proc dump*(self: StatusCause_v2, s: JsonWriter) =
   s.objectStart()
   if not self.`field`.isEmpty:
     s.name("field")
@@ -313,7 +313,7 @@ proc load*(self: var StatusDetails_v2, parser: var JsonParser) =
             load(self.`kind`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: StatusDetails_v2, s: JsonStream) =
+proc dump*(self: StatusDetails_v2, s: JsonWriter) =
   s.objectStart()
   if not self.`uid`.isEmpty:
     s.name("uid")
@@ -370,7 +370,7 @@ proc load*(self: var ListMeta_v2, parser: var JsonParser) =
             load(self.`continue`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ListMeta_v2, s: JsonStream) =
+proc dump*(self: ListMeta_v2, s: JsonWriter) =
   s.objectStart()
   if not self.`resourceVersion`.isEmpty:
     s.name("resourceVersion")
@@ -430,7 +430,7 @@ proc load*(self: var Status_v2, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: Status_v2, s: JsonStream) =
+proc dump*(self: Status_v2, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("v1")
   s.name("kind"); s.value("Status_v2")
@@ -502,7 +502,7 @@ proc load*(self: var Initializers, parser: var JsonParser) =
             load(self.`result`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: Initializers, s: JsonStream) =
+proc dump*(self: Initializers, s: JsonWriter) =
   s.objectStart()
   s.name("pending")
   self.`pending`.dump(s)
@@ -563,7 +563,7 @@ proc load*(self: var APIResource, parser: var JsonParser) =
             load(self.`storageVersionHash`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: APIResource, s: JsonStream) =
+proc dump*(self: APIResource, s: JsonWriter) =
   s.objectStart()
   if not self.`version`.isEmpty:
     s.name("version")
@@ -634,7 +634,7 @@ proc load*(self: var ListMeta, parser: var JsonParser) =
             load(self.`continue`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ListMeta, s: JsonStream) =
+proc dump*(self: ListMeta, s: JsonWriter) =
   s.objectStart()
   if not self.`remainingItemCount`.isEmpty:
     s.name("remainingItemCount")
@@ -663,7 +663,7 @@ type
 proc load*(self: var FieldsV1, parser: var JsonParser) =
   load(Table[string,string](self),parser)
 
-proc dump*(self: FieldsV1, s: JsonStream) =
+proc dump*(self: FieldsV1, s: JsonWriter) =
   dump(Table[string,string](self),s)
 
 proc isEmpty*(self: FieldsV1): bool = Table[string,string](self).isEmpty
@@ -674,7 +674,7 @@ type
 proc load*(self: var MicroTime, parser: var JsonParser) =
   load(DateTime(self),parser)
 
-proc dump*(self: MicroTime, s: JsonStream) =
+proc dump*(self: MicroTime, s: JsonWriter) =
   dump(DateTime(self),s)
 
 proc isEmpty*(self: MicroTime): bool = DateTime(self).isEmpty
@@ -685,7 +685,7 @@ type
 proc load*(self: var Time, parser: var JsonParser) =
   load(DateTime(self),parser)
 
-proc dump*(self: Time, s: JsonStream) =
+proc dump*(self: Time, s: JsonWriter) =
   dump(DateTime(self),s)
 
 proc isEmpty*(self: Time): bool = DateTime(self).isEmpty
@@ -713,7 +713,7 @@ proc load*(self: var GroupVersionForDiscovery_v2, parser: var JsonParser) =
             load(self.`groupVersion`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: GroupVersionForDiscovery_v2, s: JsonStream) =
+proc dump*(self: GroupVersionForDiscovery_v2, s: JsonWriter) =
   s.objectStart()
   s.name("version")
   self.`version`.dump(s)
@@ -761,7 +761,7 @@ proc load*(self: var OwnerReference_v2, parser: var JsonParser) =
             load(self.`kind`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: OwnerReference_v2, s: JsonStream) =
+proc dump*(self: OwnerReference_v2, s: JsonWriter) =
   s.objectStart()
   s.name("uid")
   self.`uid`.dump(s)
@@ -853,7 +853,7 @@ proc load*(self: var ObjectMeta_v2, parser: var JsonParser) =
             load(self.`deletionTimestamp`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ObjectMeta_v2, s: JsonStream) =
+proc dump*(self: ObjectMeta_v2, s: JsonWriter) =
   s.objectStart()
   if not self.`uid`.isEmpty:
     s.name("uid")
@@ -959,7 +959,7 @@ proc load*(self: var OwnerReference, parser: var JsonParser) =
             load(self.`kind`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: OwnerReference, s: JsonStream) =
+proc dump*(self: OwnerReference, s: JsonWriter) =
   s.objectStart()
   s.name("uid")
   self.`uid`.dump(s)
@@ -1009,7 +1009,7 @@ proc load*(self: var WatchEvent_v2, parser: var JsonParser) =
             load(self.`object`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: WatchEvent_v2, s: JsonStream) =
+proc dump*(self: WatchEvent_v2, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("v1")
   s.name("kind"); s.value("WatchEvent_v2")
@@ -1067,7 +1067,7 @@ proc load*(self: var APIResourceList, parser: var JsonParser) =
             load(self.`kind`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: APIResourceList, s: JsonStream) =
+proc dump*(self: APIResourceList, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("v1")
   s.name("kind"); s.value("APIResourceList")
@@ -1112,7 +1112,7 @@ proc load*(self: var Preconditions_v2, parser: var JsonParser) =
             load(self.`uid`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: Preconditions_v2, s: JsonStream) =
+proc dump*(self: Preconditions_v2, s: JsonWriter) =
   s.objectStart()
   if not self.`uid`.isEmpty:
     s.name("uid")
@@ -1146,7 +1146,7 @@ proc load*(self: var ServerAddressByClientCIDR, parser: var JsonParser) =
             load(self.`clientCIDR`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ServerAddressByClientCIDR, s: JsonStream) =
+proc dump*(self: ServerAddressByClientCIDR, s: JsonWriter) =
   s.objectStart()
   s.name("serverAddress")
   self.`serverAddress`.dump(s)
@@ -1182,7 +1182,7 @@ proc load*(self: var GroupVersionForDiscovery, parser: var JsonParser) =
             load(self.`groupVersion`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: GroupVersionForDiscovery, s: JsonStream) =
+proc dump*(self: GroupVersionForDiscovery, s: JsonWriter) =
   s.objectStart()
   s.name("version")
   self.`version`.dump(s)
@@ -1230,7 +1230,7 @@ proc load*(self: var APIGroup, parser: var JsonParser) =
             load(self.`preferredVersion`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: APIGroup, s: JsonStream) =
+proc dump*(self: APIGroup, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("v1")
   s.name("kind"); s.value("APIGroup")
@@ -1295,7 +1295,7 @@ proc load*(self: var APIGroupList, parser: var JsonParser) =
             load(self.`kind`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: APIGroupList, s: JsonStream) =
+proc dump*(self: APIGroupList, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("v1")
   s.name("kind"); s.value("APIGroupList")
@@ -1340,7 +1340,7 @@ proc load*(self: var WatchEvent, parser: var JsonParser) =
             load(self.`object`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: WatchEvent, s: JsonStream) =
+proc dump*(self: WatchEvent, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("v1")
   s.name("kind"); s.value("WatchEvent")
@@ -1395,7 +1395,7 @@ proc load*(self: var LabelSelectorRequirement, parser: var JsonParser) =
             load(self.`operator`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: LabelSelectorRequirement, s: JsonStream) =
+proc dump*(self: LabelSelectorRequirement, s: JsonWriter) =
   s.objectStart()
   s.name("key")
   self.`key`.dump(s)
@@ -1435,7 +1435,7 @@ proc load*(self: var LabelSelector, parser: var JsonParser) =
             load(self.`matchExpressions`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: LabelSelector, s: JsonStream) =
+proc dump*(self: LabelSelector, s: JsonWriter) =
   s.objectStart()
   if not self.`matchLabels`.isEmpty:
     s.name("matchLabels")
@@ -1494,7 +1494,7 @@ proc load*(self: var APIResource_v2, parser: var JsonParser) =
             load(self.`kind`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: APIResource_v2, s: JsonStream) =
+proc dump*(self: APIResource_v2, s: JsonWriter) =
   s.objectStart()
   if not self.`version`.isEmpty:
     s.name("version")
@@ -1561,7 +1561,7 @@ proc load*(self: var APIResourceList_v2, parser: var JsonParser) =
             load(self.`kind`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: APIResourceList_v2, s: JsonStream) =
+proc dump*(self: APIResourceList_v2, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("v1")
   s.name("kind"); s.value("APIResourceList_v2")
@@ -1621,7 +1621,7 @@ proc load*(self: var APIVersions, parser: var JsonParser) =
             load(self.`kind`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: APIVersions, s: JsonStream) =
+proc dump*(self: APIVersions, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("v1")
   s.name("kind"); s.value("APIVersions")
@@ -1658,7 +1658,7 @@ type
 proc load*(self: var Patch, parser: var JsonParser) =
   load(Table[string,string](self),parser)
 
-proc dump*(self: Patch, s: JsonStream) =
+proc dump*(self: Patch, s: JsonWriter) =
   dump(Table[string,string](self),s)
 
 proc isEmpty*(self: Patch): bool = Table[string,string](self).isEmpty
@@ -1698,7 +1698,7 @@ proc load*(self: var APIGroup_v2, parser: var JsonParser) =
             load(self.`preferredVersion`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: APIGroup_v2, s: JsonStream) =
+proc dump*(self: APIGroup_v2, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("v1")
   s.name("kind"); s.value("APIGroup_v2")
@@ -1772,7 +1772,7 @@ proc load*(self: var ManagedFieldsEntry, parser: var JsonParser) =
             load(self.`manager`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ManagedFieldsEntry, s: JsonStream) =
+proc dump*(self: ManagedFieldsEntry, s: JsonWriter) =
   s.objectStart()
   if not self.`fieldsType`.isEmpty:
     s.name("fieldsType")
@@ -1841,7 +1841,7 @@ proc load*(self: var DeleteOptions, parser: var JsonParser) =
             load(self.`preconditions`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: DeleteOptions, s: JsonStream) =
+proc dump*(self: DeleteOptions, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("v1")
   s.name("kind"); s.value("DeleteOptions")
@@ -1951,7 +1951,7 @@ proc load*(self: var ObjectMeta, parser: var JsonParser) =
             load(self.`deletionTimestamp`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ObjectMeta, s: JsonStream) =
+proc dump*(self: ObjectMeta, s: JsonWriter) =
   s.objectStart()
   if not self.`uid`.isEmpty:
     s.name("uid")
@@ -2057,7 +2057,7 @@ proc load*(self: var DeleteOptions_v2, parser: var JsonParser) =
             load(self.`preconditions`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: DeleteOptions_v2, s: JsonStream) =
+proc dump*(self: DeleteOptions_v2, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("v1")
   s.name("kind"); s.value("DeleteOptions_v2")
@@ -2139,7 +2139,7 @@ proc load*(self: var Status, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: Status, s: JsonStream) =
+proc dump*(self: Status, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("v1")
   s.name("kind"); s.value("Status")

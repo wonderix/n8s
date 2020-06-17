@@ -1,4 +1,4 @@
-import httpClient, asyncdispatch, config, json, sequtils, options, strutils, streams, jsonstream, uri, asyncstreams
+import httpClient, asyncdispatch, config, json, sequtils, options, strutils, streams, jsonwriter, uri, asyncstreams
 from sugar import `=>`
 
 type
@@ -79,7 +79,7 @@ proc create*(client: Client, path: string, content: string): Future[Stream] {.as
 proc create*[T](client: Client, groupVersion: string, t: T, namespace: string, load: proc(parser: var JsonParser): T): Future[T] {.async.}=
   let path = groupVersion & "/namespaces/" & namespace & "/" & ($(typedesc[T])).toLowerAscii() & "s"
   let stream = newStringStream()
-  t.dump(newJsonStream(stream))
+  t.dump(newJsonWriter(stream))
   stream.setPosition(0)
   return loadJson(await client.create(path,stream.readAll()),path,load)
 
@@ -101,7 +101,7 @@ proc replace*(client: Client, path: string, content: string): Future[Stream] {.a
 proc replace*[T](client: Client, groupVersion: string, t: T, name: string, namespace: string, load: proc(parser: var JsonParser): T): Future[T] {.async.}=
   let path = groupVersion & "/namespaces/" & namespace & "/" & ($(typedesc[T])).toLowerAscii() & "s/" & name
   let stream = newStringStream()
-  t.dump(newJsonStream(stream))
+  t.dump(newJsonWriter(stream))
   stream.setPosition(0)
   return loadJson(await client.replace(path,stream.readAll()),path,load)
 

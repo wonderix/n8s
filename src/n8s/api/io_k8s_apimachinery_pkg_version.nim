@@ -1,7 +1,7 @@
 import ../client
 import ../base_types
 import parsejson
-import ../jsonstream
+import ../jsonwriter
 
 type
   Info* = object
@@ -47,7 +47,7 @@ proc load*(self: var Info, parser: var JsonParser) =
             load(self.`minor`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: Info, s: JsonStream) =
+proc dump*(self: Info, s: JsonWriter) =
   s.objectStart()
   s.name("gitTreeState")
   self.`gitTreeState`.dump(s)

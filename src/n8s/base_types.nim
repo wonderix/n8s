@@ -1,4 +1,4 @@
-import yaml, base64, parsejson, times, tables, json, jsonstream
+import yaml, base64, parsejson, times, tables, json, jsonwriter
 
 type 
     ByteArray* = distinct string
@@ -34,7 +34,7 @@ proc load*(value: var string, parser: var JsonParser )=
   value = parser.str
   parser.next
 
-proc dump*(v: string, s: JsonStream)=
+proc dump*(v: string, s: JsonWriter)=
   s.value(v)
 
 proc isEmpty*(value: string): bool =  value.len == 0
@@ -46,7 +46,7 @@ proc load*(value: var int,parser: var JsonParser )=
   value = int(parser.getInt)
   parser.next
 
-proc dump*(v: int, s: JsonStream) = s.value(v)
+proc dump*(v: int, s: JsonWriter) = s.value(v)
 
 proc isEmpty*(value: int): bool = value == 0
 
@@ -55,7 +55,7 @@ proc load*(value: var float,parser: var JsonParser )=
   value = parser.getFloat
   parser.next
 
-proc dump*(v: float, s: JsonStream) = s.value(v)
+proc dump*(v: float, s: JsonWriter) = s.value(v)
 
 proc isEmpty*(value: float): bool = value == 0.0
 
@@ -68,7 +68,7 @@ proc load*(value: var bool,parser: var JsonParser )=
     else: raiseParseErr(parser,"true or false")
   parser.next
 
-proc dump*(v: bool, s: JsonStream) = s.value(v)
+proc dump*(v: bool, s: JsonWriter) = s.value(v)
 
 proc isEmpty*(value: bool): bool = 
   value == false
@@ -82,7 +82,7 @@ proc load*(ios: var IntOrString,parser: var JsonParser )=
     else: raiseParseErr(parser,"string or int")
   parser.next
 
-proc dump*(ios: IntOrString, s: JsonStream)=
+proc dump*(ios: IntOrString, s: JsonWriter)=
   case ios.kind:
     of iosInt:
       s.value(ios.ivalue)
@@ -101,7 +101,7 @@ proc load*(bytes: var ByteArray, parser: var JsonParser )=
   bytes = decode(parser.str).ByteArray
   parser.next
 
-proc dump*(bytes:  ByteArray, s: JsonStream) = s.value(encode(string(bytes)))
+proc dump*(bytes:  ByteArray, s: JsonWriter) = s.value(encode(string(bytes)))
 
 proc isEmpty*(bytes: ByteArray): bool = string(bytes).len == 0
 
@@ -118,7 +118,7 @@ proc load*(time: var DateTime, parser: var JsonParser )=
     else: raiseParseErr(parser,"string or null")
   parser.next
 
-proc dump*(time: DateTime, s: JsonStream) = s.value(time.format("""yyyy-MM-dd'T'HH:mm:ss'Z'"""))
+proc dump*(time: DateTime, s: JsonWriter) = s.value(time.format("""yyyy-MM-dd'T'HH:mm:ss'Z'"""))
 
 proc isEmpty*(time: DateTime): bool = time.year == 0
 
@@ -139,7 +139,7 @@ proc load*[T](table: var Table[string,T],parser: var JsonParser )=
         table[key] = item
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*[T](table: Table[string,T], s: JsonStream)=
+proc dump*[T](table: Table[string,T], s: JsonWriter)=
   s.objectStart()
   for key, value in table.pairs:
     if not value.isEmpty:
@@ -162,7 +162,7 @@ proc load*[T](sequence: var seq[T],parser: var JsonParser )=
         load(item, parser)
         sequence.add(item)
 
-proc dump*[T](sequence: seq[T], s: JsonStream)=
+proc dump*[T](sequence: seq[T], s: JsonWriter)=
   s.arrayStart()
   for value in sequence:
     value.dump(s)
@@ -223,7 +223,7 @@ proc load*(value: var JsonNode, parser: var JsonParser )=
             value.add(item)
 
 
-proc dump*(v: JsonNode, s: JsonStream)=
+proc dump*(v: JsonNode, s: JsonWriter)=
   case v.kind:
     of JObject:
       s.objectStart()

@@ -1,7 +1,7 @@
 import ../client
 import ../base_types
 import parsejson
-import ../jsonstream
+import ../jsonwriter
 import io_k8s_apimachinery_pkg_apis_meta_v1
 import asyncdispatch
 
@@ -31,7 +31,7 @@ proc load*(self: var ServiceReference, parser: var JsonParser) =
             load(self.`name`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ServiceReference, s: JsonStream) =
+proc dump*(self: ServiceReference, s: JsonWriter) =
   s.objectStart()
   if not self.`namespace`.isEmpty:
     s.name("namespace")
@@ -88,7 +88,7 @@ proc load*(self: var APIServiceSpec, parser: var JsonParser) =
             load(self.`insecureSkipTLSVerify`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: APIServiceSpec, s: JsonStream) =
+proc dump*(self: APIServiceSpec, s: JsonWriter) =
   s.objectStart()
   if not self.`version`.isEmpty:
     s.name("version")
@@ -152,7 +152,7 @@ proc load*(self: var APIServiceCondition, parser: var JsonParser) =
             load(self.`status`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: APIServiceCondition, s: JsonStream) =
+proc dump*(self: APIServiceCondition, s: JsonWriter) =
   s.objectStart()
   if not self.`lastTransitionTime`.isEmpty:
     s.name("lastTransitionTime")
@@ -197,7 +197,7 @@ proc load*(self: var APIServiceStatus, parser: var JsonParser) =
             load(self.`conditions`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: APIServiceStatus, s: JsonStream) =
+proc dump*(self: APIServiceStatus, s: JsonWriter) =
   s.objectStart()
   if not self.`conditions`.isEmpty:
     s.name("conditions")
@@ -240,7 +240,7 @@ proc load*(self: var APIService, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: APIService, s: JsonStream) =
+proc dump*(self: APIService, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("apiregistration.k8s.io/v1")
   s.name("kind"); s.value("APIService")
@@ -312,7 +312,7 @@ proc load*(self: var APIServiceList, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: APIServiceList, s: JsonStream) =
+proc dump*(self: APIServiceList, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("apiregistration.k8s.io/v1")
   s.name("kind"); s.value("APIServiceList")

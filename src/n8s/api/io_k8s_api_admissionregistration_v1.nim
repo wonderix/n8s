@@ -1,7 +1,7 @@
 import ../client
 import ../base_types
 import parsejson
-import ../jsonstream
+import ../jsonwriter
 import io_k8s_apimachinery_pkg_apis_meta_v1
 import asyncdispatch
 
@@ -34,7 +34,7 @@ proc load*(self: var ServiceReference, parser: var JsonParser) =
             load(self.`name`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ServiceReference, s: JsonStream) =
+proc dump*(self: ServiceReference, s: JsonWriter) =
   s.objectStart()
   if not self.`path`.isEmpty:
     s.name("path")
@@ -81,7 +81,7 @@ proc load*(self: var WebhookClientConfig, parser: var JsonParser) =
             load(self.`service`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: WebhookClientConfig, s: JsonStream) =
+proc dump*(self: WebhookClientConfig, s: JsonWriter) =
   s.objectStart()
   if not self.`caBundle`.isEmpty:
     s.name("caBundle")
@@ -132,7 +132,7 @@ proc load*(self: var RuleWithOperations, parser: var JsonParser) =
             load(self.`scope`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: RuleWithOperations, s: JsonStream) =
+proc dump*(self: RuleWithOperations, s: JsonWriter) =
   s.objectStart()
   if not self.`operations`.isEmpty:
     s.name("operations")
@@ -209,7 +209,7 @@ proc load*(self: var MutatingWebhook, parser: var JsonParser) =
             load(self.`reinvocationPolicy`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: MutatingWebhook, s: JsonStream) =
+proc dump*(self: MutatingWebhook, s: JsonWriter) =
   s.objectStart()
   if not self.`objectSelector`.isEmpty:
     s.name("objectSelector")
@@ -285,7 +285,7 @@ proc load*(self: var MutatingWebhookConfiguration, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: MutatingWebhookConfiguration, s: JsonStream) =
+proc dump*(self: MutatingWebhookConfiguration, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("admissionregistration.k8s.io/v1")
   s.name("kind"); s.value("MutatingWebhookConfiguration")
@@ -353,7 +353,7 @@ proc load*(self: var MutatingWebhookConfigurationList, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: MutatingWebhookConfigurationList, s: JsonStream) =
+proc dump*(self: MutatingWebhookConfigurationList, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("admissionregistration.k8s.io/v1")
   s.name("kind"); s.value("MutatingWebhookConfigurationList")
@@ -426,7 +426,7 @@ proc load*(self: var ValidatingWebhook, parser: var JsonParser) =
             load(self.`sideEffects`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ValidatingWebhook, s: JsonStream) =
+proc dump*(self: ValidatingWebhook, s: JsonWriter) =
   s.objectStart()
   if not self.`objectSelector`.isEmpty:
     s.name("objectSelector")
@@ -498,7 +498,7 @@ proc load*(self: var ValidatingWebhookConfiguration, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ValidatingWebhookConfiguration, s: JsonStream) =
+proc dump*(self: ValidatingWebhookConfiguration, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("admissionregistration.k8s.io/v1")
   s.name("kind"); s.value("ValidatingWebhookConfiguration")
@@ -566,7 +566,7 @@ proc load*(self: var ValidatingWebhookConfigurationList, parser: var JsonParser)
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ValidatingWebhookConfigurationList, s: JsonStream) =
+proc dump*(self: ValidatingWebhookConfigurationList, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("admissionregistration.k8s.io/v1")
   s.name("kind"); s.value("ValidatingWebhookConfigurationList")

@@ -1,7 +1,7 @@
 import ../client
 import ../base_types
 import parsejson
-import ../jsonstream
+import ../jsonwriter
 import io_k8s_apimachinery_pkg_apis_meta_v1
 import asyncdispatch
 import io_k8s_api_core_v1
@@ -31,7 +31,7 @@ proc load*(self: var Scheduling, parser: var JsonParser) =
             load(self.`nodeSelector`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: Scheduling, s: JsonStream) =
+proc dump*(self: Scheduling, s: JsonWriter) =
   s.objectStart()
   if not self.`tolerations`.isEmpty:
     s.name("tolerations")
@@ -66,7 +66,7 @@ proc load*(self: var Overhead, parser: var JsonParser) =
             load(self.`podFixed`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: Overhead, s: JsonStream) =
+proc dump*(self: Overhead, s: JsonWriter) =
   s.objectStart()
   if not self.`podFixed`.isEmpty:
     s.name("podFixed")
@@ -112,7 +112,7 @@ proc load*(self: var RuntimeClass, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: RuntimeClass, s: JsonStream) =
+proc dump*(self: RuntimeClass, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("node.k8s.io/v1beta1")
   s.name("kind"); s.value("RuntimeClass")
@@ -187,7 +187,7 @@ proc load*(self: var RuntimeClassList, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: RuntimeClassList, s: JsonStream) =
+proc dump*(self: RuntimeClassList, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("node.k8s.io/v1beta1")
   s.name("kind"); s.value("RuntimeClassList")

@@ -1,7 +1,7 @@
 import ../client
 import ../base_types
 import parsejson
-import ../jsonstream
+import ../jsonwriter
 import io_k8s_apimachinery_pkg_apis_meta_v1
 import asyncdispatch
 import io_k8s_api_core_v1
@@ -32,7 +32,7 @@ proc load*(self: var EventSeries, parser: var JsonParser) =
             load(self.`state`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: EventSeries, s: JsonStream) =
+proc dump*(self: EventSeries, s: JsonWriter) =
   s.objectStart()
   s.name("count")
   self.`count`.dump(s)
@@ -116,7 +116,7 @@ proc load*(self: var Event, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: Event, s: JsonStream) =
+proc dump*(self: Event, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("events.k8s.io/v1beta1")
   s.name("kind"); s.value("Event")
@@ -235,7 +235,7 @@ proc load*(self: var EventList, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: EventList, s: JsonStream) =
+proc dump*(self: EventList, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("events.k8s.io/v1beta1")
   s.name("kind"); s.value("EventList")

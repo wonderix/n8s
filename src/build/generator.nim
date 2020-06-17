@@ -202,7 +202,7 @@ proc generateLoad(definition: Definition, name: string, f: File) =
 
 proc generateDump(definition: Definition, name: string, f: File) =
   f.writeLine("")
-  f.writeLine("proc dump*(self: ", name.typename, ", s: JsonStream) =")
+  f.writeLine("proc dump*(self: ", name.typename, ", s: JsonWriter) =")
   f.writeLine("  s.objectStart()")
   let apiVersion = definition.apiVersion
   if apiVersion.isSome:
@@ -267,7 +267,7 @@ proc generateIntOrString(name: string, f: File) =
   f.writeLine("proc load*(self: var ", name.typename, ", parser: var JsonParser) =")
   f.writeLine("  load(base_types.IntOrString(self),parser)")
   f.writeLine("")
-  f.writeLine("proc dump*(self: ", name.typename, ", s: JsonStream) =")
+  f.writeLine("proc dump*(self: ", name.typename, ", s: JsonWriter) =")
   f.writeLine("  dump(base_types.IntOrString(self),s)")
   f.writeLine("")
   f.writeLine("proc isEmpty*(self: ", name.typename, "): bool = base_types.IntOrString(self).isEmpty")
@@ -286,7 +286,7 @@ proc generateTypedef(definition: Definition, name: string, f: File) =
   f.writeLine("proc load*(self: var ", name.typename, ", parser: var JsonParser) =")
   f.writeLine(fmt"  load({subtype}(self),parser)")
   f.writeLine("")
-  f.writeLine("proc dump*(self: ", name.typename, ", s: JsonStream) =")
+  f.writeLine("proc dump*(self: ", name.typename, ", s: JsonWriter) =")
   f.writeLine(fmt"  dump({subtype}(self),s)")
   f.writeLine("")
   f.writeLine("proc isEmpty*(self: ", name.typename, "): bool = ",subtype,"(self).isEmpty")
@@ -347,7 +347,7 @@ proc generate(self: Module, output: string) =
   imports.incl("../client")
   imports.incl("../base_types")
   imports.incl("parsejson")
-  imports.incl("../jsonstream")
+  imports.incl("../jsonwriter")
   for name, definition in self.definitions.pairs:
     fillReferences(name,self.definitions,refs, imports)
 

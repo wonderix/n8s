@@ -1,7 +1,7 @@
 import ../client
 import ../base_types
 import parsejson
-import ../jsonstream
+import ../jsonwriter
 import io_k8s_apimachinery_pkg_util_intstr
 import io_k8s_apimachinery_pkg_apis_meta_v1
 import asyncdispatch
@@ -31,7 +31,7 @@ proc load*(self: var HostPortRange, parser: var JsonParser) =
             load(self.`min`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: HostPortRange, s: JsonStream) =
+proc dump*(self: HostPortRange, s: JsonWriter) =
   s.objectStart()
   s.name("max")
   self.`max`.dump(s)
@@ -70,7 +70,7 @@ proc load*(self: var PodDisruptionBudgetSpec, parser: var JsonParser) =
             load(self.`minAvailable`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: PodDisruptionBudgetSpec, s: JsonStream) =
+proc dump*(self: PodDisruptionBudgetSpec, s: JsonWriter) =
   s.objectStart()
   if not self.`maxUnavailable`.isEmpty:
     s.name("maxUnavailable")
@@ -109,7 +109,7 @@ proc load*(self: var AllowedFlexVolume, parser: var JsonParser) =
             load(self.`driver`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: AllowedFlexVolume, s: JsonStream) =
+proc dump*(self: AllowedFlexVolume, s: JsonWriter) =
   s.objectStart()
   s.name("driver")
   self.`driver`.dump(s)
@@ -142,7 +142,7 @@ proc load*(self: var RuntimeClassStrategyOptions, parser: var JsonParser) =
             load(self.`defaultRuntimeClassName`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: RuntimeClassStrategyOptions, s: JsonStream) =
+proc dump*(self: RuntimeClassStrategyOptions, s: JsonWriter) =
   s.objectStart()
   s.name("allowedRuntimeClassNames")
   self.`allowedRuntimeClassNames`.dump(s)
@@ -179,7 +179,7 @@ proc load*(self: var IDRange, parser: var JsonParser) =
             load(self.`min`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: IDRange, s: JsonStream) =
+proc dump*(self: IDRange, s: JsonWriter) =
   s.objectStart()
   s.name("max")
   self.`max`.dump(s)
@@ -215,7 +215,7 @@ proc load*(self: var FSGroupStrategyOptions, parser: var JsonParser) =
             load(self.`ranges`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: FSGroupStrategyOptions, s: JsonStream) =
+proc dump*(self: FSGroupStrategyOptions, s: JsonWriter) =
   s.objectStart()
   if not self.`rule`.isEmpty:
     s.name("rule")
@@ -253,7 +253,7 @@ proc load*(self: var SupplementalGroupsStrategyOptions, parser: var JsonParser) 
             load(self.`ranges`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: SupplementalGroupsStrategyOptions, s: JsonStream) =
+proc dump*(self: SupplementalGroupsStrategyOptions, s: JsonWriter) =
   s.objectStart()
   if not self.`rule`.isEmpty:
     s.name("rule")
@@ -291,7 +291,7 @@ proc load*(self: var SELinuxStrategyOptions, parser: var JsonParser) =
             load(self.`seLinuxOptions`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: SELinuxStrategyOptions, s: JsonStream) =
+proc dump*(self: SELinuxStrategyOptions, s: JsonWriter) =
   s.objectStart()
   s.name("rule")
   self.`rule`.dump(s)
@@ -328,7 +328,7 @@ proc load*(self: var AllowedHostPath, parser: var JsonParser) =
             load(self.`readOnly`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: AllowedHostPath, s: JsonStream) =
+proc dump*(self: AllowedHostPath, s: JsonWriter) =
   s.objectStart()
   if not self.`pathPrefix`.isEmpty:
     s.name("pathPrefix")
@@ -363,7 +363,7 @@ proc load*(self: var AllowedCSIDriver, parser: var JsonParser) =
             load(self.`name`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: AllowedCSIDriver, s: JsonStream) =
+proc dump*(self: AllowedCSIDriver, s: JsonWriter) =
   s.objectStart()
   s.name("name")
   self.`name`.dump(s)
@@ -396,7 +396,7 @@ proc load*(self: var RunAsGroupStrategyOptions, parser: var JsonParser) =
             load(self.`ranges`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: RunAsGroupStrategyOptions, s: JsonStream) =
+proc dump*(self: RunAsGroupStrategyOptions, s: JsonWriter) =
   s.objectStart()
   s.name("rule")
   self.`rule`.dump(s)
@@ -433,7 +433,7 @@ proc load*(self: var RunAsUserStrategyOptions, parser: var JsonParser) =
             load(self.`ranges`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: RunAsUserStrategyOptions, s: JsonStream) =
+proc dump*(self: RunAsUserStrategyOptions, s: JsonWriter) =
   s.objectStart()
   s.name("rule")
   self.`rule`.dump(s)
@@ -536,7 +536,7 @@ proc load*(self: var PodSecurityPolicySpec, parser: var JsonParser) =
             load(self.`runAsUser`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: PodSecurityPolicySpec, s: JsonStream) =
+proc dump*(self: PodSecurityPolicySpec, s: JsonWriter) =
   s.objectStart()
   if not self.`allowedProcMountTypes`.isEmpty:
     s.name("allowedProcMountTypes")
@@ -664,7 +664,7 @@ proc load*(self: var PodSecurityPolicy, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: PodSecurityPolicy, s: JsonStream) =
+proc dump*(self: PodSecurityPolicy, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("policy/v1beta1")
   s.name("kind"); s.value("PodSecurityPolicy")
@@ -738,7 +738,7 @@ proc load*(self: var PodDisruptionBudgetStatus, parser: var JsonParser) =
             load(self.`desiredHealthy`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: PodDisruptionBudgetStatus, s: JsonStream) =
+proc dump*(self: PodDisruptionBudgetStatus, s: JsonWriter) =
   s.objectStart()
   s.name("expectedPods")
   self.`expectedPods`.dump(s)
@@ -797,7 +797,7 @@ proc load*(self: var PodDisruptionBudget, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: PodDisruptionBudget, s: JsonStream) =
+proc dump*(self: PodDisruptionBudget, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("policy/v1beta1")
   s.name("kind"); s.value("PodDisruptionBudget")
@@ -869,7 +869,7 @@ proc load*(self: var Eviction, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: Eviction, s: JsonStream) =
+proc dump*(self: Eviction, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("policy/v1beta1")
   s.name("kind"); s.value("Eviction")
@@ -937,7 +937,7 @@ proc load*(self: var PodDisruptionBudgetList, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: PodDisruptionBudgetList, s: JsonStream) =
+proc dump*(self: PodDisruptionBudgetList, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("policy/v1beta1")
   s.name("kind"); s.value("PodDisruptionBudgetList")
@@ -992,7 +992,7 @@ proc load*(self: var PodSecurityPolicyList, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: PodSecurityPolicyList, s: JsonStream) =
+proc dump*(self: PodSecurityPolicyList, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("policy/v1beta1")
   s.name("kind"); s.value("PodSecurityPolicyList")

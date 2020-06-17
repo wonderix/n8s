@@ -1,7 +1,7 @@
 import ../client
 import ../base_types
 import parsejson
-import ../jsonstream
+import ../jsonwriter
 import io_k8s_apimachinery_pkg_apis_meta_v1
 import asyncdispatch
 import io_k8s_api_core_v1
@@ -40,7 +40,7 @@ proc load*(self: var ReplicaSetCondition, parser: var JsonParser) =
             load(self.`status`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ReplicaSetCondition, s: JsonStream) =
+proc dump*(self: ReplicaSetCondition, s: JsonWriter) =
   s.objectStart()
   if not self.`lastTransitionTime`.isEmpty:
     s.name("lastTransitionTime")
@@ -100,7 +100,7 @@ proc load*(self: var ReplicaSetStatus, parser: var JsonParser) =
             load(self.`availableReplicas`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ReplicaSetStatus, s: JsonStream) =
+proc dump*(self: ReplicaSetStatus, s: JsonWriter) =
   s.objectStart()
   if not self.`fullyLabeledReplicas`.isEmpty:
     s.name("fullyLabeledReplicas")
@@ -150,7 +150,7 @@ proc load*(self: var RollingUpdateDaemonSet, parser: var JsonParser) =
             load(self.`maxUnavailable`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: RollingUpdateDaemonSet, s: JsonStream) =
+proc dump*(self: RollingUpdateDaemonSet, s: JsonWriter) =
   s.objectStart()
   if not self.`maxUnavailable`.isEmpty:
     s.name("maxUnavailable")
@@ -184,7 +184,7 @@ proc load*(self: var DaemonSetUpdateStrategy, parser: var JsonParser) =
             load(self.`rollingUpdate`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: DaemonSetUpdateStrategy, s: JsonStream) =
+proc dump*(self: DaemonSetUpdateStrategy, s: JsonWriter) =
   s.objectStart()
   if not self.`type`.isEmpty:
     s.name("type")
@@ -231,7 +231,7 @@ proc load*(self: var DaemonSetSpec, parser: var JsonParser) =
             load(self.`revisionHistoryLimit`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: DaemonSetSpec, s: JsonStream) =
+proc dump*(self: DaemonSetSpec, s: JsonWriter) =
   s.objectStart()
   if not self.`updateStrategy`.isEmpty:
     s.name("updateStrategy")
@@ -288,7 +288,7 @@ proc load*(self: var DaemonSetCondition, parser: var JsonParser) =
             load(self.`status`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: DaemonSetCondition, s: JsonStream) =
+proc dump*(self: DaemonSetCondition, s: JsonWriter) =
   s.objectStart()
   if not self.`lastTransitionTime`.isEmpty:
     s.name("lastTransitionTime")
@@ -360,7 +360,7 @@ proc load*(self: var DaemonSetStatus, parser: var JsonParser) =
             load(self.`numberUnavailable`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: DaemonSetStatus, s: JsonStream) =
+proc dump*(self: DaemonSetStatus, s: JsonWriter) =
   s.objectStart()
   s.name("currentNumberScheduled")
   self.`currentNumberScheduled`.dump(s)
@@ -435,7 +435,7 @@ proc load*(self: var DaemonSet, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: DaemonSet, s: JsonStream) =
+proc dump*(self: DaemonSet, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("apps/v1")
   s.name("kind"); s.value("DaemonSet")
@@ -498,7 +498,7 @@ proc load*(self: var RollingUpdateStatefulSetStrategy, parser: var JsonParser) =
             load(self.`partition`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: RollingUpdateStatefulSetStrategy, s: JsonStream) =
+proc dump*(self: RollingUpdateStatefulSetStrategy, s: JsonWriter) =
   s.objectStart()
   if not self.`partition`.isEmpty:
     s.name("partition")
@@ -532,7 +532,7 @@ proc load*(self: var StatefulSetUpdateStrategy, parser: var JsonParser) =
             load(self.`rollingUpdate`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: StatefulSetUpdateStrategy, s: JsonStream) =
+proc dump*(self: StatefulSetUpdateStrategy, s: JsonWriter) =
   s.objectStart()
   if not self.`type`.isEmpty:
     s.name("type")
@@ -588,7 +588,7 @@ proc load*(self: var StatefulSetSpec, parser: var JsonParser) =
             load(self.`revisionHistoryLimit`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: StatefulSetSpec, s: JsonStream) =
+proc dump*(self: StatefulSetSpec, s: JsonWriter) =
   s.objectStart()
   s.name("serviceName")
   self.`serviceName`.dump(s)
@@ -656,7 +656,7 @@ proc load*(self: var StatefulSetCondition, parser: var JsonParser) =
             load(self.`status`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: StatefulSetCondition, s: JsonStream) =
+proc dump*(self: StatefulSetCondition, s: JsonWriter) =
   s.objectStart()
   if not self.`lastTransitionTime`.isEmpty:
     s.name("lastTransitionTime")
@@ -725,7 +725,7 @@ proc load*(self: var StatefulSetStatus, parser: var JsonParser) =
             load(self.`currentReplicas`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: StatefulSetStatus, s: JsonStream) =
+proc dump*(self: StatefulSetStatus, s: JsonWriter) =
   s.objectStart()
   s.name("replicas")
   self.`replicas`.dump(s)
@@ -799,7 +799,7 @@ proc load*(self: var StatefulSet, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: StatefulSet, s: JsonStream) =
+proc dump*(self: StatefulSet, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("apps/v1")
   s.name("kind"); s.value("StatefulSet")
@@ -871,7 +871,7 @@ proc load*(self: var StatefulSetList, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: StatefulSetList, s: JsonStream) =
+proc dump*(self: StatefulSetList, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("apps/v1")
   s.name("kind"); s.value("StatefulSetList")
@@ -926,7 +926,7 @@ proc load*(self: var ReplicaSetSpec, parser: var JsonParser) =
             load(self.`minReadySeconds`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ReplicaSetSpec, s: JsonStream) =
+proc dump*(self: ReplicaSetSpec, s: JsonWriter) =
   s.objectStart()
   if not self.`replicas`.isEmpty:
     s.name("replicas")
@@ -980,7 +980,7 @@ proc load*(self: var ReplicaSet, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ReplicaSet, s: JsonStream) =
+proc dump*(self: ReplicaSet, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("apps/v1")
   s.name("kind"); s.value("ReplicaSet")
@@ -1052,7 +1052,7 @@ proc load*(self: var ReplicaSetList, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ReplicaSetList, s: JsonStream) =
+proc dump*(self: ReplicaSetList, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("apps/v1")
   s.name("kind"); s.value("ReplicaSetList")
@@ -1101,7 +1101,7 @@ proc load*(self: var RollingUpdateDeployment, parser: var JsonParser) =
             load(self.`maxSurge`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: RollingUpdateDeployment, s: JsonStream) =
+proc dump*(self: RollingUpdateDeployment, s: JsonWriter) =
   s.objectStart()
   if not self.`maxUnavailable`.isEmpty:
     s.name("maxUnavailable")
@@ -1139,7 +1139,7 @@ proc load*(self: var DeploymentStrategy, parser: var JsonParser) =
             load(self.`rollingUpdate`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: DeploymentStrategy, s: JsonStream) =
+proc dump*(self: DeploymentStrategy, s: JsonWriter) =
   s.objectStart()
   if not self.`type`.isEmpty:
     s.name("type")
@@ -1195,7 +1195,7 @@ proc load*(self: var DeploymentSpec, parser: var JsonParser) =
             load(self.`revisionHistoryLimit`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: DeploymentSpec, s: JsonStream) =
+proc dump*(self: DeploymentSpec, s: JsonWriter) =
   s.objectStart()
   if not self.`replicas`.isEmpty:
     s.name("replicas")
@@ -1267,7 +1267,7 @@ proc load*(self: var DeploymentCondition, parser: var JsonParser) =
             load(self.`status`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: DeploymentCondition, s: JsonStream) =
+proc dump*(self: DeploymentCondition, s: JsonWriter) =
   s.objectStart()
   if not self.`lastTransitionTime`.isEmpty:
     s.name("lastTransitionTime")
@@ -1337,7 +1337,7 @@ proc load*(self: var DeploymentStatus, parser: var JsonParser) =
             load(self.`availableReplicas`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: DeploymentStatus, s: JsonStream) =
+proc dump*(self: DeploymentStatus, s: JsonWriter) =
   s.objectStart()
   if not self.`replicas`.isEmpty:
     s.name("replicas")
@@ -1408,7 +1408,7 @@ proc load*(self: var Deployment, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: Deployment, s: JsonStream) =
+proc dump*(self: Deployment, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("apps/v1")
   s.name("kind"); s.value("Deployment")
@@ -1483,7 +1483,7 @@ proc load*(self: var ControllerRevision, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ControllerRevision, s: JsonStream) =
+proc dump*(self: ControllerRevision, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("apps/v1")
   s.name("kind"); s.value("ControllerRevision")
@@ -1554,7 +1554,7 @@ proc load*(self: var ControllerRevisionList, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ControllerRevisionList, s: JsonStream) =
+proc dump*(self: ControllerRevisionList, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("apps/v1")
   s.name("kind"); s.value("ControllerRevisionList")
@@ -1609,7 +1609,7 @@ proc load*(self: var DeploymentList, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: DeploymentList, s: JsonStream) =
+proc dump*(self: DeploymentList, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("apps/v1")
   s.name("kind"); s.value("DeploymentList")
@@ -1664,7 +1664,7 @@ proc load*(self: var DaemonSetList, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: DaemonSetList, s: JsonStream) =
+proc dump*(self: DaemonSetList, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("apps/v1")
   s.name("kind"); s.value("DaemonSetList")

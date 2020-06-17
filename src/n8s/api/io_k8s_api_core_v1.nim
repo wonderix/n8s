@@ -1,7 +1,7 @@
 import ../client
 import ../base_types
 import parsejson
-import ../jsonstream
+import ../jsonwriter
 import io_k8s_apimachinery_pkg_apis_meta_v1
 import tables
 import io_k8s_apimachinery_pkg_api_resource
@@ -43,7 +43,7 @@ proc load*(self: var NodeCondition, parser: var JsonParser) =
             load(self.`lastHeartbeatTime`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: NodeCondition, s: JsonStream) =
+proc dump*(self: NodeCondition, s: JsonWriter) =
   s.objectStart()
   if not self.`lastTransitionTime`.isEmpty:
     s.name("lastTransitionTime")
@@ -95,7 +95,7 @@ proc load*(self: var NodeAddress, parser: var JsonParser) =
             load(self.`address`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: NodeAddress, s: JsonStream) =
+proc dump*(self: NodeAddress, s: JsonWriter) =
   s.objectStart()
   s.name("type")
   self.`type`.dump(s)
@@ -140,7 +140,7 @@ proc load*(self: var ConfigMapNodeConfigSource, parser: var JsonParser) =
             load(self.`name`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ConfigMapNodeConfigSource, s: JsonStream) =
+proc dump*(self: ConfigMapNodeConfigSource, s: JsonWriter) =
   s.objectStart()
   if not self.`uid`.isEmpty:
     s.name("uid")
@@ -184,7 +184,7 @@ proc load*(self: var NodeConfigSource, parser: var JsonParser) =
             load(self.`configMap`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: NodeConfigSource, s: JsonStream) =
+proc dump*(self: NodeConfigSource, s: JsonWriter) =
   s.objectStart()
   if not self.`configMap`.isEmpty:
     s.name("configMap")
@@ -224,7 +224,7 @@ proc load*(self: var NodeConfigStatus, parser: var JsonParser) =
             load(self.`assigned`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: NodeConfigStatus, s: JsonStream) =
+proc dump*(self: NodeConfigStatus, s: JsonWriter) =
   s.objectStart()
   if not self.`lastKnownGood`.isEmpty:
     s.name("lastKnownGood")
@@ -267,7 +267,7 @@ proc load*(self: var DaemonEndpoint, parser: var JsonParser) =
             load(self.`Port`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: DaemonEndpoint, s: JsonStream) =
+proc dump*(self: DaemonEndpoint, s: JsonWriter) =
   s.objectStart()
   s.name("Port")
   self.`Port`.dump(s)
@@ -297,7 +297,7 @@ proc load*(self: var NodeDaemonEndpoints, parser: var JsonParser) =
             load(self.`kubeletEndpoint`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: NodeDaemonEndpoints, s: JsonStream) =
+proc dump*(self: NodeDaemonEndpoints, s: JsonWriter) =
   s.objectStart()
   if not self.`kubeletEndpoint`.isEmpty:
     s.name("kubeletEndpoint")
@@ -355,7 +355,7 @@ proc load*(self: var NodeSystemInfo, parser: var JsonParser) =
             load(self.`operatingSystem`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: NodeSystemInfo, s: JsonStream) =
+proc dump*(self: NodeSystemInfo, s: JsonWriter) =
   s.objectStart()
   s.name("machineID")
   self.`machineID`.dump(s)
@@ -415,7 +415,7 @@ proc load*(self: var AttachedVolume, parser: var JsonParser) =
             load(self.`name`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: AttachedVolume, s: JsonStream) =
+proc dump*(self: AttachedVolume, s: JsonWriter) =
   s.objectStart()
   s.name("devicePath")
   self.`devicePath`.dump(s)
@@ -451,7 +451,7 @@ proc load*(self: var ContainerImage, parser: var JsonParser) =
             load(self.`names`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ContainerImage, s: JsonStream) =
+proc dump*(self: ContainerImage, s: JsonWriter) =
   s.objectStart()
   if not self.`sizeBytes`.isEmpty:
     s.name("sizeBytes")
@@ -515,7 +515,7 @@ proc load*(self: var NodeStatus, parser: var JsonParser) =
             load(self.`conditions`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: NodeStatus, s: JsonStream) =
+proc dump*(self: NodeStatus, s: JsonWriter) =
   s.objectStart()
   if not self.`phase`.isEmpty:
     s.name("phase")
@@ -589,7 +589,7 @@ proc load*(self: var HTTPHeader, parser: var JsonParser) =
             load(self.`name`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: HTTPHeader, s: JsonStream) =
+proc dump*(self: HTTPHeader, s: JsonWriter) =
   s.objectStart()
   s.name("value")
   self.`value`.dump(s)
@@ -634,7 +634,7 @@ proc load*(self: var HTTPGetAction, parser: var JsonParser) =
             load(self.`scheme`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: HTTPGetAction, s: JsonStream) =
+proc dump*(self: HTTPGetAction, s: JsonWriter) =
   s.objectStart()
   if not self.`path`.isEmpty:
     s.name("path")
@@ -680,7 +680,7 @@ proc load*(self: var ExecAction, parser: var JsonParser) =
             load(self.`command`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ExecAction, s: JsonStream) =
+proc dump*(self: ExecAction, s: JsonWriter) =
   s.objectStart()
   if not self.`command`.isEmpty:
     s.name("command")
@@ -714,7 +714,7 @@ proc load*(self: var TCPSocketAction, parser: var JsonParser) =
             load(self.`host`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: TCPSocketAction, s: JsonStream) =
+proc dump*(self: TCPSocketAction, s: JsonWriter) =
   s.objectStart()
   s.name("port")
   self.`port`.dump(s)
@@ -769,7 +769,7 @@ proc load*(self: var Probe, parser: var JsonParser) =
             load(self.`periodSeconds`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: Probe, s: JsonStream) =
+proc dump*(self: Probe, s: JsonWriter) =
   s.objectStart()
   if not self.`failureThreshold`.isEmpty:
     s.name("failureThreshold")
@@ -843,7 +843,7 @@ proc load*(self: var PersistentVolumeClaimCondition, parser: var JsonParser) =
             load(self.`status`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: PersistentVolumeClaimCondition, s: JsonStream) =
+proc dump*(self: PersistentVolumeClaimCondition, s: JsonWriter) =
   s.objectStart()
   if not self.`lastTransitionTime`.isEmpty:
     s.name("lastTransitionTime")
@@ -892,7 +892,7 @@ proc load*(self: var LocalObjectReference, parser: var JsonParser) =
             load(self.`name`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: LocalObjectReference, s: JsonStream) =
+proc dump*(self: LocalObjectReference, s: JsonWriter) =
   s.objectStart()
   if not self.`name`.isEmpty:
     s.name("name")
@@ -935,7 +935,7 @@ proc load*(self: var CSIVolumeSource, parser: var JsonParser) =
             load(self.`readOnly`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: CSIVolumeSource, s: JsonStream) =
+proc dump*(self: CSIVolumeSource, s: JsonWriter) =
   s.objectStart()
   if not self.`volumeAttributes`.isEmpty:
     s.name("volumeAttributes")
@@ -984,7 +984,7 @@ proc load*(self: var ConfigMapEnvSource, parser: var JsonParser) =
             load(self.`optional`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ConfigMapEnvSource, s: JsonStream) =
+proc dump*(self: ConfigMapEnvSource, s: JsonWriter) =
   s.objectStart()
   if not self.`name`.isEmpty:
     s.name("name")
@@ -1022,7 +1022,7 @@ proc load*(self: var SecretEnvSource, parser: var JsonParser) =
             load(self.`optional`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: SecretEnvSource, s: JsonStream) =
+proc dump*(self: SecretEnvSource, s: JsonWriter) =
   s.objectStart()
   if not self.`name`.isEmpty:
     s.name("name")
@@ -1063,7 +1063,7 @@ proc load*(self: var EnvFromSource, parser: var JsonParser) =
             load(self.`secretRef`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: EnvFromSource, s: JsonStream) =
+proc dump*(self: EnvFromSource, s: JsonWriter) =
   s.objectStart()
   if not self.`prefix`.isEmpty:
     s.name("prefix")
@@ -1105,7 +1105,7 @@ proc load*(self: var TopologySelectorLabelRequirement, parser: var JsonParser) =
             load(self.`values`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: TopologySelectorLabelRequirement, s: JsonStream) =
+proc dump*(self: TopologySelectorLabelRequirement, s: JsonWriter) =
   s.objectStart()
   s.name("key")
   self.`key`.dump(s)
@@ -1138,7 +1138,7 @@ proc load*(self: var TopologySelectorTerm, parser: var JsonParser) =
             load(self.`matchLabelExpressions`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: TopologySelectorTerm, s: JsonStream) =
+proc dump*(self: TopologySelectorTerm, s: JsonWriter) =
   s.objectStart()
   if not self.`matchLabelExpressions`.isEmpty:
     s.name("matchLabelExpressions")
@@ -1172,7 +1172,7 @@ proc load*(self: var ObjectFieldSelector, parser: var JsonParser) =
             load(self.`fieldPath`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ObjectFieldSelector, s: JsonStream) =
+proc dump*(self: ObjectFieldSelector, s: JsonWriter) =
   s.objectStart()
   if not self.`apiVersion`.isEmpty:
     s.name("apiVersion")
@@ -1212,7 +1212,7 @@ proc load*(self: var PodAffinityTerm, parser: var JsonParser) =
             load(self.`topologyKey`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: PodAffinityTerm, s: JsonStream) =
+proc dump*(self: PodAffinityTerm, s: JsonWriter) =
   s.objectStart()
   if not self.`namespaces`.isEmpty:
     s.name("namespaces")
@@ -1253,7 +1253,7 @@ proc load*(self: var WeightedPodAffinityTerm, parser: var JsonParser) =
             load(self.`weight`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: WeightedPodAffinityTerm, s: JsonStream) =
+proc dump*(self: WeightedPodAffinityTerm, s: JsonWriter) =
   s.objectStart()
   s.name("podAffinityTerm")
   self.`podAffinityTerm`.dump(s)
@@ -1289,7 +1289,7 @@ proc load*(self: var PodAntiAffinity, parser: var JsonParser) =
             load(self.`requiredDuringSchedulingIgnoredDuringExecution`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: PodAntiAffinity, s: JsonStream) =
+proc dump*(self: PodAntiAffinity, s: JsonWriter) =
   s.objectStart()
   if not self.`preferredDuringSchedulingIgnoredDuringExecution`.isEmpty:
     s.name("preferredDuringSchedulingIgnoredDuringExecution")
@@ -1330,7 +1330,7 @@ proc load*(self: var NodeSelectorRequirement, parser: var JsonParser) =
             load(self.`operator`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: NodeSelectorRequirement, s: JsonStream) =
+proc dump*(self: NodeSelectorRequirement, s: JsonWriter) =
   s.objectStart()
   s.name("key")
   self.`key`.dump(s)
@@ -1370,7 +1370,7 @@ proc load*(self: var NodeSelectorTerm, parser: var JsonParser) =
             load(self.`matchExpressions`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: NodeSelectorTerm, s: JsonStream) =
+proc dump*(self: NodeSelectorTerm, s: JsonWriter) =
   s.objectStart()
   if not self.`matchFields`.isEmpty:
     s.name("matchFields")
@@ -1408,7 +1408,7 @@ proc load*(self: var PreferredSchedulingTerm, parser: var JsonParser) =
             load(self.`weight`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: PreferredSchedulingTerm, s: JsonStream) =
+proc dump*(self: PreferredSchedulingTerm, s: JsonWriter) =
   s.objectStart()
   s.name("preference")
   self.`preference`.dump(s)
@@ -1441,7 +1441,7 @@ proc load*(self: var NodeSelector, parser: var JsonParser) =
             load(self.`nodeSelectorTerms`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: NodeSelector, s: JsonStream) =
+proc dump*(self: NodeSelector, s: JsonWriter) =
   s.objectStart()
   s.name("nodeSelectorTerms")
   self.`nodeSelectorTerms`.dump(s)
@@ -1474,7 +1474,7 @@ proc load*(self: var NodeAffinity, parser: var JsonParser) =
             load(self.`requiredDuringSchedulingIgnoredDuringExecution`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: NodeAffinity, s: JsonStream) =
+proc dump*(self: NodeAffinity, s: JsonWriter) =
   s.objectStart()
   if not self.`preferredDuringSchedulingIgnoredDuringExecution`.isEmpty:
     s.name("preferredDuringSchedulingIgnoredDuringExecution")
@@ -1512,7 +1512,7 @@ proc load*(self: var PodAffinity, parser: var JsonParser) =
             load(self.`requiredDuringSchedulingIgnoredDuringExecution`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: PodAffinity, s: JsonStream) =
+proc dump*(self: PodAffinity, s: JsonWriter) =
   s.objectStart()
   if not self.`preferredDuringSchedulingIgnoredDuringExecution`.isEmpty:
     s.name("preferredDuringSchedulingIgnoredDuringExecution")
@@ -1553,7 +1553,7 @@ proc load*(self: var Affinity, parser: var JsonParser) =
             load(self.`podAffinity`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: Affinity, s: JsonStream) =
+proc dump*(self: Affinity, s: JsonWriter) =
   s.objectStart()
   if not self.`podAntiAffinity`.isEmpty:
     s.name("podAntiAffinity")
@@ -1598,7 +1598,7 @@ proc load*(self: var Handler, parser: var JsonParser) =
             load(self.`tcpSocket`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: Handler, s: JsonStream) =
+proc dump*(self: Handler, s: JsonWriter) =
   s.objectStart()
   if not self.`httpGet`.isEmpty:
     s.name("httpGet")
@@ -1640,7 +1640,7 @@ proc load*(self: var Lifecycle, parser: var JsonParser) =
             load(self.`postStart`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: Lifecycle, s: JsonStream) =
+proc dump*(self: Lifecycle, s: JsonWriter) =
   s.objectStart()
   if not self.`preStop`.isEmpty:
     s.name("preStop")
@@ -1687,7 +1687,7 @@ proc load*(self: var ContainerPort, parser: var JsonParser) =
             load(self.`containerPort`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ContainerPort, s: JsonStream) =
+proc dump*(self: ContainerPort, s: JsonWriter) =
   s.objectStart()
   if not self.`hostPort`.isEmpty:
     s.name("hostPort")
@@ -1739,7 +1739,7 @@ proc load*(self: var ConfigMapKeySelector, parser: var JsonParser) =
             load(self.`optional`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ConfigMapKeySelector, s: JsonStream) =
+proc dump*(self: ConfigMapKeySelector, s: JsonWriter) =
   s.objectStart()
   s.name("key")
   self.`key`.dump(s)
@@ -1783,7 +1783,7 @@ proc load*(self: var SecretKeySelector, parser: var JsonParser) =
             load(self.`optional`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: SecretKeySelector, s: JsonStream) =
+proc dump*(self: SecretKeySelector, s: JsonWriter) =
   s.objectStart()
   s.name("key")
   self.`key`.dump(s)
@@ -1827,7 +1827,7 @@ proc load*(self: var ResourceFieldSelector, parser: var JsonParser) =
             load(self.`containerName`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ResourceFieldSelector, s: JsonStream) =
+proc dump*(self: ResourceFieldSelector, s: JsonWriter) =
   s.objectStart()
   if not self.`divisor`.isEmpty:
     s.name("divisor")
@@ -1874,7 +1874,7 @@ proc load*(self: var EnvVarSource, parser: var JsonParser) =
             load(self.`resourceFieldRef`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: EnvVarSource, s: JsonStream) =
+proc dump*(self: EnvVarSource, s: JsonWriter) =
   s.objectStart()
   if not self.`fieldRef`.isEmpty:
     s.name("fieldRef")
@@ -1923,7 +1923,7 @@ proc load*(self: var EnvVar, parser: var JsonParser) =
             load(self.`valueFrom`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: EnvVar, s: JsonStream) =
+proc dump*(self: EnvVar, s: JsonWriter) =
   s.objectStart()
   if not self.`value`.isEmpty:
     s.name("value")
@@ -1964,7 +1964,7 @@ proc load*(self: var VolumeDevice, parser: var JsonParser) =
             load(self.`name`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: VolumeDevice, s: JsonStream) =
+proc dump*(self: VolumeDevice, s: JsonWriter) =
   s.objectStart()
   s.name("devicePath")
   self.`devicePath`.dump(s)
@@ -2000,7 +2000,7 @@ proc load*(self: var ResourceRequirements, parser: var JsonParser) =
             load(self.`requests`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ResourceRequirements, s: JsonStream) =
+proc dump*(self: ResourceRequirements, s: JsonWriter) =
   s.objectStart()
   if not self.`limits`.isEmpty:
     s.name("limits")
@@ -2050,7 +2050,7 @@ proc load*(self: var VolumeMount, parser: var JsonParser) =
             load(self.`readOnly`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: VolumeMount, s: JsonStream) =
+proc dump*(self: VolumeMount, s: JsonWriter) =
   s.objectStart()
   if not self.`mountPropagation`.isEmpty:
     s.name("mountPropagation")
@@ -2108,7 +2108,7 @@ proc load*(self: var SELinuxOptions, parser: var JsonParser) =
             load(self.`role`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: SELinuxOptions, s: JsonStream) =
+proc dump*(self: SELinuxOptions, s: JsonWriter) =
   s.objectStart()
   if not self.`level`.isEmpty:
     s.name("level")
@@ -2154,7 +2154,7 @@ proc load*(self: var Capabilities, parser: var JsonParser) =
             load(self.`add`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: Capabilities, s: JsonStream) =
+proc dump*(self: Capabilities, s: JsonWriter) =
   s.objectStart()
   if not self.`drop`.isEmpty:
     s.name("drop")
@@ -2195,7 +2195,7 @@ proc load*(self: var WindowsSecurityContextOptions, parser: var JsonParser) =
             load(self.`gmsaCredentialSpec`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: WindowsSecurityContextOptions, s: JsonStream) =
+proc dump*(self: WindowsSecurityContextOptions, s: JsonWriter) =
   s.objectStart()
   if not self.`runAsUserName`.isEmpty:
     s.name("runAsUserName")
@@ -2261,7 +2261,7 @@ proc load*(self: var SecurityContext, parser: var JsonParser) =
             load(self.`windowsOptions`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: SecurityContext, s: JsonStream) =
+proc dump*(self: SecurityContext, s: JsonWriter) =
   s.objectStart()
   if not self.`readOnlyRootFilesystem`.isEmpty:
     s.name("readOnlyRootFilesystem")
@@ -2394,7 +2394,7 @@ proc load*(self: var EphemeralContainer, parser: var JsonParser) =
             load(self.`args`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: EphemeralContainer, s: JsonStream) =
+proc dump*(self: EphemeralContainer, s: JsonWriter) =
   s.objectStart()
   if not self.`terminationMessagePolicy`.isEmpty:
     s.name("terminationMessagePolicy")
@@ -2515,7 +2515,7 @@ proc load*(self: var PodDNSConfigOption, parser: var JsonParser) =
             load(self.`name`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: PodDNSConfigOption, s: JsonStream) =
+proc dump*(self: PodDNSConfigOption, s: JsonWriter) =
   s.objectStart()
   if not self.`value`.isEmpty:
     s.name("value")
@@ -2556,7 +2556,7 @@ proc load*(self: var PodDNSConfig, parser: var JsonParser) =
             load(self.`searches`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: PodDNSConfig, s: JsonStream) =
+proc dump*(self: PodDNSConfig, s: JsonWriter) =
   s.objectStart()
   if not self.`nameservers`.isEmpty:
     s.name("nameservers")
@@ -2598,7 +2598,7 @@ proc load*(self: var HostAlias, parser: var JsonParser) =
             load(self.`ip`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: HostAlias, s: JsonStream) =
+proc dump*(self: HostAlias, s: JsonWriter) =
   s.objectStart()
   if not self.`hostnames`.isEmpty:
     s.name("hostnames")
@@ -2696,7 +2696,7 @@ proc load*(self: var Container, parser: var JsonParser) =
             load(self.`args`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: Container, s: JsonStream) =
+proc dump*(self: Container, s: JsonWriter) =
   s.objectStart()
   if not self.`terminationMessagePolicy`.isEmpty:
     s.name("terminationMessagePolicy")
@@ -2822,7 +2822,7 @@ proc load*(self: var Toleration, parser: var JsonParser) =
             load(self.`tolerationSeconds`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: Toleration, s: JsonStream) =
+proc dump*(self: Toleration, s: JsonWriter) =
   s.objectStart()
   if not self.`key`.isEmpty:
     s.name("key")
@@ -2869,7 +2869,7 @@ proc load*(self: var PodReadinessGate, parser: var JsonParser) =
             load(self.`conditionType`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: PodReadinessGate, s: JsonStream) =
+proc dump*(self: PodReadinessGate, s: JsonWriter) =
   s.objectStart()
   s.name("conditionType")
   self.`conditionType`.dump(s)
@@ -2902,7 +2902,7 @@ proc load*(self: var Sysctl, parser: var JsonParser) =
             load(self.`name`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: Sysctl, s: JsonStream) =
+proc dump*(self: Sysctl, s: JsonWriter) =
   s.objectStart()
   s.name("value")
   self.`value`.dump(s)
@@ -2956,7 +2956,7 @@ proc load*(self: var PodSecurityContext, parser: var JsonParser) =
             load(self.`runAsUser`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: PodSecurityContext, s: JsonStream) =
+proc dump*(self: PodSecurityContext, s: JsonWriter) =
   s.objectStart()
   if not self.`fsGroup`.isEmpty:
     s.name("fsGroup")
@@ -3024,7 +3024,7 @@ proc load*(self: var TopologySpreadConstraint, parser: var JsonParser) =
             load(self.`topologyKey`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: TopologySpreadConstraint, s: JsonStream) =
+proc dump*(self: TopologySpreadConstraint, s: JsonWriter) =
   s.objectStart()
   if not self.`labelSelector`.isEmpty:
     s.name("labelSelector")
@@ -3073,7 +3073,7 @@ proc load*(self: var VsphereVirtualDiskVolumeSource, parser: var JsonParser) =
             load(self.`fsType`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: VsphereVirtualDiskVolumeSource, s: JsonStream) =
+proc dump*(self: VsphereVirtualDiskVolumeSource, s: JsonWriter) =
   s.objectStart()
   if not self.`storagePolicyName`.isEmpty:
     s.name("storagePolicyName")
@@ -3121,7 +3121,7 @@ proc load*(self: var AzureFileVolumeSource, parser: var JsonParser) =
             load(self.`readOnly`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: AzureFileVolumeSource, s: JsonStream) =
+proc dump*(self: AzureFileVolumeSource, s: JsonWriter) =
   s.objectStart()
   s.name("shareName")
   self.`shareName`.dump(s)
@@ -3179,7 +3179,7 @@ proc load*(self: var RBDVolumeSource, parser: var JsonParser) =
             load(self.`pool`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: RBDVolumeSource, s: JsonStream) =
+proc dump*(self: RBDVolumeSource, s: JsonWriter) =
   s.objectStart()
   if not self.`user`.isEmpty:
     s.name("user")
@@ -3251,7 +3251,7 @@ proc load*(self: var CephFSVolumeSource, parser: var JsonParser) =
             load(self.`secretRef`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: CephFSVolumeSource, s: JsonStream) =
+proc dump*(self: CephFSVolumeSource, s: JsonWriter) =
   s.objectStart()
   if not self.`path`.isEmpty:
     s.name("path")
@@ -3310,7 +3310,7 @@ proc load*(self: var DownwardAPIVolumeFile, parser: var JsonParser) =
             load(self.`resourceFieldRef`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: DownwardAPIVolumeFile, s: JsonStream) =
+proc dump*(self: DownwardAPIVolumeFile, s: JsonWriter) =
   s.objectStart()
   s.name("path")
   self.`path`.dump(s)
@@ -3352,7 +3352,7 @@ proc load*(self: var DownwardAPIProjection, parser: var JsonParser) =
             load(self.`items`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: DownwardAPIProjection, s: JsonStream) =
+proc dump*(self: DownwardAPIProjection, s: JsonWriter) =
   s.objectStart()
   if not self.`items`.isEmpty:
     s.name("items")
@@ -3389,7 +3389,7 @@ proc load*(self: var ServiceAccountTokenProjection, parser: var JsonParser) =
             load(self.`audience`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ServiceAccountTokenProjection, s: JsonStream) =
+proc dump*(self: ServiceAccountTokenProjection, s: JsonWriter) =
   s.objectStart()
   s.name("path")
   self.`path`.dump(s)
@@ -3433,7 +3433,7 @@ proc load*(self: var KeyToPath, parser: var JsonParser) =
             load(self.`mode`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: KeyToPath, s: JsonStream) =
+proc dump*(self: KeyToPath, s: JsonWriter) =
   s.objectStart()
   s.name("path")
   self.`path`.dump(s)
@@ -3476,7 +3476,7 @@ proc load*(self: var SecretProjection, parser: var JsonParser) =
             load(self.`optional`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: SecretProjection, s: JsonStream) =
+proc dump*(self: SecretProjection, s: JsonWriter) =
   s.objectStart()
   if not self.`items`.isEmpty:
     s.name("items")
@@ -3521,7 +3521,7 @@ proc load*(self: var ConfigMapProjection, parser: var JsonParser) =
             load(self.`optional`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ConfigMapProjection, s: JsonStream) =
+proc dump*(self: ConfigMapProjection, s: JsonWriter) =
   s.objectStart()
   if not self.`items`.isEmpty:
     s.name("items")
@@ -3569,7 +3569,7 @@ proc load*(self: var VolumeProjection, parser: var JsonParser) =
             load(self.`configMap`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: VolumeProjection, s: JsonStream) =
+proc dump*(self: VolumeProjection, s: JsonWriter) =
   s.objectStart()
   if not self.`downwardAPI`.isEmpty:
     s.name("downwardAPI")
@@ -3615,7 +3615,7 @@ proc load*(self: var ProjectedVolumeSource, parser: var JsonParser) =
             load(self.`sources`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ProjectedVolumeSource, s: JsonStream) =
+proc dump*(self: ProjectedVolumeSource, s: JsonWriter) =
   s.objectStart()
   if not self.`defaultMode`.isEmpty:
     s.name("defaultMode")
@@ -3652,7 +3652,7 @@ proc load*(self: var HostPathVolumeSource, parser: var JsonParser) =
             load(self.`type`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: HostPathVolumeSource, s: JsonStream) =
+proc dump*(self: HostPathVolumeSource, s: JsonWriter) =
   s.objectStart()
   s.name("path")
   self.`path`.dump(s)
@@ -3692,7 +3692,7 @@ proc load*(self: var GlusterfsVolumeSource, parser: var JsonParser) =
             load(self.`readOnly`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: GlusterfsVolumeSource, s: JsonStream) =
+proc dump*(self: GlusterfsVolumeSource, s: JsonWriter) =
   s.objectStart()
   s.name("path")
   self.`path`.dump(s)
@@ -3738,7 +3738,7 @@ proc load*(self: var GCEPersistentDiskVolumeSource, parser: var JsonParser) =
             load(self.`pdName`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: GCEPersistentDiskVolumeSource, s: JsonStream) =
+proc dump*(self: GCEPersistentDiskVolumeSource, s: JsonWriter) =
   s.objectStart()
   if not self.`partition`.isEmpty:
     s.name("partition")
@@ -3795,7 +3795,7 @@ proc load*(self: var QuobyteVolumeSource, parser: var JsonParser) =
             load(self.`readOnly`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: QuobyteVolumeSource, s: JsonStream) =
+proc dump*(self: QuobyteVolumeSource, s: JsonWriter) =
   s.objectStart()
   if not self.`user`.isEmpty:
     s.name("user")
@@ -3850,7 +3850,7 @@ proc load*(self: var NFSVolumeSource, parser: var JsonParser) =
             load(self.`readOnly`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: NFSVolumeSource, s: JsonStream) =
+proc dump*(self: NFSVolumeSource, s: JsonWriter) =
   s.objectStart()
   s.name("path")
   self.`path`.dump(s)
@@ -3890,7 +3890,7 @@ proc load*(self: var EmptyDirVolumeSource, parser: var JsonParser) =
             load(self.`medium`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: EmptyDirVolumeSource, s: JsonStream) =
+proc dump*(self: EmptyDirVolumeSource, s: JsonWriter) =
   s.objectStart()
   if not self.`sizeLimit`.isEmpty:
     s.name("sizeLimit")
@@ -3928,7 +3928,7 @@ proc load*(self: var FlockerVolumeSource, parser: var JsonParser) =
             load(self.`datasetUUID`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: FlockerVolumeSource, s: JsonStream) =
+proc dump*(self: FlockerVolumeSource, s: JsonWriter) =
   s.objectStart()
   if not self.`datasetName`.isEmpty:
     s.name("datasetName")
@@ -3966,7 +3966,7 @@ proc load*(self: var DownwardAPIVolumeSource, parser: var JsonParser) =
             load(self.`defaultMode`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: DownwardAPIVolumeSource, s: JsonStream) =
+proc dump*(self: DownwardAPIVolumeSource, s: JsonWriter) =
   s.objectStart()
   if not self.`items`.isEmpty:
     s.name("items")
@@ -4004,7 +4004,7 @@ proc load*(self: var PersistentVolumeClaimVolumeSource, parser: var JsonParser) 
             load(self.`readOnly`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: PersistentVolumeClaimVolumeSource, s: JsonStream) =
+proc dump*(self: PersistentVolumeClaimVolumeSource, s: JsonWriter) =
   s.objectStart()
   s.name("claimName")
   self.`claimName`.dump(s)
@@ -4065,7 +4065,7 @@ proc load*(self: var ScaleIOVolumeSource, parser: var JsonParser) =
             load(self.`protectionDomain`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ScaleIOVolumeSource, s: JsonStream) =
+proc dump*(self: ScaleIOVolumeSource, s: JsonWriter) =
   s.objectStart()
   if not self.`storageMode`.isEmpty:
     s.name("storageMode")
@@ -4141,7 +4141,7 @@ proc load*(self: var FlexVolumeSource, parser: var JsonParser) =
             load(self.`secretRef`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: FlexVolumeSource, s: JsonStream) =
+proc dump*(self: FlexVolumeSource, s: JsonWriter) =
   s.objectStart()
   s.name("driver")
   self.`driver`.dump(s)
@@ -4196,7 +4196,7 @@ proc load*(self: var SecretVolumeSource, parser: var JsonParser) =
             load(self.`optional`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: SecretVolumeSource, s: JsonStream) =
+proc dump*(self: SecretVolumeSource, s: JsonWriter) =
   s.objectStart()
   if not self.`items`.isEmpty:
     s.name("items")
@@ -4248,7 +4248,7 @@ proc load*(self: var ConfigMapVolumeSource, parser: var JsonParser) =
             load(self.`optional`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ConfigMapVolumeSource, s: JsonStream) =
+proc dump*(self: ConfigMapVolumeSource, s: JsonWriter) =
   s.objectStart()
   if not self.`items`.isEmpty:
     s.name("items")
@@ -4297,7 +4297,7 @@ proc load*(self: var PortworxVolumeSource, parser: var JsonParser) =
             load(self.`volumeID`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: PortworxVolumeSource, s: JsonStream) =
+proc dump*(self: PortworxVolumeSource, s: JsonWriter) =
   s.objectStart()
   if not self.`fsType`.isEmpty:
     s.name("fsType")
@@ -4341,7 +4341,7 @@ proc load*(self: var GitRepoVolumeSource, parser: var JsonParser) =
             load(self.`revision`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: GitRepoVolumeSource, s: JsonStream) =
+proc dump*(self: GitRepoVolumeSource, s: JsonWriter) =
   s.objectStart()
   s.name("repository")
   self.`repository`.dump(s)
@@ -4394,7 +4394,7 @@ proc load*(self: var AzureDiskVolumeSource, parser: var JsonParser) =
             load(self.`kind`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: AzureDiskVolumeSource, s: JsonStream) =
+proc dump*(self: AzureDiskVolumeSource, s: JsonWriter) =
   s.objectStart()
   s.name("diskURI")
   self.`diskURI`.dump(s)
@@ -4452,7 +4452,7 @@ proc load*(self: var CinderVolumeSource, parser: var JsonParser) =
             load(self.`volumeID`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: CinderVolumeSource, s: JsonStream) =
+proc dump*(self: CinderVolumeSource, s: JsonWriter) =
   s.objectStart()
   if not self.`fsType`.isEmpty:
     s.name("fsType")
@@ -4506,7 +4506,7 @@ proc load*(self: var FCVolumeSource, parser: var JsonParser) =
             load(self.`wwids`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: FCVolumeSource, s: JsonStream) =
+proc dump*(self: FCVolumeSource, s: JsonWriter) =
   s.objectStart()
   if not self.`lun`.isEmpty:
     s.name("lun")
@@ -4565,7 +4565,7 @@ proc load*(self: var StorageOSVolumeSource, parser: var JsonParser) =
             load(self.`volumeNamespace`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: StorageOSVolumeSource, s: JsonStream) =
+proc dump*(self: StorageOSVolumeSource, s: JsonWriter) =
   s.objectStart()
   if not self.`volumeName`.isEmpty:
     s.name("volumeName")
@@ -4621,7 +4621,7 @@ proc load*(self: var AWSElasticBlockStoreVolumeSource, parser: var JsonParser) =
             load(self.`volumeID`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: AWSElasticBlockStoreVolumeSource, s: JsonStream) =
+proc dump*(self: AWSElasticBlockStoreVolumeSource, s: JsonWriter) =
   s.objectStart()
   if not self.`partition`.isEmpty:
     s.name("partition")
@@ -4693,7 +4693,7 @@ proc load*(self: var ISCSIVolumeSource, parser: var JsonParser) =
             load(self.`targetPortal`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ISCSIVolumeSource, s: JsonStream) =
+proc dump*(self: ISCSIVolumeSource, s: JsonWriter) =
   s.objectStart()
   s.name("iqn")
   self.`iqn`.dump(s)
@@ -4764,7 +4764,7 @@ proc load*(self: var PhotonPersistentDiskVolumeSource, parser: var JsonParser) =
             load(self.`fsType`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: PhotonPersistentDiskVolumeSource, s: JsonStream) =
+proc dump*(self: PhotonPersistentDiskVolumeSource, s: JsonWriter) =
   s.objectStart()
   s.name("pdID")
   self.`pdID`.dump(s)
@@ -4882,7 +4882,7 @@ proc load*(self: var Volume, parser: var JsonParser) =
             load(self.`photonPersistentDisk`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: Volume, s: JsonStream) =
+proc dump*(self: Volume, s: JsonWriter) =
   s.objectStart()
   if not self.`vsphereVolume`.isEmpty:
     s.name("vsphereVolume")
@@ -5123,7 +5123,7 @@ proc load*(self: var PodSpec, parser: var JsonParser) =
             load(self.`runtimeClassName`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: PodSpec, s: JsonStream) =
+proc dump*(self: PodSpec, s: JsonWriter) =
   s.objectStart()
   if not self.`affinity`.isEmpty:
     s.name("affinity")
@@ -5288,7 +5288,7 @@ proc load*(self: var ContainerStateWaiting, parser: var JsonParser) =
             load(self.`reason`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ContainerStateWaiting, s: JsonStream) =
+proc dump*(self: ContainerStateWaiting, s: JsonWriter) =
   s.objectStart()
   if not self.`message`.isEmpty:
     s.name("message")
@@ -5341,7 +5341,7 @@ proc load*(self: var ContainerStateTerminated, parser: var JsonParser) =
             load(self.`reason`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ContainerStateTerminated, s: JsonStream) =
+proc dump*(self: ContainerStateTerminated, s: JsonWriter) =
   s.objectStart()
   if not self.`signal`.isEmpty:
     s.name("signal")
@@ -5395,7 +5395,7 @@ proc load*(self: var ContainerStateRunning, parser: var JsonParser) =
             load(self.`startedAt`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ContainerStateRunning, s: JsonStream) =
+proc dump*(self: ContainerStateRunning, s: JsonWriter) =
   s.objectStart()
   if not self.`startedAt`.isEmpty:
     s.name("startedAt")
@@ -5432,7 +5432,7 @@ proc load*(self: var ContainerState, parser: var JsonParser) =
             load(self.`running`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ContainerState, s: JsonStream) =
+proc dump*(self: ContainerState, s: JsonWriter) =
   s.objectStart()
   if not self.`waiting`.isEmpty:
     s.name("waiting")
@@ -5495,7 +5495,7 @@ proc load*(self: var ContainerStatus, parser: var JsonParser) =
             load(self.`state`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ContainerStatus, s: JsonStream) =
+proc dump*(self: ContainerStatus, s: JsonWriter) =
   s.objectStart()
   s.name("ready")
   self.`ready`.dump(s)
@@ -5568,7 +5568,7 @@ proc load*(self: var PodCondition, parser: var JsonParser) =
             load(self.`status`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: PodCondition, s: JsonStream) =
+proc dump*(self: PodCondition, s: JsonWriter) =
   s.objectStart()
   if not self.`lastTransitionTime`.isEmpty:
     s.name("lastTransitionTime")
@@ -5617,7 +5617,7 @@ proc load*(self: var PodIP, parser: var JsonParser) =
             load(self.`ip`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: PodIP, s: JsonStream) =
+proc dump*(self: PodIP, s: JsonWriter) =
   s.objectStart()
   if not self.`ip`.isEmpty:
     s.name("ip")
@@ -5684,7 +5684,7 @@ proc load*(self: var PodStatus, parser: var JsonParser) =
             load(self.`podIPs`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: PodStatus, s: JsonStream) =
+proc dump*(self: PodStatus, s: JsonWriter) =
   s.objectStart()
   if not self.`containerStatuses`.isEmpty:
     s.name("containerStatuses")
@@ -5775,7 +5775,7 @@ proc load*(self: var Pod, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: Pod, s: JsonStream) =
+proc dump*(self: Pod, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("v1")
   s.name("kind"); s.value("Pod")
@@ -5856,7 +5856,7 @@ proc load*(self: var ObjectReference, parser: var JsonParser) =
             load(self.`kind`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ObjectReference, s: JsonStream) =
+proc dump*(self: ObjectReference, s: JsonWriter) =
   s.objectStart()
   if not self.`uid`.isEmpty:
     s.name("uid")
@@ -5920,7 +5920,7 @@ proc load*(self: var EndpointAddress, parser: var JsonParser) =
             load(self.`targetRef`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: EndpointAddress, s: JsonStream) =
+proc dump*(self: EndpointAddress, s: JsonWriter) =
   s.objectStart()
   if not self.`nodeName`.isEmpty:
     s.name("nodeName")
@@ -5968,7 +5968,7 @@ proc load*(self: var EndpointPort, parser: var JsonParser) =
             load(self.`name`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: EndpointPort, s: JsonStream) =
+proc dump*(self: EndpointPort, s: JsonWriter) =
   s.objectStart()
   if not self.`protocol`.isEmpty:
     s.name("protocol")
@@ -6012,7 +6012,7 @@ proc load*(self: var EndpointSubset, parser: var JsonParser) =
             load(self.`notReadyAddresses`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: EndpointSubset, s: JsonStream) =
+proc dump*(self: EndpointSubset, s: JsonWriter) =
   s.objectStart()
   if not self.`addresses`.isEmpty:
     s.name("addresses")
@@ -6060,7 +6060,7 @@ proc load*(self: var Endpoints, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: Endpoints, s: JsonStream) =
+proc dump*(self: Endpoints, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("v1")
   s.name("kind"); s.value("Endpoints")
@@ -6125,7 +6125,7 @@ proc load*(self: var ScopedResourceSelectorRequirement, parser: var JsonParser) 
             load(self.`operator`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ScopedResourceSelectorRequirement, s: JsonStream) =
+proc dump*(self: ScopedResourceSelectorRequirement, s: JsonWriter) =
   s.objectStart()
   if not self.`values`.isEmpty:
     s.name("values")
@@ -6171,7 +6171,7 @@ proc load*(self: var Taint, parser: var JsonParser) =
             load(self.`value`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: Taint, s: JsonStream) =
+proc dump*(self: Taint, s: JsonWriter) =
   s.objectStart()
   s.name("key")
   self.`key`.dump(s)
@@ -6230,7 +6230,7 @@ proc load*(self: var NodeSpec, parser: var JsonParser) =
             load(self.`configSource`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: NodeSpec, s: JsonStream) =
+proc dump*(self: NodeSpec, s: JsonWriter) =
   s.objectStart()
   if not self.`podCIDRs`.isEmpty:
     s.name("podCIDRs")
@@ -6294,7 +6294,7 @@ proc load*(self: var AzureFilePersistentVolumeSource, parser: var JsonParser) =
             load(self.`readOnly`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: AzureFilePersistentVolumeSource, s: JsonStream) =
+proc dump*(self: AzureFilePersistentVolumeSource, s: JsonWriter) =
   s.objectStart()
   s.name("shareName")
   self.`shareName`.dump(s)
@@ -6338,7 +6338,7 @@ proc load*(self: var EventSource, parser: var JsonParser) =
             load(self.`host`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: EventSource, s: JsonStream) =
+proc dump*(self: EventSource, s: JsonWriter) =
   s.objectStart()
   if not self.`component`.isEmpty:
     s.name("component")
@@ -6376,7 +6376,7 @@ proc load*(self: var PodTemplateSpec, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: PodTemplateSpec, s: JsonStream) =
+proc dump*(self: PodTemplateSpec, s: JsonWriter) =
   s.objectStart()
   if not self.`spec`.isEmpty:
     s.name("spec")
@@ -6420,7 +6420,7 @@ proc load*(self: var ReplicationControllerSpec, parser: var JsonParser) =
             load(self.`minReadySeconds`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ReplicationControllerSpec, s: JsonStream) =
+proc dump*(self: ReplicationControllerSpec, s: JsonWriter) =
   s.objectStart()
   if not self.`replicas`.isEmpty:
     s.name("replicas")
@@ -6475,7 +6475,7 @@ proc load*(self: var ReplicationControllerCondition, parser: var JsonParser) =
             load(self.`status`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ReplicationControllerCondition, s: JsonStream) =
+proc dump*(self: ReplicationControllerCondition, s: JsonWriter) =
   s.objectStart()
   if not self.`lastTransitionTime`.isEmpty:
     s.name("lastTransitionTime")
@@ -6535,7 +6535,7 @@ proc load*(self: var ReplicationControllerStatus, parser: var JsonParser) =
             load(self.`availableReplicas`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ReplicationControllerStatus, s: JsonStream) =
+proc dump*(self: ReplicationControllerStatus, s: JsonWriter) =
   s.objectStart()
   if not self.`fullyLabeledReplicas`.isEmpty:
     s.name("fullyLabeledReplicas")
@@ -6597,7 +6597,7 @@ proc load*(self: var ReplicationController, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ReplicationController, s: JsonStream) =
+proc dump*(self: ReplicationController, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("v1")
   s.name("kind"); s.value("ReplicationController")
@@ -6675,7 +6675,7 @@ proc load*(self: var LimitRangeItem, parser: var JsonParser) =
             load(self.`min`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: LimitRangeItem, s: JsonStream) =
+proc dump*(self: LimitRangeItem, s: JsonWriter) =
   s.objectStart()
   if not self.`maxLimitRequestRatio`.isEmpty:
     s.name("maxLimitRequestRatio")
@@ -6726,7 +6726,7 @@ proc load*(self: var LimitRangeSpec, parser: var JsonParser) =
             load(self.`limits`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: LimitRangeSpec, s: JsonStream) =
+proc dump*(self: LimitRangeSpec, s: JsonWriter) =
   s.objectStart()
   s.name("limits")
   self.`limits`.dump(s)
@@ -6765,7 +6765,7 @@ proc load*(self: var LimitRange, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: LimitRange, s: JsonStream) =
+proc dump*(self: LimitRange, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("v1")
   s.name("kind"); s.value("LimitRange")
@@ -6833,7 +6833,7 @@ proc load*(self: var LimitRangeList, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: LimitRangeList, s: JsonStream) =
+proc dump*(self: LimitRangeList, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("v1")
   s.name("kind"); s.value("LimitRangeList")
@@ -6891,7 +6891,7 @@ proc load*(self: var Node, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: Node, s: JsonStream) =
+proc dump*(self: Node, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("v1")
   s.name("kind"); s.value("Node")
@@ -6963,7 +6963,7 @@ proc load*(self: var NodeList, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: NodeList, s: JsonStream) =
+proc dump*(self: NodeList, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("v1")
   s.name("kind"); s.value("NodeList")
@@ -7021,7 +7021,7 @@ proc load*(self: var ServicePort, parser: var JsonParser) =
             load(self.`name`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ServicePort, s: JsonStream) =
+proc dump*(self: ServicePort, s: JsonWriter) =
   s.objectStart()
   if not self.`nodePort`.isEmpty:
     s.name("nodePort")
@@ -7079,7 +7079,7 @@ proc load*(self: var StorageOSPersistentVolumeSource, parser: var JsonParser) =
             load(self.`volumeNamespace`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: StorageOSPersistentVolumeSource, s: JsonStream) =
+proc dump*(self: StorageOSPersistentVolumeSource, s: JsonWriter) =
   s.objectStart()
   if not self.`volumeName`.isEmpty:
     s.name("volumeName")
@@ -7126,7 +7126,7 @@ proc load*(self: var VolumeNodeAffinity, parser: var JsonParser) =
             load(self.`required`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: VolumeNodeAffinity, s: JsonStream) =
+proc dump*(self: VolumeNodeAffinity, s: JsonWriter) =
   s.objectStart()
   if not self.`required`.isEmpty:
     s.name("required")
@@ -7169,7 +7169,7 @@ proc load*(self: var ConfigMap, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ConfigMap, s: JsonStream) =
+proc dump*(self: ConfigMap, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("v1")
   s.name("kind"); s.value("ConfigMap")
@@ -7241,7 +7241,7 @@ proc load*(self: var ConfigMapList, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ConfigMapList, s: JsonStream) =
+proc dump*(self: ConfigMapList, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("v1")
   s.name("kind"); s.value("ConfigMapList")
@@ -7287,7 +7287,7 @@ proc load*(self: var ClientIPConfig, parser: var JsonParser) =
             load(self.`timeoutSeconds`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ClientIPConfig, s: JsonStream) =
+proc dump*(self: ClientIPConfig, s: JsonWriter) =
   s.objectStart()
   if not self.`timeoutSeconds`.isEmpty:
     s.name("timeoutSeconds")
@@ -7318,7 +7318,7 @@ proc load*(self: var SessionAffinityConfig, parser: var JsonParser) =
             load(self.`clientIP`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: SessionAffinityConfig, s: JsonStream) =
+proc dump*(self: SessionAffinityConfig, s: JsonWriter) =
   s.objectStart()
   if not self.`clientIP`.isEmpty:
     s.name("clientIP")
@@ -7388,7 +7388,7 @@ proc load*(self: var ServiceSpec, parser: var JsonParser) =
             load(self.`externalIPs`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ServiceSpec, s: JsonStream) =
+proc dump*(self: ServiceSpec, s: JsonWriter) =
   s.objectStart()
   if not self.`publishNotReadyAddresses`.isEmpty:
     s.name("publishNotReadyAddresses")
@@ -7474,7 +7474,7 @@ proc load*(self: var LoadBalancerIngress, parser: var JsonParser) =
             load(self.`hostname`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: LoadBalancerIngress, s: JsonStream) =
+proc dump*(self: LoadBalancerIngress, s: JsonWriter) =
   s.objectStart()
   if not self.`ip`.isEmpty:
     s.name("ip")
@@ -7509,7 +7509,7 @@ proc load*(self: var LoadBalancerStatus, parser: var JsonParser) =
             load(self.`ingress`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: LoadBalancerStatus, s: JsonStream) =
+proc dump*(self: LoadBalancerStatus, s: JsonWriter) =
   s.objectStart()
   if not self.`ingress`.isEmpty:
     s.name("ingress")
@@ -7540,7 +7540,7 @@ proc load*(self: var ServiceStatus, parser: var JsonParser) =
             load(self.`loadBalancer`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ServiceStatus, s: JsonStream) =
+proc dump*(self: ServiceStatus, s: JsonWriter) =
   s.objectStart()
   if not self.`loadBalancer`.isEmpty:
     s.name("loadBalancer")
@@ -7583,7 +7583,7 @@ proc load*(self: var Service, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: Service, s: JsonStream) =
+proc dump*(self: Service, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("v1")
   s.name("kind"); s.value("Service")
@@ -7655,7 +7655,7 @@ proc load*(self: var ServiceList, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ServiceList, s: JsonStream) =
+proc dump*(self: ServiceList, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("v1")
   s.name("kind"); s.value("ServiceList")
@@ -7713,7 +7713,7 @@ proc load*(self: var NamespaceCondition, parser: var JsonParser) =
             load(self.`status`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: NamespaceCondition, s: JsonStream) =
+proc dump*(self: NamespaceCondition, s: JsonWriter) =
   s.objectStart()
   if not self.`lastTransitionTime`.isEmpty:
     s.name("lastTransitionTime")
@@ -7761,7 +7761,7 @@ proc load*(self: var NamespaceStatus, parser: var JsonParser) =
             load(self.`conditions`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: NamespaceStatus, s: JsonStream) =
+proc dump*(self: NamespaceStatus, s: JsonWriter) =
   s.objectStart()
   if not self.`phase`.isEmpty:
     s.name("phase")
@@ -7799,7 +7799,7 @@ proc load*(self: var SecretReference, parser: var JsonParser) =
             load(self.`name`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: SecretReference, s: JsonStream) =
+proc dump*(self: SecretReference, s: JsonWriter) =
   s.objectStart()
   if not self.`namespace`.isEmpty:
     s.name("namespace")
@@ -7843,7 +7843,7 @@ proc load*(self: var CinderPersistentVolumeSource, parser: var JsonParser) =
             load(self.`volumeID`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: CinderPersistentVolumeSource, s: JsonStream) =
+proc dump*(self: CinderPersistentVolumeSource, s: JsonWriter) =
   s.objectStart()
   if not self.`fsType`.isEmpty:
     s.name("fsType")
@@ -7885,7 +7885,7 @@ proc load*(self: var ScopeSelector, parser: var JsonParser) =
             load(self.`matchExpressions`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ScopeSelector, s: JsonStream) =
+proc dump*(self: ScopeSelector, s: JsonWriter) =
   s.objectStart()
   if not self.`matchExpressions`.isEmpty:
     s.name("matchExpressions")
@@ -7922,7 +7922,7 @@ proc load*(self: var ResourceQuotaSpec, parser: var JsonParser) =
             load(self.`scopeSelector`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ResourceQuotaSpec, s: JsonStream) =
+proc dump*(self: ResourceQuotaSpec, s: JsonWriter) =
   s.objectStart()
   if not self.`scopes`.isEmpty:
     s.name("scopes")
@@ -7964,7 +7964,7 @@ proc load*(self: var ResourceQuotaStatus, parser: var JsonParser) =
             load(self.`used`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ResourceQuotaStatus, s: JsonStream) =
+proc dump*(self: ResourceQuotaStatus, s: JsonWriter) =
   s.objectStart()
   if not self.`hard`.isEmpty:
     s.name("hard")
@@ -8011,7 +8011,7 @@ proc load*(self: var ResourceQuota, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ResourceQuota, s: JsonStream) =
+proc dump*(self: ResourceQuota, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("v1")
   s.name("kind"); s.value("ResourceQuota")
@@ -8104,7 +8104,7 @@ proc load*(self: var ISCSIPersistentVolumeSource, parser: var JsonParser) =
             load(self.`targetPortal`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ISCSIPersistentVolumeSource, s: JsonStream) =
+proc dump*(self: ISCSIPersistentVolumeSource, s: JsonWriter) =
   s.objectStart()
   s.name("iqn")
   self.`iqn`.dump(s)
@@ -8193,7 +8193,7 @@ proc load*(self: var RBDPersistentVolumeSource, parser: var JsonParser) =
             load(self.`pool`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: RBDPersistentVolumeSource, s: JsonStream) =
+proc dump*(self: RBDPersistentVolumeSource, s: JsonWriter) =
   s.objectStart()
   if not self.`user`.isEmpty:
     s.name("user")
@@ -8265,7 +8265,7 @@ proc load*(self: var CephFSPersistentVolumeSource, parser: var JsonParser) =
             load(self.`secretRef`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: CephFSPersistentVolumeSource, s: JsonStream) =
+proc dump*(self: CephFSPersistentVolumeSource, s: JsonWriter) =
   s.objectStart()
   if not self.`path`.isEmpty:
     s.name("path")
@@ -8324,7 +8324,7 @@ proc load*(self: var GlusterfsPersistentVolumeSource, parser: var JsonParser) =
             load(self.`readOnly`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: GlusterfsPersistentVolumeSource, s: JsonStream) =
+proc dump*(self: GlusterfsPersistentVolumeSource, s: JsonWriter) =
   s.objectStart()
   s.name("path")
   self.`path`.dump(s)
@@ -8392,7 +8392,7 @@ proc load*(self: var ScaleIOPersistentVolumeSource, parser: var JsonParser) =
             load(self.`protectionDomain`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ScaleIOPersistentVolumeSource, s: JsonStream) =
+proc dump*(self: ScaleIOPersistentVolumeSource, s: JsonWriter) =
   s.objectStart()
   if not self.`storageMode`.isEmpty:
     s.name("storageMode")
@@ -8468,7 +8468,7 @@ proc load*(self: var FlexPersistentVolumeSource, parser: var JsonParser) =
             load(self.`secretRef`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: FlexPersistentVolumeSource, s: JsonStream) =
+proc dump*(self: FlexPersistentVolumeSource, s: JsonWriter) =
   s.objectStart()
   s.name("driver")
   self.`driver`.dump(s)
@@ -8517,7 +8517,7 @@ proc load*(self: var LocalVolumeSource, parser: var JsonParser) =
             load(self.`fsType`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: LocalVolumeSource, s: JsonStream) =
+proc dump*(self: LocalVolumeSource, s: JsonWriter) =
   s.objectStart()
   s.name("path")
   self.`path`.dump(s)
@@ -8575,7 +8575,7 @@ proc load*(self: var CSIPersistentVolumeSource, parser: var JsonParser) =
             load(self.`volumeHandle`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: CSIPersistentVolumeSource, s: JsonStream) =
+proc dump*(self: CSIPersistentVolumeSource, s: JsonWriter) =
   s.objectStart()
   if not self.`controllerExpandSecretRef`.isEmpty:
     s.name("controllerExpandSecretRef")
@@ -8723,7 +8723,7 @@ proc load*(self: var PersistentVolumeSpec, parser: var JsonParser) =
             load(self.`photonPersistentDisk`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: PersistentVolumeSpec, s: JsonStream) =
+proc dump*(self: PersistentVolumeSpec, s: JsonWriter) =
   s.objectStart()
   if not self.`vsphereVolume`.isEmpty:
     s.name("vsphereVolume")
@@ -8876,7 +8876,7 @@ proc load*(self: var PersistentVolumeStatus, parser: var JsonParser) =
             load(self.`reason`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: PersistentVolumeStatus, s: JsonStream) =
+proc dump*(self: PersistentVolumeStatus, s: JsonWriter) =
   s.objectStart()
   if not self.`phase`.isEmpty:
     s.name("phase")
@@ -8924,7 +8924,7 @@ proc load*(self: var PersistentVolumeClaimStatus, parser: var JsonParser) =
             load(self.`accessModes`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: PersistentVolumeClaimStatus, s: JsonStream) =
+proc dump*(self: PersistentVolumeClaimStatus, s: JsonWriter) =
   s.objectStart()
   if not self.`phase`.isEmpty:
     s.name("phase")
@@ -8973,7 +8973,7 @@ proc load*(self: var EventSeries, parser: var JsonParser) =
             load(self.`state`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: EventSeries, s: JsonStream) =
+proc dump*(self: EventSeries, s: JsonWriter) =
   s.objectStart()
   if not self.`count`.isEmpty:
     s.name("count")
@@ -9060,7 +9060,7 @@ proc load*(self: var Event, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: Event, s: JsonStream) =
+proc dump*(self: Event, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("v1")
   s.name("kind"); s.value("Event")
@@ -9178,7 +9178,7 @@ proc load*(self: var EventList, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: EventList, s: JsonStream) =
+proc dump*(self: EventList, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("v1")
   s.name("kind"); s.value("EventList")
@@ -9236,7 +9236,7 @@ proc load*(self: var PersistentVolume, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: PersistentVolume, s: JsonStream) =
+proc dump*(self: PersistentVolume, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("v1")
   s.name("kind"); s.value("PersistentVolume")
@@ -9305,7 +9305,7 @@ proc load*(self: var TypedLocalObjectReference, parser: var JsonParser) =
             load(self.`kind`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: TypedLocalObjectReference, s: JsonStream) =
+proc dump*(self: TypedLocalObjectReference, s: JsonWriter) =
   s.objectStart()
   if not self.`apiGroup`.isEmpty:
     s.name("apiGroup")
@@ -9351,7 +9351,7 @@ proc load*(self: var PodTemplate, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: PodTemplate, s: JsonStream) =
+proc dump*(self: PodTemplate, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("v1")
   s.name("kind"); s.value("PodTemplate")
@@ -9419,7 +9419,7 @@ proc load*(self: var PodTemplateList, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: PodTemplateList, s: JsonStream) =
+proc dump*(self: PodTemplateList, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("v1")
   s.name("kind"); s.value("PodTemplateList")
@@ -9474,7 +9474,7 @@ proc load*(self: var ComponentCondition, parser: var JsonParser) =
             load(self.`status`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ComponentCondition, s: JsonStream) =
+proc dump*(self: ComponentCondition, s: JsonWriter) =
   s.objectStart()
   if not self.`error`.isEmpty:
     s.name("error")
@@ -9524,7 +9524,7 @@ proc load*(self: var ComponentStatus, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ComponentStatus, s: JsonStream) =
+proc dump*(self: ComponentStatus, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("v1")
   s.name("kind"); s.value("ComponentStatus")
@@ -9592,7 +9592,7 @@ proc load*(self: var ComponentStatusList, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ComponentStatusList, s: JsonStream) =
+proc dump*(self: ComponentStatusList, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("v1")
   s.name("kind"); s.value("ComponentStatusList")
@@ -9656,7 +9656,7 @@ proc load*(self: var PersistentVolumeClaimSpec, parser: var JsonParser) =
             load(self.`accessModes`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: PersistentVolumeClaimSpec, s: JsonStream) =
+proc dump*(self: PersistentVolumeClaimSpec, s: JsonWriter) =
   s.objectStart()
   if not self.`volumeMode`.isEmpty:
     s.name("volumeMode")
@@ -9723,7 +9723,7 @@ proc load*(self: var PersistentVolumeClaim, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: PersistentVolumeClaim, s: JsonStream) =
+proc dump*(self: PersistentVolumeClaim, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("v1")
   s.name("kind"); s.value("PersistentVolumeClaim")
@@ -9795,7 +9795,7 @@ proc load*(self: var PersistentVolumeList, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: PersistentVolumeList, s: JsonStream) =
+proc dump*(self: PersistentVolumeList, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("v1")
   s.name("kind"); s.value("PersistentVolumeList")
@@ -9850,7 +9850,7 @@ proc load*(self: var Binding, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: Binding, s: JsonStream) =
+proc dump*(self: Binding, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("v1")
   s.name("kind"); s.value("Binding")
@@ -9908,7 +9908,7 @@ proc load*(self: var NamespaceSpec, parser: var JsonParser) =
             load(self.`finalizers`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: NamespaceSpec, s: JsonStream) =
+proc dump*(self: NamespaceSpec, s: JsonWriter) =
   s.objectStart()
   if not self.`finalizers`.isEmpty:
     s.name("finalizers")
@@ -9951,7 +9951,7 @@ proc load*(self: var Namespace, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: Namespace, s: JsonStream) =
+proc dump*(self: Namespace, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("v1")
   s.name("kind"); s.value("Namespace")
@@ -10023,7 +10023,7 @@ proc load*(self: var ResourceQuotaList, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ResourceQuotaList, s: JsonStream) =
+proc dump*(self: ResourceQuotaList, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("v1")
   s.name("kind"); s.value("ResourceQuotaList")
@@ -10078,7 +10078,7 @@ proc load*(self: var PersistentVolumeClaimList, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: PersistentVolumeClaimList, s: JsonStream) =
+proc dump*(self: PersistentVolumeClaimList, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("v1")
   s.name("kind"); s.value("PersistentVolumeClaimList")
@@ -10133,7 +10133,7 @@ proc load*(self: var PodList, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: PodList, s: JsonStream) =
+proc dump*(self: PodList, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("v1")
   s.name("kind"); s.value("PodList")
@@ -10194,7 +10194,7 @@ proc load*(self: var ServiceAccount, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ServiceAccount, s: JsonStream) =
+proc dump*(self: ServiceAccount, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("v1")
   s.name("kind"); s.value("ServiceAccount")
@@ -10270,7 +10270,7 @@ proc load*(self: var ServiceAccountList, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ServiceAccountList, s: JsonStream) =
+proc dump*(self: ServiceAccountList, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("v1")
   s.name("kind"); s.value("ServiceAccountList")
@@ -10325,7 +10325,7 @@ proc load*(self: var ReplicationControllerList, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ReplicationControllerList, s: JsonStream) =
+proc dump*(self: ReplicationControllerList, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("v1")
   s.name("kind"); s.value("ReplicationControllerList")
@@ -10380,7 +10380,7 @@ proc load*(self: var EndpointsList, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: EndpointsList, s: JsonStream) =
+proc dump*(self: EndpointsList, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("v1")
   s.name("kind"); s.value("EndpointsList")
@@ -10435,7 +10435,7 @@ proc load*(self: var NamespaceList, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: NamespaceList, s: JsonStream) =
+proc dump*(self: NamespaceList, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("v1")
   s.name("kind"); s.value("NamespaceList")
@@ -10496,7 +10496,7 @@ proc load*(self: var Secret, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: Secret, s: JsonStream) =
+proc dump*(self: Secret, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("v1")
   s.name("kind"); s.value("Secret")
@@ -10572,7 +10572,7 @@ proc load*(self: var SecretList, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: SecretList, s: JsonStream) =
+proc dump*(self: SecretList, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("v1")
   s.name("kind"); s.value("SecretList")

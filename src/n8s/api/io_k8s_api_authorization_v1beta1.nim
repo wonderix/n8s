@@ -1,7 +1,7 @@
 import ../client
 import ../base_types
 import parsejson
-import ../jsonstream
+import ../jsonwriter
 import io_k8s_apimachinery_pkg_apis_meta_v1
 import asyncdispatch
 import tables
@@ -44,7 +44,7 @@ proc load*(self: var ResourceAttributes, parser: var JsonParser) =
             load(self.`verb`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ResourceAttributes, s: JsonStream) =
+proc dump*(self: ResourceAttributes, s: JsonWriter) =
   s.objectStart()
   if not self.`version`.isEmpty:
     s.name("version")
@@ -102,7 +102,7 @@ proc load*(self: var NonResourceAttributes, parser: var JsonParser) =
             load(self.`verb`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: NonResourceAttributes, s: JsonStream) =
+proc dump*(self: NonResourceAttributes, s: JsonWriter) =
   s.objectStart()
   if not self.`path`.isEmpty:
     s.name("path")
@@ -152,7 +152,7 @@ proc load*(self: var SubjectAccessReviewSpec, parser: var JsonParser) =
             load(self.`nonResourceAttributes`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: SubjectAccessReviewSpec, s: JsonStream) =
+proc dump*(self: SubjectAccessReviewSpec, s: JsonWriter) =
   s.objectStart()
   if not self.`uid`.isEmpty:
     s.name("uid")
@@ -212,7 +212,7 @@ proc load*(self: var SubjectAccessReviewStatus, parser: var JsonParser) =
             load(self.`allowed`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: SubjectAccessReviewStatus, s: JsonStream) =
+proc dump*(self: SubjectAccessReviewStatus, s: JsonWriter) =
   s.objectStart()
   if not self.`denied`.isEmpty:
     s.name("denied")
@@ -266,7 +266,7 @@ proc load*(self: var SubjectAccessReview, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: SubjectAccessReview, s: JsonStream) =
+proc dump*(self: SubjectAccessReview, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("authorization.k8s.io/v1beta1")
   s.name("kind"); s.value("SubjectAccessReview")
@@ -331,7 +331,7 @@ proc load*(self: var SelfSubjectAccessReviewSpec, parser: var JsonParser) =
             load(self.`nonResourceAttributes`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: SelfSubjectAccessReviewSpec, s: JsonStream) =
+proc dump*(self: SelfSubjectAccessReviewSpec, s: JsonWriter) =
   s.objectStart()
   if not self.`resourceAttributes`.isEmpty:
     s.name("resourceAttributes")
@@ -369,7 +369,7 @@ proc load*(self: var NonResourceRule, parser: var JsonParser) =
             load(self.`nonResourceURLs`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: NonResourceRule, s: JsonStream) =
+proc dump*(self: NonResourceRule, s: JsonWriter) =
   s.objectStart()
   s.name("verbs")
   self.`verbs`.dump(s)
@@ -403,7 +403,7 @@ proc load*(self: var SelfSubjectRulesReviewSpec, parser: var JsonParser) =
             load(self.`namespace`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: SelfSubjectRulesReviewSpec, s: JsonStream) =
+proc dump*(self: SelfSubjectRulesReviewSpec, s: JsonWriter) =
   s.objectStart()
   if not self.`namespace`.isEmpty:
     s.name("namespace")
@@ -443,7 +443,7 @@ proc load*(self: var ResourceRule, parser: var JsonParser) =
             load(self.`resourceNames`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ResourceRule, s: JsonStream) =
+proc dump*(self: ResourceRule, s: JsonWriter) =
   s.objectStart()
   if not self.`resources`.isEmpty:
     s.name("resources")
@@ -494,7 +494,7 @@ proc load*(self: var SubjectRulesReviewStatus, parser: var JsonParser) =
             load(self.`evaluationError`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: SubjectRulesReviewStatus, s: JsonStream) =
+proc dump*(self: SubjectRulesReviewStatus, s: JsonWriter) =
   s.objectStart()
   s.name("nonResourceRules")
   self.`nonResourceRules`.dump(s)
@@ -546,7 +546,7 @@ proc load*(self: var SelfSubjectRulesReview, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: SelfSubjectRulesReview, s: JsonStream) =
+proc dump*(self: SelfSubjectRulesReview, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("authorization.k8s.io/v1beta1")
   s.name("kind"); s.value("SelfSubjectRulesReview")
@@ -620,7 +620,7 @@ proc load*(self: var SelfSubjectAccessReview, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: SelfSubjectAccessReview, s: JsonStream) =
+proc dump*(self: SelfSubjectAccessReview, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("authorization.k8s.io/v1beta1")
   s.name("kind"); s.value("SelfSubjectAccessReview")
@@ -694,7 +694,7 @@ proc load*(self: var LocalSubjectAccessReview, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: LocalSubjectAccessReview, s: JsonStream) =
+proc dump*(self: LocalSubjectAccessReview, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("authorization.k8s.io/v1beta1")
   s.name("kind"); s.value("LocalSubjectAccessReview")

@@ -1,7 +1,7 @@
 import ../client
 import ../base_types
 import parsejson
-import ../jsonstream
+import ../jsonwriter
 import io_k8s_apimachinery_pkg_apis_meta_v1
 import asyncdispatch
 import io_k8s_apimachinery_pkg_util_intstr
@@ -29,7 +29,7 @@ proc load*(self: var NetworkPolicyPort, parser: var JsonParser) =
             load(self.`port`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: NetworkPolicyPort, s: JsonStream) =
+proc dump*(self: NetworkPolicyPort, s: JsonWriter) =
   s.objectStart()
   if not self.`protocol`.isEmpty:
     s.name("protocol")
@@ -67,7 +67,7 @@ proc load*(self: var IPBlock, parser: var JsonParser) =
             load(self.`cidr`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: IPBlock, s: JsonStream) =
+proc dump*(self: IPBlock, s: JsonWriter) =
   s.objectStart()
   if not self.`except`.isEmpty:
     s.name("except")
@@ -107,7 +107,7 @@ proc load*(self: var NetworkPolicyPeer, parser: var JsonParser) =
             load(self.`podSelector`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: NetworkPolicyPeer, s: JsonStream) =
+proc dump*(self: NetworkPolicyPeer, s: JsonWriter) =
   s.objectStart()
   if not self.`ipBlock`.isEmpty:
     s.name("ipBlock")
@@ -149,7 +149,7 @@ proc load*(self: var NetworkPolicyEgressRule, parser: var JsonParser) =
             load(self.`to`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: NetworkPolicyEgressRule, s: JsonStream) =
+proc dump*(self: NetworkPolicyEgressRule, s: JsonWriter) =
   s.objectStart()
   if not self.`ports`.isEmpty:
     s.name("ports")
@@ -187,7 +187,7 @@ proc load*(self: var NetworkPolicyIngressRule, parser: var JsonParser) =
             load(self.`ports`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: NetworkPolicyIngressRule, s: JsonStream) =
+proc dump*(self: NetworkPolicyIngressRule, s: JsonWriter) =
   s.objectStart()
   if not self.`from`.isEmpty:
     s.name("from")
@@ -231,7 +231,7 @@ proc load*(self: var NetworkPolicySpec, parser: var JsonParser) =
             load(self.`podSelector`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: NetworkPolicySpec, s: JsonStream) =
+proc dump*(self: NetworkPolicySpec, s: JsonWriter) =
   s.objectStart()
   if not self.`policyTypes`.isEmpty:
     s.name("policyTypes")
@@ -282,7 +282,7 @@ proc load*(self: var NetworkPolicy, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: NetworkPolicy, s: JsonStream) =
+proc dump*(self: NetworkPolicy, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("networking.k8s.io/v1")
   s.name("kind"); s.value("NetworkPolicy")
@@ -350,7 +350,7 @@ proc load*(self: var NetworkPolicyList, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: NetworkPolicyList, s: JsonStream) =
+proc dump*(self: NetworkPolicyList, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("networking.k8s.io/v1")
   s.name("kind"); s.value("NetworkPolicyList")

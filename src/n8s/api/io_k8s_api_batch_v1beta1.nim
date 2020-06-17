@@ -1,7 +1,7 @@
 import ../client
 import ../base_types
 import parsejson
-import ../jsonstream
+import ../jsonwriter
 import io_k8s_api_batch_v1
 import io_k8s_apimachinery_pkg_apis_meta_v1
 import io_k8s_api_core_v1
@@ -30,7 +30,7 @@ proc load*(self: var JobTemplateSpec, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: JobTemplateSpec, s: JsonStream) =
+proc dump*(self: JobTemplateSpec, s: JsonWriter) =
   s.objectStart()
   if not self.`spec`.isEmpty:
     s.name("spec")
@@ -83,7 +83,7 @@ proc load*(self: var CronJobSpec, parser: var JsonParser) =
             load(self.`startingDeadlineSeconds`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: CronJobSpec, s: JsonStream) =
+proc dump*(self: CronJobSpec, s: JsonWriter) =
   s.objectStart()
   if not self.`failedJobsHistoryLimit`.isEmpty:
     s.name("failedJobsHistoryLimit")
@@ -139,7 +139,7 @@ proc load*(self: var CronJobStatus, parser: var JsonParser) =
             load(self.`active`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: CronJobStatus, s: JsonStream) =
+proc dump*(self: CronJobStatus, s: JsonWriter) =
   s.objectStart()
   if not self.`lastScheduleTime`.isEmpty:
     s.name("lastScheduleTime")
@@ -186,7 +186,7 @@ proc load*(self: var CronJob, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: CronJob, s: JsonStream) =
+proc dump*(self: CronJob, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("batch/v1beta1")
   s.name("kind"); s.value("CronJob")
@@ -258,7 +258,7 @@ proc load*(self: var CronJobList, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: CronJobList, s: JsonStream) =
+proc dump*(self: CronJobList, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("batch/v1beta1")
   s.name("kind"); s.value("CronJobList")

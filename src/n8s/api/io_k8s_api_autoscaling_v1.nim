@@ -1,7 +1,7 @@
 import ../client
 import ../base_types
 import parsejson
-import ../jsonstream
+import ../jsonwriter
 import io_k8s_apimachinery_pkg_apis_meta_v1
 import asyncdispatch
 
@@ -31,7 +31,7 @@ proc load*(self: var CrossVersionObjectReference, parser: var JsonParser) =
             load(self.`kind`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: CrossVersionObjectReference, s: JsonStream) =
+proc dump*(self: CrossVersionObjectReference, s: JsonWriter) =
   s.objectStart()
   if not self.`apiVersion`.isEmpty:
     s.name("apiVersion")
@@ -77,7 +77,7 @@ proc load*(self: var HorizontalPodAutoscalerSpec, parser: var JsonParser) =
             load(self.`minReplicas`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: HorizontalPodAutoscalerSpec, s: JsonStream) =
+proc dump*(self: HorizontalPodAutoscalerSpec, s: JsonWriter) =
   s.objectStart()
   s.name("maxReplicas")
   self.`maxReplicas`.dump(s)
@@ -130,7 +130,7 @@ proc load*(self: var HorizontalPodAutoscalerStatus, parser: var JsonParser) =
             load(self.`currentReplicas`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: HorizontalPodAutoscalerStatus, s: JsonStream) =
+proc dump*(self: HorizontalPodAutoscalerStatus, s: JsonWriter) =
   s.objectStart()
   s.name("desiredReplicas")
   self.`desiredReplicas`.dump(s)
@@ -187,7 +187,7 @@ proc load*(self: var HorizontalPodAutoscaler, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: HorizontalPodAutoscaler, s: JsonStream) =
+proc dump*(self: HorizontalPodAutoscaler, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("autoscaling/v1")
   s.name("kind"); s.value("HorizontalPodAutoscaler")
@@ -250,7 +250,7 @@ proc load*(self: var ScaleSpec, parser: var JsonParser) =
             load(self.`replicas`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ScaleSpec, s: JsonStream) =
+proc dump*(self: ScaleSpec, s: JsonWriter) =
   s.objectStart()
   if not self.`replicas`.isEmpty:
     s.name("replicas")
@@ -284,7 +284,7 @@ proc load*(self: var ScaleStatus, parser: var JsonParser) =
             load(self.`selector`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ScaleStatus, s: JsonStream) =
+proc dump*(self: ScaleStatus, s: JsonWriter) =
   s.objectStart()
   s.name("replicas")
   self.`replicas`.dump(s)
@@ -330,7 +330,7 @@ proc load*(self: var Scale, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: Scale, s: JsonStream) =
+proc dump*(self: Scale, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("autoscaling/v1")
   s.name("kind"); s.value("Scale")
@@ -402,7 +402,7 @@ proc load*(self: var HorizontalPodAutoscalerList, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: HorizontalPodAutoscalerList, s: JsonStream) =
+proc dump*(self: HorizontalPodAutoscalerList, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("autoscaling/v1")
   s.name("kind"); s.value("HorizontalPodAutoscalerList")

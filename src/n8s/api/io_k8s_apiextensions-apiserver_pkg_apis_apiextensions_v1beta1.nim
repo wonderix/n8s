@@ -1,7 +1,7 @@
 import ../client
 import ../base_types
 import parsejson
-import ../jsonstream
+import ../jsonwriter
 import tables
 import io_k8s_apimachinery_pkg_apis_meta_v1
 import asyncdispatch
@@ -41,7 +41,7 @@ proc load*(self: var CustomResourceColumnDefinition, parser: var JsonParser) =
             load(self.`name`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: CustomResourceColumnDefinition, s: JsonStream) =
+proc dump*(self: CustomResourceColumnDefinition, s: JsonWriter) =
   s.objectStart()
   if not self.`format`.isEmpty:
     s.name("format")
@@ -95,7 +95,7 @@ proc load*(self: var CustomResourceSubresourceScale, parser: var JsonParser) =
             load(self.`statusReplicasPath`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: CustomResourceSubresourceScale, s: JsonStream) =
+proc dump*(self: CustomResourceSubresourceScale, s: JsonWriter) =
   s.objectStart()
   s.name("specReplicasPath")
   self.`specReplicasPath`.dump(s)
@@ -118,7 +118,7 @@ type
 proc load*(self: var CustomResourceSubresourceStatus, parser: var JsonParser) =
   load(Table[string,string](self),parser)
 
-proc dump*(self: CustomResourceSubresourceStatus, s: JsonStream) =
+proc dump*(self: CustomResourceSubresourceStatus, s: JsonWriter) =
   dump(Table[string,string](self),s)
 
 proc isEmpty*(self: CustomResourceSubresourceStatus): bool = Table[string,string](self).isEmpty
@@ -146,7 +146,7 @@ proc load*(self: var CustomResourceSubresources, parser: var JsonParser) =
             load(self.`status`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: CustomResourceSubresources, s: JsonStream) =
+proc dump*(self: CustomResourceSubresources, s: JsonWriter) =
   s.objectStart()
   if not self.`scale`.isEmpty:
     s.name("scale")
@@ -167,7 +167,7 @@ type
 proc load*(self: var JSON, parser: var JsonParser) =
   load(string(self),parser)
 
-proc dump*(self: JSON, s: JsonStream) =
+proc dump*(self: JSON, s: JsonWriter) =
   dump(string(self),s)
 
 proc isEmpty*(self: JSON): bool = string(self).isEmpty
@@ -178,7 +178,7 @@ type
 proc load*(self: var JSONSchemaPropsOrArray, parser: var JsonParser) =
   load(string(self),parser)
 
-proc dump*(self: JSONSchemaPropsOrArray, s: JsonStream) =
+proc dump*(self: JSONSchemaPropsOrArray, s: JsonWriter) =
   dump(string(self),s)
 
 proc isEmpty*(self: JSONSchemaPropsOrArray): bool = string(self).isEmpty
@@ -206,7 +206,7 @@ proc load*(self: var ExternalDocumentation, parser: var JsonParser) =
             load(self.`description`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ExternalDocumentation, s: JsonStream) =
+proc dump*(self: ExternalDocumentation, s: JsonWriter) =
   s.objectStart()
   if not self.`url`.isEmpty:
     s.name("url")
@@ -227,7 +227,7 @@ type
 proc load*(self: var JSONSchemaPropsOrBool, parser: var JsonParser) =
   load(string(self),parser)
 
-proc dump*(self: JSONSchemaPropsOrBool, s: JsonStream) =
+proc dump*(self: JSONSchemaPropsOrBool, s: JsonWriter) =
   dump(string(self),s)
 
 proc isEmpty*(self: JSONSchemaPropsOrBool): bool = string(self).isEmpty
@@ -375,7 +375,7 @@ proc load*(self: var JSONSchemaProps, parser: var JsonParser) =
             load(self.`minItems`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: JSONSchemaProps, s: JsonStream) =
+proc dump*(self: JSONSchemaProps, s: JsonWriter) =
   s.objectStart()
   if not self.`maxLength`.isEmpty:
     s.name("maxLength")
@@ -570,7 +570,7 @@ proc load*(self: var CustomResourceValidation, parser: var JsonParser) =
             load(self.`openAPIV3Schema`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: CustomResourceValidation, s: JsonStream) =
+proc dump*(self: CustomResourceValidation, s: JsonWriter) =
   s.objectStart()
   if not self.`openAPIV3Schema`.isEmpty:
     s.name("openAPIV3Schema")
@@ -616,7 +616,7 @@ proc load*(self: var CustomResourceDefinitionVersion, parser: var JsonParser) =
             load(self.`schema`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: CustomResourceDefinitionVersion, s: JsonStream) =
+proc dump*(self: CustomResourceDefinitionVersion, s: JsonWriter) =
   s.objectStart()
   s.name("served")
   self.`served`.dump(s)
@@ -673,7 +673,7 @@ proc load*(self: var ServiceReference, parser: var JsonParser) =
             load(self.`name`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ServiceReference, s: JsonStream) =
+proc dump*(self: ServiceReference, s: JsonWriter) =
   s.objectStart()
   if not self.`path`.isEmpty:
     s.name("path")
@@ -720,7 +720,7 @@ proc load*(self: var WebhookClientConfig, parser: var JsonParser) =
             load(self.`service`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: WebhookClientConfig, s: JsonStream) =
+proc dump*(self: WebhookClientConfig, s: JsonWriter) =
   s.objectStart()
   if not self.`caBundle`.isEmpty:
     s.name("caBundle")
@@ -765,7 +765,7 @@ proc load*(self: var CustomResourceConversion, parser: var JsonParser) =
             load(self.`conversionReviewVersions`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: CustomResourceConversion, s: JsonStream) =
+proc dump*(self: CustomResourceConversion, s: JsonWriter) =
   s.objectStart()
   s.name("strategy")
   self.`strategy`.dump(s)
@@ -789,7 +789,7 @@ type
 proc load*(self: var JSONSchemaPropsOrStringArray, parser: var JsonParser) =
   load(string(self),parser)
 
-proc dump*(self: JSONSchemaPropsOrStringArray, s: JsonStream) =
+proc dump*(self: JSONSchemaPropsOrStringArray, s: JsonWriter) =
   dump(string(self),s)
 
 proc isEmpty*(self: JSONSchemaPropsOrStringArray): bool = string(self).isEmpty
@@ -829,7 +829,7 @@ proc load*(self: var CustomResourceDefinitionNames, parser: var JsonParser) =
             load(self.`kind`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: CustomResourceDefinitionNames, s: JsonStream) =
+proc dump*(self: CustomResourceDefinitionNames, s: JsonWriter) =
   s.objectStart()
   if not self.`shortNames`.isEmpty:
     s.name("shortNames")
@@ -890,7 +890,7 @@ proc load*(self: var CustomResourceDefinitionCondition, parser: var JsonParser) 
             load(self.`status`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: CustomResourceDefinitionCondition, s: JsonStream) =
+proc dump*(self: CustomResourceDefinitionCondition, s: JsonWriter) =
   s.objectStart()
   if not self.`lastTransitionTime`.isEmpty:
     s.name("lastTransitionTime")
@@ -941,7 +941,7 @@ proc load*(self: var CustomResourceDefinitionStatus, parser: var JsonParser) =
             load(self.`conditions`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: CustomResourceDefinitionStatus, s: JsonStream) =
+proc dump*(self: CustomResourceDefinitionStatus, s: JsonWriter) =
   s.objectStart()
   s.name("storedVersions")
   self.`storedVersions`.dump(s)
@@ -1005,7 +1005,7 @@ proc load*(self: var CustomResourceDefinitionSpec, parser: var JsonParser) =
             load(self.`conversion`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: CustomResourceDefinitionSpec, s: JsonStream) =
+proc dump*(self: CustomResourceDefinitionSpec, s: JsonWriter) =
   s.objectStart()
   if not self.`version`.isEmpty:
     s.name("version")
@@ -1081,7 +1081,7 @@ proc load*(self: var CustomResourceDefinition, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: CustomResourceDefinition, s: JsonStream) =
+proc dump*(self: CustomResourceDefinition, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("apiextensions.k8s.io/v1beta1")
   s.name("kind"); s.value("CustomResourceDefinition")
@@ -1152,7 +1152,7 @@ proc load*(self: var CustomResourceDefinitionList, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: CustomResourceDefinitionList, s: JsonStream) =
+proc dump*(self: CustomResourceDefinitionList, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("apiextensions.k8s.io/v1beta1")
   s.name("kind"); s.value("CustomResourceDefinitionList")

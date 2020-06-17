@@ -1,7 +1,7 @@
 import ../client
 import ../base_types
 import parsejson
-import ../jsonstream
+import ../jsonwriter
 import io_k8s_apimachinery_pkg_apis_meta_v1
 import asyncdispatch
 
@@ -37,7 +37,7 @@ proc load*(self: var LeaseSpec, parser: var JsonParser) =
             load(self.`holderIdentity`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: LeaseSpec, s: JsonStream) =
+proc dump*(self: LeaseSpec, s: JsonWriter) =
   s.objectStart()
   if not self.`acquireTime`.isEmpty:
     s.name("acquireTime")
@@ -93,7 +93,7 @@ proc load*(self: var Lease, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: Lease, s: JsonStream) =
+proc dump*(self: Lease, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("coordination.k8s.io/v1")
   s.name("kind"); s.value("Lease")
@@ -161,7 +161,7 @@ proc load*(self: var LeaseList, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: LeaseList, s: JsonStream) =
+proc dump*(self: LeaseList, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("coordination.k8s.io/v1")
   s.name("kind"); s.value("LeaseList")

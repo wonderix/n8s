@@ -1,7 +1,7 @@
 import ../client
 import ../base_types
 import parsejson
-import ../jsonstream
+import ../jsonwriter
 import io_k8s_apimachinery_pkg_apis_meta_v1
 import asyncdispatch
 import io_k8s_api_core_v1
@@ -47,7 +47,7 @@ proc load*(self: var JobSpec, parser: var JsonParser) =
             load(self.`ttlSecondsAfterFinished`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: JobSpec, s: JsonStream) =
+proc dump*(self: JobSpec, s: JsonWriter) =
   s.objectStart()
   if not self.`completions`.isEmpty:
     s.name("completions")
@@ -120,7 +120,7 @@ proc load*(self: var JobCondition, parser: var JsonParser) =
             load(self.`status`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: JobCondition, s: JsonStream) =
+proc dump*(self: JobCondition, s: JsonWriter) =
   s.objectStart()
   if not self.`lastTransitionTime`.isEmpty:
     s.name("lastTransitionTime")
@@ -184,7 +184,7 @@ proc load*(self: var JobStatus, parser: var JsonParser) =
             load(self.`active`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: JobStatus, s: JsonStream) =
+proc dump*(self: JobStatus, s: JsonWriter) =
   s.objectStart()
   if not self.`failed`.isEmpty:
     s.name("failed")
@@ -247,7 +247,7 @@ proc load*(self: var Job, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: Job, s: JsonStream) =
+proc dump*(self: Job, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("batch/v1")
   s.name("kind"); s.value("Job")
@@ -319,7 +319,7 @@ proc load*(self: var JobList, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: JobList, s: JsonStream) =
+proc dump*(self: JobList, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("batch/v1")
   s.name("kind"); s.value("JobList")

@@ -1,7 +1,7 @@
 import ../client
 import ../base_types
 import parsejson
-import ../jsonstream
+import ../jsonwriter
 import io_k8s_apimachinery_pkg_apis_meta_v1
 import asyncdispatch
 import io_k8s_api_core_v1
@@ -30,7 +30,7 @@ proc load*(self: var VolumeAttachmentSource, parser: var JsonParser) =
             load(self.`inlineVolumeSpec`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: VolumeAttachmentSource, s: JsonStream) =
+proc dump*(self: VolumeAttachmentSource, s: JsonWriter) =
   s.objectStart()
   if not self.`persistentVolumeName`.isEmpty:
     s.name("persistentVolumeName")
@@ -71,7 +71,7 @@ proc load*(self: var VolumeAttachmentSpec, parser: var JsonParser) =
             load(self.`source`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: VolumeAttachmentSpec, s: JsonStream) =
+proc dump*(self: VolumeAttachmentSpec, s: JsonWriter) =
   s.objectStart()
   s.name("nodeName")
   self.`nodeName`.dump(s)
@@ -110,7 +110,7 @@ proc load*(self: var VolumeError, parser: var JsonParser) =
             load(self.`time`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: VolumeError, s: JsonStream) =
+proc dump*(self: VolumeError, s: JsonWriter) =
   s.objectStart()
   if not self.`message`.isEmpty:
     s.name("message")
@@ -154,7 +154,7 @@ proc load*(self: var VolumeAttachmentStatus, parser: var JsonParser) =
             load(self.`attachmentMetadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: VolumeAttachmentStatus, s: JsonStream) =
+proc dump*(self: VolumeAttachmentStatus, s: JsonWriter) =
   s.objectStart()
   s.name("attached")
   self.`attached`.dump(s)
@@ -208,7 +208,7 @@ proc load*(self: var VolumeAttachment, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: VolumeAttachment, s: JsonStream) =
+proc dump*(self: VolumeAttachment, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("storage.k8s.io/v1beta1")
   s.name("kind"); s.value("VolumeAttachment")
@@ -279,7 +279,7 @@ proc load*(self: var VolumeAttachmentList, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: VolumeAttachmentList, s: JsonStream) =
+proc dump*(self: VolumeAttachmentList, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("storage.k8s.io/v1beta1")
   s.name("kind"); s.value("VolumeAttachmentList")
@@ -325,7 +325,7 @@ proc load*(self: var VolumeNodeResources, parser: var JsonParser) =
             load(self.`count`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: VolumeNodeResources, s: JsonStream) =
+proc dump*(self: VolumeNodeResources, s: JsonWriter) =
   s.objectStart()
   if not self.`count`.isEmpty:
     s.name("count")
@@ -365,7 +365,7 @@ proc load*(self: var CSINodeDriver, parser: var JsonParser) =
             load(self.`name`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: CSINodeDriver, s: JsonStream) =
+proc dump*(self: CSINodeDriver, s: JsonWriter) =
   s.objectStart()
   if not self.`allocatable`.isEmpty:
     s.name("allocatable")
@@ -406,7 +406,7 @@ proc load*(self: var CSINodeSpec, parser: var JsonParser) =
             load(self.`drivers`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: CSINodeSpec, s: JsonStream) =
+proc dump*(self: CSINodeSpec, s: JsonWriter) =
   s.objectStart()
   s.name("drivers")
   self.`drivers`.dump(s)
@@ -445,7 +445,7 @@ proc load*(self: var CSINode, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: CSINode, s: JsonStream) =
+proc dump*(self: CSINode, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("storage.k8s.io/v1beta1")
   s.name("kind"); s.value("CSINode")
@@ -509,7 +509,7 @@ proc load*(self: var CSIDriverSpec, parser: var JsonParser) =
             load(self.`volumeLifecycleModes`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: CSIDriverSpec, s: JsonStream) =
+proc dump*(self: CSIDriverSpec, s: JsonWriter) =
   s.objectStart()
   if not self.`attachRequired`.isEmpty:
     s.name("attachRequired")
@@ -557,7 +557,7 @@ proc load*(self: var CSIDriver, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: CSIDriver, s: JsonStream) =
+proc dump*(self: CSIDriver, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("storage.k8s.io/v1beta1")
   s.name("kind"); s.value("CSIDriver")
@@ -624,7 +624,7 @@ proc load*(self: var CSIDriverList, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: CSIDriverList, s: JsonStream) =
+proc dump*(self: CSIDriverList, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("storage.k8s.io/v1beta1")
   s.name("kind"); s.value("CSIDriverList")
@@ -679,7 +679,7 @@ proc load*(self: var CSINodeList, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: CSINodeList, s: JsonStream) =
+proc dump*(self: CSINodeList, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("storage.k8s.io/v1beta1")
   s.name("kind"); s.value("CSINodeList")
@@ -752,7 +752,7 @@ proc load*(self: var StorageClass, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: StorageClass, s: JsonStream) =
+proc dump*(self: StorageClass, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("storage.k8s.io/v1beta1")
   s.name("kind"); s.value("StorageClass")
@@ -843,7 +843,7 @@ proc load*(self: var StorageClassList, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: StorageClassList, s: JsonStream) =
+proc dump*(self: StorageClassList, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("storage.k8s.io/v1beta1")
   s.name("kind"); s.value("StorageClassList")

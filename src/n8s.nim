@@ -5,8 +5,8 @@
 import n8s/client
 import n8s/config
 import n8s/base_types
-import n8s/jsonstream
+import n8s/jsonwriter
 export client
 export config
 export base_types
-export jsonstream
+export jsonwriter

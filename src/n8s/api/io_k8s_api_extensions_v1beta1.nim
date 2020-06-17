@@ -1,7 +1,7 @@
 import ../client
 import ../base_types
 import parsejson
-import ../jsonstream
+import ../jsonwriter
 import io_k8s_apimachinery_pkg_util_intstr
 import io_k8s_apimachinery_pkg_apis_meta_v1
 import asyncdispatch
@@ -30,7 +30,7 @@ proc load*(self: var IngressBackend, parser: var JsonParser) =
             load(self.`servicePort`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: IngressBackend, s: JsonStream) =
+proc dump*(self: IngressBackend, s: JsonWriter) =
   s.objectStart()
   s.name("serviceName")
   self.`serviceName`.dump(s)
@@ -66,7 +66,7 @@ proc load*(self: var HTTPIngressPath, parser: var JsonParser) =
             load(self.`backend`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: HTTPIngressPath, s: JsonStream) =
+proc dump*(self: HTTPIngressPath, s: JsonWriter) =
   s.objectStart()
   if not self.`path`.isEmpty:
     s.name("path")
@@ -103,7 +103,7 @@ proc load*(self: var IngressTLS, parser: var JsonParser) =
             load(self.`hosts`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: IngressTLS, s: JsonStream) =
+proc dump*(self: IngressTLS, s: JsonWriter) =
   s.objectStart()
   if not self.`secretName`.isEmpty:
     s.name("secretName")
@@ -138,7 +138,7 @@ proc load*(self: var HTTPIngressRuleValue, parser: var JsonParser) =
             load(self.`paths`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: HTTPIngressRuleValue, s: JsonStream) =
+proc dump*(self: HTTPIngressRuleValue, s: JsonWriter) =
   s.objectStart()
   s.name("paths")
   self.`paths`.dump(s)
@@ -171,7 +171,7 @@ proc load*(self: var IngressRule, parser: var JsonParser) =
             load(self.`host`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: IngressRule, s: JsonStream) =
+proc dump*(self: IngressRule, s: JsonWriter) =
   s.objectStart()
   if not self.`http`.isEmpty:
     s.name("http")
@@ -212,7 +212,7 @@ proc load*(self: var IngressSpec, parser: var JsonParser) =
             load(self.`backend`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: IngressSpec, s: JsonStream) =
+proc dump*(self: IngressSpec, s: JsonWriter) =
   s.objectStart()
   if not self.`tls`.isEmpty:
     s.name("tls")
@@ -251,7 +251,7 @@ proc load*(self: var IngressStatus, parser: var JsonParser) =
             load(self.`loadBalancer`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: IngressStatus, s: JsonStream) =
+proc dump*(self: IngressStatus, s: JsonWriter) =
   s.objectStart()
   if not self.`loadBalancer`.isEmpty:
     s.name("loadBalancer")
@@ -294,7 +294,7 @@ proc load*(self: var Ingress, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: Ingress, s: JsonStream) =
+proc dump*(self: Ingress, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("extensions/v1beta1")
   s.name("kind"); s.value("Ingress")
@@ -366,7 +366,7 @@ proc load*(self: var IngressList, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: IngressList, s: JsonStream) =
+proc dump*(self: IngressList, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("extensions/v1beta1")
   s.name("kind"); s.value("IngressList")

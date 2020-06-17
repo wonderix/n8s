@@ -1,7 +1,7 @@
 import ../client
 import ../base_types
 import parsejson
-import ../jsonstream
+import ../jsonwriter
 import io_k8s_apimachinery_pkg_apis_meta_v1
 import asyncdispatch
 
@@ -37,7 +37,7 @@ proc load*(self: var PolicyRule, parser: var JsonParser) =
             load(self.`resourceNames`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: PolicyRule, s: JsonStream) =
+proc dump*(self: PolicyRule, s: JsonWriter) =
   s.objectStart()
   if not self.`resources`.isEmpty:
     s.name("resources")
@@ -92,7 +92,7 @@ proc load*(self: var Role, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: Role, s: JsonStream) =
+proc dump*(self: Role, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("rbac.authorization.k8s.io/v1beta1")
   s.name("kind"); s.value("Role")
@@ -160,7 +160,7 @@ proc load*(self: var RoleList, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: RoleList, s: JsonStream) =
+proc dump*(self: RoleList, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("rbac.authorization.k8s.io/v1beta1")
   s.name("kind"); s.value("RoleList")
@@ -206,7 +206,7 @@ proc load*(self: var AggregationRule, parser: var JsonParser) =
             load(self.`clusterRoleSelectors`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: AggregationRule, s: JsonStream) =
+proc dump*(self: AggregationRule, s: JsonWriter) =
   s.objectStart()
   if not self.`clusterRoleSelectors`.isEmpty:
     s.name("clusterRoleSelectors")
@@ -249,7 +249,7 @@ proc load*(self: var ClusterRole, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ClusterRole, s: JsonStream) =
+proc dump*(self: ClusterRole, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("rbac.authorization.k8s.io/v1beta1")
   s.name("kind"); s.value("ClusterRole")
@@ -321,7 +321,7 @@ proc load*(self: var ClusterRoleList, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ClusterRoleList, s: JsonStream) =
+proc dump*(self: ClusterRoleList, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("rbac.authorization.k8s.io/v1beta1")
   s.name("kind"); s.value("ClusterRoleList")
@@ -373,7 +373,7 @@ proc load*(self: var RoleRef, parser: var JsonParser) =
             load(self.`kind`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: RoleRef, s: JsonStream) =
+proc dump*(self: RoleRef, s: JsonWriter) =
   s.objectStart()
   s.name("apiGroup")
   self.`apiGroup`.dump(s)
@@ -418,7 +418,7 @@ proc load*(self: var Subject, parser: var JsonParser) =
             load(self.`kind`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: Subject, s: JsonStream) =
+proc dump*(self: Subject, s: JsonWriter) =
   s.objectStart()
   if not self.`namespace`.isEmpty:
     s.name("namespace")
@@ -471,7 +471,7 @@ proc load*(self: var ClusterRoleBinding, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ClusterRoleBinding, s: JsonStream) =
+proc dump*(self: ClusterRoleBinding, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("rbac.authorization.k8s.io/v1beta1")
   s.name("kind"); s.value("ClusterRoleBinding")
@@ -545,7 +545,7 @@ proc load*(self: var RoleBinding, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: RoleBinding, s: JsonStream) =
+proc dump*(self: RoleBinding, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("rbac.authorization.k8s.io/v1beta1")
   s.name("kind"); s.value("RoleBinding")
@@ -616,7 +616,7 @@ proc load*(self: var ClusterRoleBindingList, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ClusterRoleBindingList, s: JsonStream) =
+proc dump*(self: ClusterRoleBindingList, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("rbac.authorization.k8s.io/v1beta1")
   s.name("kind"); s.value("ClusterRoleBindingList")
@@ -671,7 +671,7 @@ proc load*(self: var RoleBindingList, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: RoleBindingList, s: JsonStream) =
+proc dump*(self: RoleBindingList, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("rbac.authorization.k8s.io/v1beta1")
   s.name("kind"); s.value("RoleBindingList")

@@ -1,7 +1,7 @@
 import ../client
 import ../base_types
 import parsejson
-import ../jsonstream
+import ../jsonwriter
 import io_k8s_apimachinery_pkg_apis_meta_v1
 import io_k8s_apimachinery_pkg_api_resource
 import asyncdispatch
@@ -32,7 +32,7 @@ proc load*(self: var CrossVersionObjectReference, parser: var JsonParser) =
             load(self.`kind`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: CrossVersionObjectReference, s: JsonStream) =
+proc dump*(self: CrossVersionObjectReference, s: JsonWriter) =
   s.objectStart()
   if not self.`apiVersion`.isEmpty:
     s.name("apiVersion")
@@ -81,7 +81,7 @@ proc load*(self: var HorizontalPodAutoscalerCondition, parser: var JsonParser) =
             load(self.`status`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: HorizontalPodAutoscalerCondition, s: JsonStream) =
+proc dump*(self: HorizontalPodAutoscalerCondition, s: JsonWriter) =
   s.objectStart()
   if not self.`lastTransitionTime`.isEmpty:
     s.name("lastTransitionTime")
@@ -135,7 +135,7 @@ proc load*(self: var ExternalMetricSource, parser: var JsonParser) =
             load(self.`metricSelector`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ExternalMetricSource, s: JsonStream) =
+proc dump*(self: ExternalMetricSource, s: JsonWriter) =
   s.objectStart()
   if not self.`targetAverageValue`.isEmpty:
     s.name("targetAverageValue")
@@ -183,7 +183,7 @@ proc load*(self: var ResourceMetricSource, parser: var JsonParser) =
             load(self.`name`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ResourceMetricSource, s: JsonStream) =
+proc dump*(self: ResourceMetricSource, s: JsonWriter) =
   s.objectStart()
   if not self.`targetAverageUtilization`.isEmpty:
     s.name("targetAverageUtilization")
@@ -233,7 +233,7 @@ proc load*(self: var ObjectMetricSource, parser: var JsonParser) =
             load(self.`selector`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ObjectMetricSource, s: JsonStream) =
+proc dump*(self: ObjectMetricSource, s: JsonWriter) =
   s.objectStart()
   s.name("targetValue")
   self.`targetValue`.dump(s)
@@ -283,7 +283,7 @@ proc load*(self: var PodsMetricSource, parser: var JsonParser) =
             load(self.`selector`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: PodsMetricSource, s: JsonStream) =
+proc dump*(self: PodsMetricSource, s: JsonWriter) =
   s.objectStart()
   s.name("targetAverageValue")
   self.`targetAverageValue`.dump(s)
@@ -332,7 +332,7 @@ proc load*(self: var MetricSpec, parser: var JsonParser) =
             load(self.`pods`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: MetricSpec, s: JsonStream) =
+proc dump*(self: MetricSpec, s: JsonWriter) =
   s.objectStart()
   s.name("type")
   self.`type`.dump(s)
@@ -387,7 +387,7 @@ proc load*(self: var HorizontalPodAutoscalerSpec, parser: var JsonParser) =
             load(self.`minReplicas`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: HorizontalPodAutoscalerSpec, s: JsonStream) =
+proc dump*(self: HorizontalPodAutoscalerSpec, s: JsonWriter) =
   s.objectStart()
   if not self.`metrics`.isEmpty:
     s.name("metrics")
@@ -437,7 +437,7 @@ proc load*(self: var ExternalMetricStatus, parser: var JsonParser) =
             load(self.`metricSelector`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ExternalMetricStatus, s: JsonStream) =
+proc dump*(self: ExternalMetricStatus, s: JsonWriter) =
   s.objectStart()
   if not self.`currentAverageValue`.isEmpty:
     s.name("currentAverageValue")
@@ -484,7 +484,7 @@ proc load*(self: var ResourceMetricStatus, parser: var JsonParser) =
             load(self.`currentAverageUtilization`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ResourceMetricStatus, s: JsonStream) =
+proc dump*(self: ResourceMetricStatus, s: JsonWriter) =
   s.objectStart()
   s.name("currentAverageValue")
   self.`currentAverageValue`.dump(s)
@@ -533,7 +533,7 @@ proc load*(self: var ObjectMetricStatus, parser: var JsonParser) =
             load(self.`selector`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: ObjectMetricStatus, s: JsonStream) =
+proc dump*(self: ObjectMetricStatus, s: JsonWriter) =
   s.objectStart()
   s.name("currentValue")
   self.`currentValue`.dump(s)
@@ -583,7 +583,7 @@ proc load*(self: var PodsMetricStatus, parser: var JsonParser) =
             load(self.`selector`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: PodsMetricStatus, s: JsonStream) =
+proc dump*(self: PodsMetricStatus, s: JsonWriter) =
   s.objectStart()
   s.name("currentAverageValue")
   self.`currentAverageValue`.dump(s)
@@ -632,7 +632,7 @@ proc load*(self: var MetricStatus, parser: var JsonParser) =
             load(self.`pods`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: MetricStatus, s: JsonStream) =
+proc dump*(self: MetricStatus, s: JsonWriter) =
   s.objectStart()
   s.name("type")
   self.`type`.dump(s)
@@ -693,7 +693,7 @@ proc load*(self: var HorizontalPodAutoscalerStatus, parser: var JsonParser) =
             load(self.`currentReplicas`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: HorizontalPodAutoscalerStatus, s: JsonStream) =
+proc dump*(self: HorizontalPodAutoscalerStatus, s: JsonWriter) =
   s.objectStart()
   s.name("desiredReplicas")
   self.`desiredReplicas`.dump(s)
@@ -753,7 +753,7 @@ proc load*(self: var HorizontalPodAutoscaler, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: HorizontalPodAutoscaler, s: JsonStream) =
+proc dump*(self: HorizontalPodAutoscaler, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("autoscaling/v2beta1")
   s.name("kind"); s.value("HorizontalPodAutoscaler")
@@ -825,7 +825,7 @@ proc load*(self: var HorizontalPodAutoscalerList, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: HorizontalPodAutoscalerList, s: JsonStream) =
+proc dump*(self: HorizontalPodAutoscalerList, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("autoscaling/v2beta1")
   s.name("kind"); s.value("HorizontalPodAutoscalerList")

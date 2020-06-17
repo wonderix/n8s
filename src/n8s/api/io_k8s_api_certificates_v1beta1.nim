@@ -1,7 +1,7 @@
 import ../client
 import ../base_types
 import parsejson
-import ../jsonstream
+import ../jsonwriter
 import tables
 import io_k8s_apimachinery_pkg_apis_meta_v1
 import asyncdispatch
@@ -41,7 +41,7 @@ proc load*(self: var CertificateSigningRequestSpec, parser: var JsonParser) =
             load(self.`extra`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: CertificateSigningRequestSpec, s: JsonStream) =
+proc dump*(self: CertificateSigningRequestSpec, s: JsonWriter) =
   s.objectStart()
   if not self.`uid`.isEmpty:
     s.name("uid")
@@ -100,7 +100,7 @@ proc load*(self: var CertificateSigningRequestCondition, parser: var JsonParser)
             load(self.`reason`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: CertificateSigningRequestCondition, s: JsonStream) =
+proc dump*(self: CertificateSigningRequestCondition, s: JsonWriter) =
   s.objectStart()
   s.name("type")
   self.`type`.dump(s)
@@ -145,7 +145,7 @@ proc load*(self: var CertificateSigningRequestStatus, parser: var JsonParser) =
             load(self.`certificate`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: CertificateSigningRequestStatus, s: JsonStream) =
+proc dump*(self: CertificateSigningRequestStatus, s: JsonWriter) =
   s.objectStart()
   if not self.`conditions`.isEmpty:
     s.name("conditions")
@@ -192,7 +192,7 @@ proc load*(self: var CertificateSigningRequest, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: CertificateSigningRequest, s: JsonStream) =
+proc dump*(self: CertificateSigningRequest, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("certificates.k8s.io/v1beta1")
   s.name("kind"); s.value("CertificateSigningRequest")
@@ -264,7 +264,7 @@ proc load*(self: var CertificateSigningRequestList, parser: var JsonParser) =
             load(self.`metadata`,parser)
       else: raiseParseErr(parser,"string not " & $(parser.kind))
 
-proc dump*(self: CertificateSigningRequestList, s: JsonStream) =
+proc dump*(self: CertificateSigningRequestList, s: JsonWriter) =
   s.objectStart()
   s.name("apiVersion"); s.value("certificates.k8s.io/v1beta1")
   s.name("kind"); s.value("CertificateSigningRequestList")
