@@ -12,12 +12,12 @@ src/n8s/api/generated: bin/generator
 
 bin/generator: src/build/generator.nim $(wildcard src/n8s/*.nim)
 	mkdir -p bin
-	nim c -d:ssl src/build/generator.nim
+	nim c src/build/generator.nim
 	mv src/build/generator bin/generator
 
 test:: tests/test.log
 tests/test.log: src/n8s/api/generated $(wildcard src/n8s/*.nim) $(wildcard tests/*.nim)
-	nim c -r -d:ssl tests/test.nim
+	nim c -r tests/test.nim
 	touch tests/test.log
 	rm tests/test
 
