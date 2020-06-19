@@ -8,6 +8,7 @@ import strutils
 import sequtils
 import strformat
 import parseopt
+import re
 
 type
 
@@ -71,7 +72,7 @@ iterator references(definition: Definition): string =
           yield r.`$ref`.get.split("/")[^1]
 
 proc modulename(qualifiedName: string): string =
-  qualifiedName.rsplit(".",1)[0].replace(".","_")
+  qualifiedName.rsplit(".",1)[0].replace(re("[^A-Z0-9a-z]"),"_")
 
 proc typename(qualifiedName: string): string =
   qualifiedName.rsplit(".",1)[1]
@@ -107,6 +108,12 @@ proc nimType(ts: ExtendedTypeSpec, modulename: string): string =
             of "byte":
               return "ByteArray"
         return "string"
+      of "number":
+        if ts.format.isSome:
+          case ts.format.get:
+            of "double":
+              return "float"
+        return "int"
       of "integer":
         return "int"
       of "float":
@@ -364,12 +371,16 @@ when isMainModule:
 
     let json = await client.openapi()
     let definitions = json["definitions"]
-    #writeFile("api.json",pretty(definitions))
+    # writeFile("api.json",pretty(definitions))
     let schema = to(definitions,Definitions)
     let modules = schema.toModules()
+    let api = open(output & ".nim",fmWrite)
     for module in modules:
-      if module.name.startsWith(inc):
+      if module.name.startsWith(inc) and not module.name.startsWith("io_k8s_apiextensions"):
         module.generate(output)
+        api.writeLine("import api/" & module.name )
+        api.writeLine("export " & module.name )
+    api.close()
 
   proc usage() = 
     echo "Usage: generator --kubeconfig=config --output=dir  --include=startmodule"

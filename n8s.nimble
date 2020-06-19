@@ -3,8 +3,9 @@
 version       = "0.1.0"
 author        = "Ulrich Kramer"
 description   = "Nim Kubernetes client"
-license       = "Apache"
+license       = "MIT"
 srcDir        = "src"
+skipDirs      = @["build"]
 
 
 
