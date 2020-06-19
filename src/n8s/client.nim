@@ -56,11 +56,11 @@ proc get*[T](client: Client, groupVersion: string, t: typedesc[T], name: string,
 
 proc watch*[T](client: Client, groupVersion: string, t: typedesc[T], name: string, namespace: string, load: proc(parser: var JsonParser): T): Future[FutureStream[T]] {.async.}=
   let res = newFutureStream[T]()
-  var path = groupVersion & "/namespaces/" & namespace & "/" & ($t).toLowerAscii() & "s/" & name 
+  var path = groupVersion & "/namespaces/" & namespace & "/" & ($t).toLowerAscii() & "s/" & name
   let obj = loadJson(await client.get(path),path,load)
   await res.write(obj)
   proc background() {.async.}=
-    path = path & "?" & encodeQuery({"watch" : "true", "resourceVersion": obj.metadata.resourceVersion})
+    path = groupVersion & "/namespaces/" & namespace & "/" & ($t).toLowerAscii() & "s?" & encodeQuery({"watch" : "true", "resourceVersion": obj.metadata.resourceVersion,"fieldSelector" : "metadata.name=" & name})
     let obj = loadJson(await client.get(path),path,load)
     await res.write(obj)
   background().asyncCheck()

@@ -5,7 +5,7 @@ import streams
 import unittest
 
 suite "n8s base types":
-  test "load for JsonNore":
+  test "load for JsonNode":
     var node: JsonNode
     var parser: JsonParser
 
