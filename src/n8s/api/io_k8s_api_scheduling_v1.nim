@@ -90,7 +90,7 @@ proc delete*(client: Client, t: typedesc[PriorityClass], name: string, namespace
 proc replace*(client: Client, t: PriorityClass, namespace = "default"): Future[PriorityClass] {.async.}=
   return await client.replace("/apis/scheduling.k8s.io/v1", t, t.metadata.name, namespace, loadPriorityClass)
 
-proc watch*(client: Client, t: typedesc[PriorityClass], name: string, namespace = "default"): Future[FutureStream[PriorityClass]] {.async.}=
+proc watch*(client: Client, t: typedesc[PriorityClass], name: string, namespace = "default"): Future[FutureStream[WatchEv[PriorityClass]]] {.async.}=
   return await client.watch("/apis/scheduling.k8s.io/v1", t, name, namespace, loadPriorityClass)
 
 type

@@ -5,7 +5,6 @@ import ../jsonwriter
 import asyncdispatch
 import tables
 import times
-import io_k8s_apimachinery_pkg_runtime
 
 type
   StatusCause* = object
@@ -987,56 +986,7 @@ proc isEmpty*(self: OwnerReference): bool =
   true
 
 type
-  WatchEvent_v2* = object
-    `type`*: string
-    `object`*: io_k8s_apimachinery_pkg_runtime.RawExtension_v2
-
-proc load*(self: var WatchEvent_v2, parser: var JsonParser) =
-  if parser.kind != jsonObjectStart: raiseParseErr(parser,"object start")
-  parser.next
-  while true:
-    case parser.kind:
-      of jsonObjectEnd:
-        parser.next
-        return
-      of jsonString:
-        let key = parser.str
-        parser.next
-        case key:
-          of "type":
-            load(self.`type`,parser)
-          of "object":
-            load(self.`object`,parser)
-      else: raiseParseErr(parser,"string not " & $(parser.kind))
-
-proc dump*(self: WatchEvent_v2, s: JsonWriter) =
-  s.objectStart()
-  s.name("apiVersion"); s.value("v1")
-  s.name("kind"); s.value("WatchEvent_v2")
-  s.name("type")
-  self.`type`.dump(s)
-  s.name("object")
-  self.`object`.dump(s)
-  s.objectEnd()
-
-proc isEmpty*(self: WatchEvent_v2): bool =
-  if not self.`type`.isEmpty: return false
-  if not self.`object`.isEmpty: return false
-  true
-
-proc loadWatchEvent_v2(parser: var JsonParser):WatchEvent_v2 = 
-  var ret: WatchEvent_v2
-  load(ret,parser)
-  return ret 
-
-proc get*(client: Client, t: typedesc[WatchEvent_v2], name: string, namespace = "default"): Future[WatchEvent_v2] {.async.}=
-  return await client.get("/api/v1", t, name, namespace, loadWatchEvent_v2)
-
-proc create*(client: Client, t: WatchEvent_v2, namespace = "default"): Future[WatchEvent_v2] {.async.}=
-  return await client.create("/api/v1", t, namespace, loadWatchEvent_v2)
-
-proc delete*(client: Client, t: typedesc[WatchEvent_v2], name: string, namespace = "default") {.async.}=
-  await client.delete("/api/v1", t, name, namespace)
+  WatchEvent_v2* = WatchEv
 
 type
   APIResourceList* = object
@@ -1318,56 +1268,7 @@ proc list*(client: Client, t: typedesc[APIGroup], namespace = "default"): Future
   return (await client.list("/api/v1", APIGroupList, namespace, loadAPIGroupList)).items
 
 type
-  WatchEvent* = object
-    `type`*: string
-    `object`*: io_k8s_apimachinery_pkg_runtime.RawExtension
-
-proc load*(self: var WatchEvent, parser: var JsonParser) =
-  if parser.kind != jsonObjectStart: raiseParseErr(parser,"object start")
-  parser.next
-  while true:
-    case parser.kind:
-      of jsonObjectEnd:
-        parser.next
-        return
-      of jsonString:
-        let key = parser.str
-        parser.next
-        case key:
-          of "type":
-            load(self.`type`,parser)
-          of "object":
-            load(self.`object`,parser)
-      else: raiseParseErr(parser,"string not " & $(parser.kind))
-
-proc dump*(self: WatchEvent, s: JsonWriter) =
-  s.objectStart()
-  s.name("apiVersion"); s.value("v1")
-  s.name("kind"); s.value("WatchEvent")
-  s.name("type")
-  self.`type`.dump(s)
-  s.name("object")
-  self.`object`.dump(s)
-  s.objectEnd()
-
-proc isEmpty*(self: WatchEvent): bool =
-  if not self.`type`.isEmpty: return false
-  if not self.`object`.isEmpty: return false
-  true
-
-proc loadWatchEvent(parser: var JsonParser):WatchEvent = 
-  var ret: WatchEvent
-  load(ret,parser)
-  return ret 
-
-proc get*(client: Client, t: typedesc[WatchEvent], name: string, namespace = "default"): Future[WatchEvent] {.async.}=
-  return await client.get("/api/v1", t, name, namespace, loadWatchEvent)
-
-proc create*(client: Client, t: WatchEvent, namespace = "default"): Future[WatchEvent] {.async.}=
-  return await client.create("/api/v1", t, namespace, loadWatchEvent)
-
-proc delete*(client: Client, t: typedesc[WatchEvent], name: string, namespace = "default") {.async.}=
-  await client.delete("/api/v1", t, name, namespace)
+  WatchEvent* = WatchEv
 
 type
   LabelSelectorRequirement* = object

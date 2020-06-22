@@ -113,7 +113,7 @@ proc delete*(client: Client, t: typedesc[StorageClass], name: string, namespace 
 proc replace*(client: Client, t: StorageClass, namespace = "default"): Future[StorageClass] {.async.}=
   return await client.replace("/apis/storage.k8s.io/v1", t, t.metadata.name, namespace, loadStorageClass)
 
-proc watch*(client: Client, t: typedesc[StorageClass], name: string, namespace = "default"): Future[FutureStream[StorageClass]] {.async.}=
+proc watch*(client: Client, t: typedesc[StorageClass], name: string, namespace = "default"): Future[FutureStream[WatchEv[StorageClass]]] {.async.}=
   return await client.watch("/apis/storage.k8s.io/v1", t, name, namespace, loadStorageClass)
 
 type
@@ -411,7 +411,7 @@ proc delete*(client: Client, t: typedesc[VolumeAttachment], name: string, namesp
 proc replace*(client: Client, t: VolumeAttachment, namespace = "default"): Future[VolumeAttachment] {.async.}=
   return await client.replace("/apis/storage.k8s.io/v1", t, t.metadata.name, namespace, loadVolumeAttachment)
 
-proc watch*(client: Client, t: typedesc[VolumeAttachment], name: string, namespace = "default"): Future[FutureStream[VolumeAttachment]] {.async.}=
+proc watch*(client: Client, t: typedesc[VolumeAttachment], name: string, namespace = "default"): Future[FutureStream[WatchEv[VolumeAttachment]]] {.async.}=
   return await client.watch("/apis/storage.k8s.io/v1", t, name, namespace, loadVolumeAttachment)
 
 type

@@ -1,10 +1,8 @@
 import httpClient, asyncdispatch, config, json, sequtils, options, strutils, streams, jsonwriter, uri, asyncstreams
+import base_types
 from sugar import `=>`
 
 type
-  Event*[T] = object 
-    `object`*: T
-    `type`*: string
 
   Client* = ref object of RootObj
     config: Config
@@ -32,6 +30,7 @@ proc newClient*(kubeconfig: string = ""): Client =
   result.account = result.config.account
   result.client = newAsyncHttpClient(result.account)
 
+
 proc loadJson[T](stream: Stream, path: string, load: proc(parser: var JsonParser): T): T =
   var parser: JsonParser
   try:
@@ -56,30 +55,27 @@ proc raiseError(response: AsyncResponse, body: string) =
 
 proc splitInto(source: FutureStream[string], target: FutureStream[string]) {.async.} =
   var buffer = ""
-  var counter = 0
   while true:
     let (hasData,data) = await source.read()
     if hasData:
       for c in data.items():
         buffer.add(c)
         if c == '\n':
-          counter = counter + 1
-          if counter == 2:
-            await target.write(buffer)
-            buffer = ""
-            counter = 0
+          await target.write(buffer)
+          buffer = ""
     else:
       if buffer.len() > 0:
         await target.write(buffer)
       break
 
-proc loadInto[T](source: FutureStream[string], target: FutureStream[T], load: proc(parser: var JsonParser): T) {.async.} =
+proc loadWatchEvsInto[T](source: FutureStream[string], target: FutureStream[WatchEv[T]]) {.async.} =
   while true:
     let (hasData,data) = await source.read()
     if hasData:
-      echo data
-      # let obj = loadJson(newStringStream(data),"",load)
-      # await target.write(obj)
+      proc x(parser: var JsonParser): WatchEv[T] = 
+        loadWatchEv(result,parser)
+      let obj = loadJson(newStringStream(data),"",x)
+      await target.write(obj)
     else:
       break
 
@@ -95,18 +91,18 @@ proc get*[T](client: Client, groupVersion: string, t: typedesc[T], name: string,
   let path = groupVersion & "/namespaces/" & namespace & "/" & ($t).toLowerAscii() & "s/" & name
   return loadJson(await toStream(await client.get(path)),path,load)
 
-proc watch*[T](client: Client, groupVersion: string, t: typedesc[T], name: string, namespace: string, load: proc(parser: var JsonParser): T): Future[FutureStream[T]] {.async.}=
-  let res = newFutureStream[T]()
+proc watch*[T](client: Client, groupVersion: string, t: typedesc[T], name: string, namespace: string, load: proc(parser: var JsonParser): T): Future[FutureStream[WatchEv[T]]] {.async.}=
+  let res = newFutureStream[WatchEv[T]]()
   let path = groupVersion & "/namespaces/" & namespace & "/" & ($t).toLowerAscii() & "s/" & name
   let obj = loadJson(await toStream(await client.get(path)),path,load)
-  await res.write(obj)
+  await res.write(WatchEv[T](`type`:"",`object`:obj))
   proc background() {.async.} =
     let c = newAsyncHttpClient(client.account)
     let path = groupVersion & "/namespaces/" & namespace & "/" & ($t).toLowerAscii() & "s?" & encodeQuery({"watch" : "true", "resourceVersion": obj.metadata.resourceVersion,"fieldSelector" : "metadata.name=" & name})
     let fs = await c.get(client.config.server, path)
     let splitted = newFutureStream[string]()
     fs.splitInto(splitted).asyncCheck()
-    splitted.loadInto(res,load).asyncCheck()
+    loadWatchEvsInto[T](splitted, res).asyncCheck()
   background().asyncCheck()
   return res
 

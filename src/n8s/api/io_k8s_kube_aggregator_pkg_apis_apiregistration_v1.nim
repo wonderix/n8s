@@ -280,7 +280,7 @@ proc delete*(client: Client, t: typedesc[APIService], name: string, namespace = 
 proc replace*(client: Client, t: APIService, namespace = "default"): Future[APIService] {.async.}=
   return await client.replace("/apis/apiregistration.k8s.io/v1", t, t.metadata.name, namespace, loadAPIService)
 
-proc watch*(client: Client, t: typedesc[APIService], name: string, namespace = "default"): Future[FutureStream[APIService]] {.async.}=
+proc watch*(client: Client, t: typedesc[APIService], name: string, namespace = "default"): Future[FutureStream[WatchEv[APIService]]] {.async.}=
   return await client.watch("/apis/apiregistration.k8s.io/v1", t, name, namespace, loadAPIService)
 
 type

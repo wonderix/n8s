@@ -226,7 +226,7 @@ proc delete*(client: Client, t: typedesc[CronJob], name: string, namespace = "de
 proc replace*(client: Client, t: CronJob, namespace = "default"): Future[CronJob] {.async.}=
   return await client.replace("/apis/batch/v1beta1", t, t.metadata.name, namespace, loadCronJob)
 
-proc watch*(client: Client, t: typedesc[CronJob], name: string, namespace = "default"): Future[FutureStream[CronJob]] {.async.}=
+proc watch*(client: Client, t: typedesc[CronJob], name: string, namespace = "default"): Future[FutureStream[WatchEv[CronJob]]] {.async.}=
   return await client.watch("/apis/batch/v1beta1", t, name, namespace, loadCronJob)
 
 type

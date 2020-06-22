@@ -287,7 +287,7 @@ proc delete*(client: Client, t: typedesc[Job], name: string, namespace = "defaul
 proc replace*(client: Client, t: Job, namespace = "default"): Future[Job] {.async.}=
   return await client.replace("/apis/batch/v1", t, t.metadata.name, namespace, loadJob)
 
-proc watch*(client: Client, t: typedesc[Job], name: string, namespace = "default"): Future[FutureStream[Job]] {.async.}=
+proc watch*(client: Client, t: typedesc[Job], name: string, namespace = "default"): Future[FutureStream[WatchEv[Job]]] {.async.}=
   return await client.watch("/apis/batch/v1", t, name, namespace, loadJob)
 
 type

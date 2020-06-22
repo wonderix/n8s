@@ -1,19 +1,23 @@
 import yaml, base64, parsejson, times, tables, json, jsonwriter
 
 type 
-    ByteArray* = distinct string
+  ByteArray* = distinct string
 
-    IntOrStringKind* = enum 
-        iosString,
-        iosInt
+  IntOrStringKind* = enum 
+    iosString,
+    iosInt
 
-    IntOrString* = object
-        case kind: IntOrStringKind
-        of iosString:
-            svalue: string
-        of iosInt:
-            ivalue: int
-    
+  IntOrString* = object
+    case kind: IntOrStringKind
+    of iosString:
+      svalue: string
+    of iosInt:
+      ivalue: int
+
+  WatchEv*[T] = object 
+    `object`*: T
+    `type`*: string
+
 setTagUri(ByteArray, "!string")
 
 proc constructObject*( s: var YamlStream, c: ConstructionContext, result: var ByteArray)
@@ -245,3 +249,23 @@ proc dump*(v: JsonNode, s: JsonWriter)=
       s.null()
 
 proc isEmpty*(value: JsonNode): bool =  value.len == 0
+
+proc loadWatchEv*[T](self: var WatchEv[T], parser: var JsonParser) =
+  if parser.kind != jsonObjectStart: raiseParseErr(parser,"object start")
+  parser.next
+  while true:
+    case parser.kind:
+      of jsonObjectEnd:
+        parser.next
+        return
+      of jsonString:
+        let key = parser.str
+        parser.next
+        case key:
+          of "type":
+            load(self.`type`,parser)
+          of "object":
+            var obj: T
+            load(obj,parser)
+            self.`object` = obj
+      else: raiseParseErr(parser,"string not " & $(parser.kind))

@@ -5815,7 +5815,7 @@ proc delete*(client: Client, t: typedesc[Pod], name: string, namespace = "defaul
 proc replace*(client: Client, t: Pod, namespace = "default"): Future[Pod] {.async.}=
   return await client.replace("/api/v1", t, t.metadata.name, namespace, loadPod)
 
-proc watch*(client: Client, t: typedesc[Pod], name: string, namespace = "default"): Future[FutureStream[Pod]] {.async.}=
+proc watch*(client: Client, t: typedesc[Pod], name: string, namespace = "default"): Future[FutureStream[WatchEv[Pod]]] {.async.}=
   return await client.watch("/api/v1", t, name, namespace, loadPod)
 
 type
@@ -6096,7 +6096,7 @@ proc delete*(client: Client, t: typedesc[Endpoints], name: string, namespace = "
 proc replace*(client: Client, t: Endpoints, namespace = "default"): Future[Endpoints] {.async.}=
   return await client.replace("/api/v1", t, t.metadata.name, namespace, loadEndpoints)
 
-proc watch*(client: Client, t: typedesc[Endpoints], name: string, namespace = "default"): Future[FutureStream[Endpoints]] {.async.}=
+proc watch*(client: Client, t: typedesc[Endpoints], name: string, namespace = "default"): Future[FutureStream[WatchEv[Endpoints]]] {.async.}=
   return await client.watch("/api/v1", t, name, namespace, loadEndpoints)
 
 type
@@ -6637,7 +6637,7 @@ proc delete*(client: Client, t: typedesc[ReplicationController], name: string, n
 proc replace*(client: Client, t: ReplicationController, namespace = "default"): Future[ReplicationController] {.async.}=
   return await client.replace("/api/v1", t, t.metadata.name, namespace, loadReplicationController)
 
-proc watch*(client: Client, t: typedesc[ReplicationController], name: string, namespace = "default"): Future[FutureStream[ReplicationController]] {.async.}=
+proc watch*(client: Client, t: typedesc[ReplicationController], name: string, namespace = "default"): Future[FutureStream[WatchEv[ReplicationController]]] {.async.}=
   return await client.watch("/api/v1", t, name, namespace, loadReplicationController)
 
 type
@@ -6801,7 +6801,7 @@ proc delete*(client: Client, t: typedesc[LimitRange], name: string, namespace = 
 proc replace*(client: Client, t: LimitRange, namespace = "default"): Future[LimitRange] {.async.}=
   return await client.replace("/api/v1", t, t.metadata.name, namespace, loadLimitRange)
 
-proc watch*(client: Client, t: typedesc[LimitRange], name: string, namespace = "default"): Future[FutureStream[LimitRange]] {.async.}=
+proc watch*(client: Client, t: typedesc[LimitRange], name: string, namespace = "default"): Future[FutureStream[WatchEv[LimitRange]]] {.async.}=
   return await client.watch("/api/v1", t, name, namespace, loadLimitRange)
 
 type
@@ -6931,7 +6931,7 @@ proc delete*(client: Client, t: typedesc[Node], name: string, namespace = "defau
 proc replace*(client: Client, t: Node, namespace = "default"): Future[Node] {.async.}=
   return await client.replace("/api/v1", t, t.metadata.name, namespace, loadNode)
 
-proc watch*(client: Client, t: typedesc[Node], name: string, namespace = "default"): Future[FutureStream[Node]] {.async.}=
+proc watch*(client: Client, t: typedesc[Node], name: string, namespace = "default"): Future[FutureStream[WatchEv[Node]]] {.async.}=
   return await client.watch("/api/v1", t, name, namespace, loadNode)
 
 type
@@ -7209,7 +7209,7 @@ proc delete*(client: Client, t: typedesc[ConfigMap], name: string, namespace = "
 proc replace*(client: Client, t: ConfigMap, namespace = "default"): Future[ConfigMap] {.async.}=
   return await client.replace("/api/v1", t, t.metadata.name, namespace, loadConfigMap)
 
-proc watch*(client: Client, t: typedesc[ConfigMap], name: string, namespace = "default"): Future[FutureStream[ConfigMap]] {.async.}=
+proc watch*(client: Client, t: typedesc[ConfigMap], name: string, namespace = "default"): Future[FutureStream[WatchEv[ConfigMap]]] {.async.}=
   return await client.watch("/api/v1", t, name, namespace, loadConfigMap)
 
 type
@@ -7623,7 +7623,7 @@ proc delete*(client: Client, t: typedesc[Service], name: string, namespace = "de
 proc replace*(client: Client, t: Service, namespace = "default"): Future[Service] {.async.}=
   return await client.replace("/api/v1", t, t.metadata.name, namespace, loadService)
 
-proc watch*(client: Client, t: typedesc[Service], name: string, namespace = "default"): Future[FutureStream[Service]] {.async.}=
+proc watch*(client: Client, t: typedesc[Service], name: string, namespace = "default"): Future[FutureStream[WatchEv[Service]]] {.async.}=
   return await client.watch("/api/v1", t, name, namespace, loadService)
 
 type
@@ -8051,7 +8051,7 @@ proc delete*(client: Client, t: typedesc[ResourceQuota], name: string, namespace
 proc replace*(client: Client, t: ResourceQuota, namespace = "default"): Future[ResourceQuota] {.async.}=
   return await client.replace("/api/v1", t, t.metadata.name, namespace, loadResourceQuota)
 
-proc watch*(client: Client, t: typedesc[ResourceQuota], name: string, namespace = "default"): Future[FutureStream[ResourceQuota]] {.async.}=
+proc watch*(client: Client, t: typedesc[ResourceQuota], name: string, namespace = "default"): Future[FutureStream[WatchEv[ResourceQuota]]] {.async.}=
   return await client.watch("/api/v1", t, name, namespace, loadResourceQuota)
 
 type
@@ -9146,7 +9146,7 @@ proc delete*(client: Client, t: typedesc[Event], name: string, namespace = "defa
 proc replace*(client: Client, t: Event, namespace = "default"): Future[Event] {.async.}=
   return await client.replace("/api/v1", t, t.metadata.name, namespace, loadEvent)
 
-proc watch*(client: Client, t: typedesc[Event], name: string, namespace = "default"): Future[FutureStream[Event]] {.async.}=
+proc watch*(client: Client, t: typedesc[Event], name: string, namespace = "default"): Future[FutureStream[WatchEv[Event]]] {.async.}=
   return await client.watch("/api/v1", t, name, namespace, loadEvent)
 
 type
@@ -9276,7 +9276,7 @@ proc delete*(client: Client, t: typedesc[PersistentVolume], name: string, namesp
 proc replace*(client: Client, t: PersistentVolume, namespace = "default"): Future[PersistentVolume] {.async.}=
   return await client.replace("/api/v1", t, t.metadata.name, namespace, loadPersistentVolume)
 
-proc watch*(client: Client, t: typedesc[PersistentVolume], name: string, namespace = "default"): Future[FutureStream[PersistentVolume]] {.async.}=
+proc watch*(client: Client, t: typedesc[PersistentVolume], name: string, namespace = "default"): Future[FutureStream[WatchEv[PersistentVolume]]] {.async.}=
   return await client.watch("/api/v1", t, name, namespace, loadPersistentVolume)
 
 type
@@ -9387,7 +9387,7 @@ proc delete*(client: Client, t: typedesc[PodTemplate], name: string, namespace =
 proc replace*(client: Client, t: PodTemplate, namespace = "default"): Future[PodTemplate] {.async.}=
   return await client.replace("/api/v1", t, t.metadata.name, namespace, loadPodTemplate)
 
-proc watch*(client: Client, t: typedesc[PodTemplate], name: string, namespace = "default"): Future[FutureStream[PodTemplate]] {.async.}=
+proc watch*(client: Client, t: typedesc[PodTemplate], name: string, namespace = "default"): Future[FutureStream[WatchEv[PodTemplate]]] {.async.}=
   return await client.watch("/api/v1", t, name, namespace, loadPodTemplate)
 
 type
@@ -9560,7 +9560,7 @@ proc delete*(client: Client, t: typedesc[ComponentStatus], name: string, namespa
 proc replace*(client: Client, t: ComponentStatus, namespace = "default"): Future[ComponentStatus] {.async.}=
   return await client.replace("/api/v1", t, t.metadata.name, namespace, loadComponentStatus)
 
-proc watch*(client: Client, t: typedesc[ComponentStatus], name: string, namespace = "default"): Future[FutureStream[ComponentStatus]] {.async.}=
+proc watch*(client: Client, t: typedesc[ComponentStatus], name: string, namespace = "default"): Future[FutureStream[WatchEv[ComponentStatus]]] {.async.}=
   return await client.watch("/api/v1", t, name, namespace, loadComponentStatus)
 
 type
@@ -9763,7 +9763,7 @@ proc delete*(client: Client, t: typedesc[PersistentVolumeClaim], name: string, n
 proc replace*(client: Client, t: PersistentVolumeClaim, namespace = "default"): Future[PersistentVolumeClaim] {.async.}=
   return await client.replace("/api/v1", t, t.metadata.name, namespace, loadPersistentVolumeClaim)
 
-proc watch*(client: Client, t: typedesc[PersistentVolumeClaim], name: string, namespace = "default"): Future[FutureStream[PersistentVolumeClaim]] {.async.}=
+proc watch*(client: Client, t: typedesc[PersistentVolumeClaim], name: string, namespace = "default"): Future[FutureStream[WatchEv[PersistentVolumeClaim]]] {.async.}=
   return await client.watch("/api/v1", t, name, namespace, loadPersistentVolumeClaim)
 
 type
@@ -9885,7 +9885,7 @@ proc delete*(client: Client, t: typedesc[Binding], name: string, namespace = "de
 proc replace*(client: Client, t: Binding, namespace = "default"): Future[Binding] {.async.}=
   return await client.replace("/api/v1", t, t.metadata.name, namespace, loadBinding)
 
-proc watch*(client: Client, t: typedesc[Binding], name: string, namespace = "default"): Future[FutureStream[Binding]] {.async.}=
+proc watch*(client: Client, t: typedesc[Binding], name: string, namespace = "default"): Future[FutureStream[WatchEv[Binding]]] {.async.}=
   return await client.watch("/api/v1", t, name, namespace, loadBinding)
 
 type
@@ -9991,7 +9991,7 @@ proc delete*(client: Client, t: typedesc[Namespace], name: string, namespace = "
 proc replace*(client: Client, t: Namespace, namespace = "default"): Future[Namespace] {.async.}=
   return await client.replace("/api/v1", t, t.metadata.name, namespace, loadNamespace)
 
-proc watch*(client: Client, t: typedesc[Namespace], name: string, namespace = "default"): Future[FutureStream[Namespace]] {.async.}=
+proc watch*(client: Client, t: typedesc[Namespace], name: string, namespace = "default"): Future[FutureStream[WatchEv[Namespace]]] {.async.}=
   return await client.watch("/api/v1", t, name, namespace, loadNamespace)
 
 type
@@ -10238,7 +10238,7 @@ proc delete*(client: Client, t: typedesc[ServiceAccount], name: string, namespac
 proc replace*(client: Client, t: ServiceAccount, namespace = "default"): Future[ServiceAccount] {.async.}=
   return await client.replace("/api/v1", t, t.metadata.name, namespace, loadServiceAccount)
 
-proc watch*(client: Client, t: typedesc[ServiceAccount], name: string, namespace = "default"): Future[FutureStream[ServiceAccount]] {.async.}=
+proc watch*(client: Client, t: typedesc[ServiceAccount], name: string, namespace = "default"): Future[FutureStream[WatchEv[ServiceAccount]]] {.async.}=
   return await client.watch("/api/v1", t, name, namespace, loadServiceAccount)
 
 type
@@ -10540,7 +10540,7 @@ proc delete*(client: Client, t: typedesc[Secret], name: string, namespace = "def
 proc replace*(client: Client, t: Secret, namespace = "default"): Future[Secret] {.async.}=
   return await client.replace("/api/v1", t, t.metadata.name, namespace, loadSecret)
 
-proc watch*(client: Client, t: typedesc[Secret], name: string, namespace = "default"): Future[FutureStream[Secret]] {.async.}=
+proc watch*(client: Client, t: typedesc[Secret], name: string, namespace = "default"): Future[FutureStream[WatchEv[Secret]]] {.async.}=
   return await client.watch("/api/v1", t, name, namespace, loadSecret)
 
 type

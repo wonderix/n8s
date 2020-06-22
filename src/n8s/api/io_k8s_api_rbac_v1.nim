@@ -168,7 +168,7 @@ proc delete*(client: Client, t: typedesc[RoleBinding], name: string, namespace =
 proc replace*(client: Client, t: RoleBinding, namespace = "default"): Future[RoleBinding] {.async.}=
   return await client.replace("/apis/rbac.authorization.k8s.io/v1", t, t.metadata.name, namespace, loadRoleBinding)
 
-proc watch*(client: Client, t: typedesc[RoleBinding], name: string, namespace = "default"): Future[FutureStream[RoleBinding]] {.async.}=
+proc watch*(client: Client, t: typedesc[RoleBinding], name: string, namespace = "default"): Future[FutureStream[WatchEv[RoleBinding]]] {.async.}=
   return await client.watch("/apis/rbac.authorization.k8s.io/v1", t, name, namespace, loadRoleBinding)
 
 type
@@ -242,7 +242,7 @@ proc delete*(client: Client, t: typedesc[ClusterRoleBinding], name: string, name
 proc replace*(client: Client, t: ClusterRoleBinding, namespace = "default"): Future[ClusterRoleBinding] {.async.}=
   return await client.replace("/apis/rbac.authorization.k8s.io/v1", t, t.metadata.name, namespace, loadClusterRoleBinding)
 
-proc watch*(client: Client, t: typedesc[ClusterRoleBinding], name: string, namespace = "default"): Future[FutureStream[ClusterRoleBinding]] {.async.}=
+proc watch*(client: Client, t: typedesc[ClusterRoleBinding], name: string, namespace = "default"): Future[FutureStream[WatchEv[ClusterRoleBinding]]] {.async.}=
   return await client.watch("/apis/rbac.authorization.k8s.io/v1", t, name, namespace, loadClusterRoleBinding)
 
 type
@@ -478,7 +478,7 @@ proc delete*(client: Client, t: typedesc[Role], name: string, namespace = "defau
 proc replace*(client: Client, t: Role, namespace = "default"): Future[Role] {.async.}=
   return await client.replace("/apis/rbac.authorization.k8s.io/v1", t, t.metadata.name, namespace, loadRole)
 
-proc watch*(client: Client, t: typedesc[Role], name: string, namespace = "default"): Future[FutureStream[Role]] {.async.}=
+proc watch*(client: Client, t: typedesc[Role], name: string, namespace = "default"): Future[FutureStream[WatchEv[Role]]] {.async.}=
   return await client.watch("/apis/rbac.authorization.k8s.io/v1", t, name, namespace, loadRole)
 
 type
@@ -584,7 +584,7 @@ proc delete*(client: Client, t: typedesc[ClusterRole], name: string, namespace =
 proc replace*(client: Client, t: ClusterRole, namespace = "default"): Future[ClusterRole] {.async.}=
   return await client.replace("/apis/rbac.authorization.k8s.io/v1", t, t.metadata.name, namespace, loadClusterRole)
 
-proc watch*(client: Client, t: typedesc[ClusterRole], name: string, namespace = "default"): Future[FutureStream[ClusterRole]] {.async.}=
+proc watch*(client: Client, t: typedesc[ClusterRole], name: string, namespace = "default"): Future[FutureStream[WatchEv[ClusterRole]]] {.async.}=
   return await client.watch("/apis/rbac.authorization.k8s.io/v1", t, name, namespace, loadClusterRole)
 
 type

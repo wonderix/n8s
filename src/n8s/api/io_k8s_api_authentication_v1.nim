@@ -219,5 +219,5 @@ proc delete*(client: Client, t: typedesc[TokenReview], name: string, namespace =
 proc replace*(client: Client, t: TokenReview, namespace = "default"): Future[TokenReview] {.async.}=
   return await client.replace("/apis/authentication.k8s.io/v1", t, t.metadata.name, namespace, loadTokenReview)
 
-proc watch*(client: Client, t: typedesc[TokenReview], name: string, namespace = "default"): Future[FutureStream[TokenReview]] {.async.}=
+proc watch*(client: Client, t: typedesc[TokenReview], name: string, namespace = "default"): Future[FutureStream[WatchEv[TokenReview]]] {.async.}=
   return await client.watch("/apis/authentication.k8s.io/v1", t, name, namespace, loadTokenReview)

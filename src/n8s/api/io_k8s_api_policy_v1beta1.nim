@@ -700,7 +700,7 @@ proc delete*(client: Client, t: typedesc[PodSecurityPolicy], name: string, names
 proc replace*(client: Client, t: PodSecurityPolicy, namespace = "default"): Future[PodSecurityPolicy] {.async.}=
   return await client.replace("/apis/policy/v1beta1", t, t.metadata.name, namespace, loadPodSecurityPolicy)
 
-proc watch*(client: Client, t: typedesc[PodSecurityPolicy], name: string, namespace = "default"): Future[FutureStream[PodSecurityPolicy]] {.async.}=
+proc watch*(client: Client, t: typedesc[PodSecurityPolicy], name: string, namespace = "default"): Future[FutureStream[WatchEv[PodSecurityPolicy]]] {.async.}=
   return await client.watch("/apis/policy/v1beta1", t, name, namespace, loadPodSecurityPolicy)
 
 type
@@ -837,7 +837,7 @@ proc delete*(client: Client, t: typedesc[PodDisruptionBudget], name: string, nam
 proc replace*(client: Client, t: PodDisruptionBudget, namespace = "default"): Future[PodDisruptionBudget] {.async.}=
   return await client.replace("/apis/policy/v1beta1", t, t.metadata.name, namespace, loadPodDisruptionBudget)
 
-proc watch*(client: Client, t: typedesc[PodDisruptionBudget], name: string, namespace = "default"): Future[FutureStream[PodDisruptionBudget]] {.async.}=
+proc watch*(client: Client, t: typedesc[PodDisruptionBudget], name: string, namespace = "default"): Future[FutureStream[WatchEv[PodDisruptionBudget]]] {.async.}=
   return await client.watch("/apis/policy/v1beta1", t, name, namespace, loadPodDisruptionBudget)
 
 type
@@ -905,7 +905,7 @@ proc delete*(client: Client, t: typedesc[Eviction], name: string, namespace = "d
 proc replace*(client: Client, t: Eviction, namespace = "default"): Future[Eviction] {.async.}=
   return await client.replace("/apis/policy/v1beta1", t, t.metadata.name, namespace, loadEviction)
 
-proc watch*(client: Client, t: typedesc[Eviction], name: string, namespace = "default"): Future[FutureStream[Eviction]] {.async.}=
+proc watch*(client: Client, t: typedesc[Eviction], name: string, namespace = "default"): Future[FutureStream[WatchEv[Eviction]]] {.async.}=
   return await client.watch("/apis/policy/v1beta1", t, name, namespace, loadEviction)
 
 type

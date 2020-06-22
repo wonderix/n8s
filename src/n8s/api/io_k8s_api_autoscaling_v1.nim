@@ -227,7 +227,7 @@ proc delete*(client: Client, t: typedesc[HorizontalPodAutoscaler], name: string,
 proc replace*(client: Client, t: HorizontalPodAutoscaler, namespace = "default"): Future[HorizontalPodAutoscaler] {.async.}=
   return await client.replace("/apis/autoscaling/v1", t, t.metadata.name, namespace, loadHorizontalPodAutoscaler)
 
-proc watch*(client: Client, t: typedesc[HorizontalPodAutoscaler], name: string, namespace = "default"): Future[FutureStream[HorizontalPodAutoscaler]] {.async.}=
+proc watch*(client: Client, t: typedesc[HorizontalPodAutoscaler], name: string, namespace = "default"): Future[FutureStream[WatchEv[HorizontalPodAutoscaler]]] {.async.}=
   return await client.watch("/apis/autoscaling/v1", t, name, namespace, loadHorizontalPodAutoscaler)
 
 type
@@ -370,7 +370,7 @@ proc delete*(client: Client, t: typedesc[Scale], name: string, namespace = "defa
 proc replace*(client: Client, t: Scale, namespace = "default"): Future[Scale] {.async.}=
   return await client.replace("/apis/autoscaling/v1", t, t.metadata.name, namespace, loadScale)
 
-proc watch*(client: Client, t: typedesc[Scale], name: string, namespace = "default"): Future[FutureStream[Scale]] {.async.}=
+proc watch*(client: Client, t: typedesc[Scale], name: string, namespace = "default"): Future[FutureStream[WatchEv[Scale]]] {.async.}=
   return await client.watch("/apis/autoscaling/v1", t, name, namespace, loadScale)
 
 type

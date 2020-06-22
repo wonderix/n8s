@@ -1,5 +1,3 @@
-import asyncdispatch
-import ../n8s/client
 import json
 import tables
 import options
@@ -8,6 +6,7 @@ import strutils
 import sequtils
 import strformat
 import parseopt
+import streams
 import re
 
 type
@@ -263,7 +262,7 @@ proc generateApi(definition: Definition, name: string, apiPath: string, f: File)
       f.writeLine("proc replace*(client: Client, t: ", name.typename, ", namespace = \"default\"): Future[", name.typename, "] {.async.}=")
       f.writeLine("  return await client.replace(\"" & apiPath & "\", t, t.metadata.name, namespace, load", name.typename, ")")
       f.writeLine("")
-      f.writeLine("proc watch*(client: Client, t: typedesc[", name.typename, "], name: string, namespace = \"default\"): Future[FutureStream[", name.typename, "]] {.async.}=")
+      f.writeLine("proc watch*(client: Client, t: typedesc[", name.typename, "], name: string, namespace = \"default\"): Future[FutureStream[WatchEv[", name.typename, "]]] {.async.}=")
       f.writeLine("  return await client.watch(\"" & apiPath & "\", t, name, namespace, load", name.typename, ")")
 
 proc generateIntOrString(name: string, f: File) =
@@ -283,6 +282,11 @@ proc generateRawExtension(name: string, f: File) =
   f.writeLine("")
   f.writeLine("type")
   f.writeLine("  ", name.typename, "* = JsonNode")
+
+proc generateWatchEvent(name: string, f: File) =
+  f.writeLine("")
+  f.writeLine("type")
+  f.writeLine("  ", name.typename, "* = WatchEv")
 
 proc generateTypedef(definition: Definition, name: string, f: File) =
   f.writeLine("")
@@ -304,6 +308,10 @@ proc generate(definition: Definition, name: string, f: File) =
       generateRawExtension(name,f)
     of "io.k8s.apimachinery.pkg.util.intstr.IntOrString":
       generateIntOrString(name,f)
+    of "io.k8s.apimachinery.pkg.apis.meta.v1.WatchEvent":
+      generateWatchEvent(name,f)
+    of "io.k8s.apimachinery.pkg.apis.meta.v1.WatchEvent_v2":
+      generateWatchEvent(name,f)
     else:
       if definition.properties.isSome:
         definition.generateType(name,f)
@@ -330,6 +338,10 @@ proc fillReferences(name: string, definitions: Table[string,Definition], refs: v
     of "io.k8s.apimachinery.pkg.runtime.RawExtension_v2", "io.k8s.apimachinery.pkg.runtime.RawExtension":
       imports.incl("json")
     of "io.k8s.apimachinery.pkg.util.intstr.IntOrString":
+      discard
+    of "io.k8s.apimachinery.pkg.apis.meta.v1.WatchEvent":
+      discard
+    of "io.k8s.apimachinery.pkg.apis.meta.v1.WatchEvent_v2":
       discard
     else:
       let definition = definitions[name]
@@ -366,12 +378,8 @@ proc generate(self: Module, output: string) =
   f.close()
 
 when isMainModule: 
-  proc generate(output: string, kubeconfig: string, inc: string) {.async.} = 
-    let client = newClient(kubeconfig)
-
-    let json = await client.openapi()
-    let definitions = json["definitions"]
-    # writeFile("api.json",pretty(definitions))
+  proc generate(input: string, output: string, kubeconfig: string, inc: string) = 
+    let definitions = parseJson(newStringStream(readFile(input)))
     let schema = to(definitions,Definitions)
     let modules = schema.toModules()
     let api = open(output & ".nim",fmWrite)
@@ -387,6 +395,7 @@ when isMainModule:
     quit(0)
 
   var p = initOptParser(@[])
+  var input = "api.json"
   var output = "."
   var kubeconfig = ""
   var inc = ""
@@ -396,8 +405,9 @@ when isMainModule:
       case key
       of "help", "h": usage()
       of "output" : output = val
+      of "input" : input = val
       of "kubeconfig" : kubeconfig = val
       of "include" : inc = val
     of cmdEnd: assert(false) # cannot happen
     else: usage()
-  waitFor generate(output,kubeconfig,inc)
+  generate(input, output,kubeconfig,inc)

@@ -334,7 +334,7 @@ proc delete*(client: Client, t: typedesc[Ingress], name: string, namespace = "de
 proc replace*(client: Client, t: Ingress, namespace = "default"): Future[Ingress] {.async.}=
   return await client.replace("/apis/extensions/v1beta1", t, t.metadata.name, namespace, loadIngress)
 
-proc watch*(client: Client, t: typedesc[Ingress], name: string, namespace = "default"): Future[FutureStream[Ingress]] {.async.}=
+proc watch*(client: Client, t: typedesc[Ingress], name: string, namespace = "default"): Future[FutureStream[WatchEv[Ingress]]] {.async.}=
   return await client.watch("/apis/extensions/v1beta1", t, name, namespace, loadIngress)
 
 type

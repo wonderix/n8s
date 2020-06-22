@@ -232,7 +232,7 @@ proc delete*(client: Client, t: typedesc[CertificateSigningRequest], name: strin
 proc replace*(client: Client, t: CertificateSigningRequest, namespace = "default"): Future[CertificateSigningRequest] {.async.}=
   return await client.replace("/apis/certificates.k8s.io/v1beta1", t, t.metadata.name, namespace, loadCertificateSigningRequest)
 
-proc watch*(client: Client, t: typedesc[CertificateSigningRequest], name: string, namespace = "default"): Future[FutureStream[CertificateSigningRequest]] {.async.}=
+proc watch*(client: Client, t: typedesc[CertificateSigningRequest], name: string, namespace = "default"): Future[FutureStream[WatchEv[CertificateSigningRequest]]] {.async.}=
   return await client.watch("/apis/certificates.k8s.io/v1beta1", t, name, namespace, loadCertificateSigningRequest)
 
 type

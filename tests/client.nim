@@ -25,24 +25,33 @@ suite "n8s client":
       secret = await client.create(secret)
       doAssert secret.data["test"] == "test"
 
-      when true:
-        let fs = await client.watch(Secret,"test")
+      let fs = await client.watch(Secret,"test")
+      block:
         let (hasData, data) = await fs.read()
 
         doAssert hasData
-        doAssert data.data["test"] == "test"
+        doAssert data.`object`.data["test"] == "test"
 
       secret.data["test"] = "hello"
       secret = await client.replace(secret)
       doAssert secret.data["test"] == "hello"
 
-      when false:
+      block:
         doAssert not fs.finished()
         let (hasData, data) = await fs.read()
         doAssert hasData
-        doAssert data.data["test"] == "hello"
+        doAssert data.`type` == "MODIFIED"
+        doAssert data.`object`.data["test"] == "hello"
 
       await client.delete(Secret,"test")
+
+      block:
+        doAssert not fs.finished()
+        let (hasData, data) = await fs.read()
+        doAssert hasData
+        doAssert data.`type` == "DELETED"
+        doAssert data.`object`.data["test"] == "hello"
+
 
     waitFor testSecret()
   
