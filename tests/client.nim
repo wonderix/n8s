@@ -25,9 +25,10 @@ suite "n8s client":
       secret = await client.create(secret)
       doAssert secret.data["test"] == "test"
 
-      when false:
+      when true:
         let fs = await client.watch(Secret,"test")
         let (hasData, data) = await fs.read()
+
         doAssert hasData
         doAssert data.data["test"] == "test"
 

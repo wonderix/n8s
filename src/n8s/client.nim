@@ -2,6 +2,10 @@ import httpClient, asyncdispatch, config, json, sequtils, options, strutils, str
 from sugar import `=>`
 
 type
+  Event*[T] = object 
+    `object`*: T
+    `type`*: string
+
   Client* = ref object of RootObj
     config: Config
     client: AsyncHttpClient
@@ -19,11 +23,14 @@ type
     shortNames: Option[seq[string]]
     storageVersionHash: Option[string]
 
+proc newAsyncHttpClient(account: Account): AsyncHttpClient =
+  newAsyncHttpClient(sslContext= account.sslContext,headers= account.authHeaders)
+
 proc newClient*(kubeconfig: string = ""): Client =
   new(result)
   result.config = load(kubeconfig)
   result.account = result.config.account
-  result.client = newAsyncHttpClient(sslContext= result.account.sslContext)
+  result.client = newAsyncHttpClient(result.account)
 
 proc loadJson[T](stream: Stream, path: string, load: proc(parser: var JsonParser): T): T =
   var parser: JsonParser
@@ -70,15 +77,19 @@ proc loadInto[T](source: FutureStream[string], target: FutureStream[T], load: pr
   while true:
     let (hasData,data) = await source.read()
     if hasData:
-      let obj = loadJson(newStringStream(data),"",load)
-      await target.write(obj)
+      echo data
+      # let obj = loadJson(newStringStream(data),"",load)
+      # await target.write(obj)
     else:
       break
 
-proc get*(client: Client, path: string): Future[FutureStream[string]] {.async.}=
-  let response = await client.client.request(client.config.server & path, httpMethod = HttpGet, headers= client.account.authHeaders)
+proc get(client: AsyncHttpClient, server: string, path: string): Future[FutureStream[string]] {.async.}=
+  let response = await client.request(server & path, httpMethod = HttpGet)
   if not response.code.is2xx: raiseError(response, await response.body)
   return response.bodyStream
+
+proc get*(client: Client, path: string): Future[FutureStream[string]]=
+  client.client.get(client.config.server,path)
 
 proc get*[T](client: Client, groupVersion: string, t: typedesc[T], name: string, namespace: string, load: proc(parser: var JsonParser): T): Future[T] {.async.}=
   let path = groupVersion & "/namespaces/" & namespace & "/" & ($t).toLowerAscii() & "s/" & name
@@ -86,14 +97,17 @@ proc get*[T](client: Client, groupVersion: string, t: typedesc[T], name: string,
 
 proc watch*[T](client: Client, groupVersion: string, t: typedesc[T], name: string, namespace: string, load: proc(parser: var JsonParser): T): Future[FutureStream[T]] {.async.}=
   let res = newFutureStream[T]()
-  var path = groupVersion & "/namespaces/" & namespace & "/" & ($t).toLowerAscii() & "s/" & name
+  let path = groupVersion & "/namespaces/" & namespace & "/" & ($t).toLowerAscii() & "s/" & name
   let obj = loadJson(await toStream(await client.get(path)),path,load)
   await res.write(obj)
-  path = groupVersion & "/namespaces/" & namespace & "/" & ($t).toLowerAscii() & "s?" & encodeQuery({"watch" : "true", "resourceVersion": obj.metadata.resourceVersion,"fieldSelector" : "metadata.name=" & name})
-  let fs = await client.get(path)
-  let splitted = newFutureStream[string]()
-  fs.splitInto(splitted).asyncCheck()
-  splitted.loadInto(res,load).asyncCheck()
+  proc background() {.async.} =
+    let c = newAsyncHttpClient(client.account)
+    let path = groupVersion & "/namespaces/" & namespace & "/" & ($t).toLowerAscii() & "s?" & encodeQuery({"watch" : "true", "resourceVersion": obj.metadata.resourceVersion,"fieldSelector" : "metadata.name=" & name})
+    let fs = await c.get(client.config.server, path)
+    let splitted = newFutureStream[string]()
+    fs.splitInto(splitted).asyncCheck()
+    splitted.loadInto(res,load).asyncCheck()
+  background().asyncCheck()
   return res
 
 proc list*[T](client: Client, groupVersion: string, t: typedesc[T], namespace: string, load: proc(parser: var JsonParser): T): Future[T] {.async.}=
@@ -101,7 +115,7 @@ proc list*[T](client: Client, groupVersion: string, t: typedesc[T], namespace: s
   return loadJson(await toStream(await client.get(path)),path,load)
 
 proc create*(client: Client, path: string, content: string): Future[Stream] {.async.}=
-  let response = await client.client.request(client.config.server & path, httpMethod = HttpPost, headers= client.account.authHeaders, body=content)
+  let response = await client.client.request(client.config.server & path, httpMethod = HttpPost, body=content)
   let body = await response.body
   if not response.code.is2xx: raiseError(response, body)
   return newStringStream(body)
@@ -114,7 +128,7 @@ proc create*[T](client: Client, groupVersion: string, t: T, namespace: string, l
   return loadJson(await client.create(path,stream.readAll()),path,load)
 
 proc delete*(client: Client, path: string) {.async.}=
-  let response = await client.client.request(client.config.server & path, httpMethod = HttpDelete, headers= client.account.authHeaders)
+  let response = await client.client.request(client.config.server & path, httpMethod = HttpDelete)
   let body = await response.body
   if not response.code.is2xx: raiseError(response, body)
 
@@ -123,7 +137,7 @@ proc delete*[T](client: Client, groupVersion: string, t: typedesc[T], name: stri
   await client.delete(path)
 
 proc replace*(client: Client, path: string, content: string): Future[Stream] {.async.}=
-  let response = await client.client.request(client.config.server & path, httpMethod = HttpPut, headers= client.account.authHeaders, body=content)
+  let response = await client.client.request(client.config.server & path, httpMethod = HttpPut, body=content)
   let body = await response.body
   if not response.code.is2xx: raiseError(response, body)
   return newStringStream(body)
@@ -136,12 +150,12 @@ proc replace*[T](client: Client, groupVersion: string, t: T, name: string, names
   return loadJson(await client.replace(path,stream.readAll()),path,load)
 
 proc apiResources*(client: Client): Future[seq[APIResource]] {.async.}=
-  let response = await client.client.request(client.config.server & "/api/v1", httpMethod = HttpGet, headers= client.account.authHeaders)
+  let response = await client.client.request(client.config.server & "/api/v1", httpMethod = HttpGet)
   let resources = parseJson(await response.body)
   return resources["resources"].getElems.map((n) => to(n,APIResource))
 
 proc openapi*(client: Client): Future[JsonNode] {.async.}=
-  let response = await client.client.request(client.config.server & "/openapi/v2", httpMethod = HttpGet, headers= client.account.authHeaders)
+  let response = await client.client.request(client.config.server & "/openapi/v2", httpMethod = HttpGet)
   return parseJson(await response.body)
 
 
