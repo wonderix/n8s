@@ -6,7 +6,7 @@
 
 ## Example
 
-```python
+```nim
 import n8s
 # Import required k8s api
 import n8s/api/io_k8s_api_core_v1
@@ -24,4 +24,7 @@ secret = await client.create(secret)
 
 # Get secret
 secret = await client.get(Secret,"test")
+
+# Watch secret for changes
+let fs = await client.watch(Secret,"test")
 ```
