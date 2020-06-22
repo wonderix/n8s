@@ -73,25 +73,21 @@ proc isEmpty*(self: PriorityClass): bool =
   if not self.`metadata`.isEmpty: return false
   true
 
-proc loadPriorityClass(parser: var JsonParser):PriorityClass = 
-  var ret: PriorityClass
-  load(ret,parser)
-  return ret 
 
 proc get*(client: Client, t: typedesc[PriorityClass], name: string, namespace = "default"): Future[PriorityClass] {.async.}=
-  return await client.get("/apis/scheduling.k8s.io/v1", t, name, namespace, loadPriorityClass)
+  return await client.get("/apis/scheduling.k8s.io/v1", t, name, namespace)
 
 proc create*(client: Client, t: PriorityClass, namespace = "default"): Future[PriorityClass] {.async.}=
-  return await client.create("/apis/scheduling.k8s.io/v1", t, namespace, loadPriorityClass)
+  return await client.create("/apis/scheduling.k8s.io/v1", t, namespace)
 
 proc delete*(client: Client, t: typedesc[PriorityClass], name: string, namespace = "default") {.async.}=
   await client.delete("/apis/scheduling.k8s.io/v1", t, name, namespace)
 
 proc replace*(client: Client, t: PriorityClass, namespace = "default"): Future[PriorityClass] {.async.}=
-  return await client.replace("/apis/scheduling.k8s.io/v1", t, t.metadata.name, namespace, loadPriorityClass)
+  return await client.replace("/apis/scheduling.k8s.io/v1", t, t.metadata.name, namespace)
 
 proc watch*(client: Client, t: typedesc[PriorityClass], name: string, namespace = "default"): Future[FutureStream[WatchEv[PriorityClass]]] {.async.}=
-  return await client.watch("/apis/scheduling.k8s.io/v1", t, name, namespace, loadPriorityClass)
+  return await client.watch("/apis/scheduling.k8s.io/v1", t, name, namespace)
 
 type
   PriorityClassList* = object
@@ -140,10 +136,6 @@ proc isEmpty*(self: PriorityClassList): bool =
   if not self.`metadata`.isEmpty: return false
   true
 
-proc loadPriorityClassList(parser: var JsonParser):PriorityClassList = 
-  var ret: PriorityClassList
-  load(ret,parser)
-  return ret 
 
 proc list*(client: Client, t: typedesc[PriorityClass], namespace = "default"): Future[seq[PriorityClass]] {.async.}=
-  return (await client.list("/apis/scheduling.k8s.io/v1", PriorityClassList, namespace, loadPriorityClassList)).items
+  return (await client.list("/apis/scheduling.k8s.io/v1", PriorityClassList, namespace)).items

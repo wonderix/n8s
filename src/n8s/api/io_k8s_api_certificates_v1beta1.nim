@@ -215,25 +215,21 @@ proc isEmpty*(self: CertificateSigningRequest): bool =
   if not self.`metadata`.isEmpty: return false
   true
 
-proc loadCertificateSigningRequest(parser: var JsonParser):CertificateSigningRequest = 
-  var ret: CertificateSigningRequest
-  load(ret,parser)
-  return ret 
 
 proc get*(client: Client, t: typedesc[CertificateSigningRequest], name: string, namespace = "default"): Future[CertificateSigningRequest] {.async.}=
-  return await client.get("/apis/certificates.k8s.io/v1beta1", t, name, namespace, loadCertificateSigningRequest)
+  return await client.get("/apis/certificates.k8s.io/v1beta1", t, name, namespace)
 
 proc create*(client: Client, t: CertificateSigningRequest, namespace = "default"): Future[CertificateSigningRequest] {.async.}=
-  return await client.create("/apis/certificates.k8s.io/v1beta1", t, namespace, loadCertificateSigningRequest)
+  return await client.create("/apis/certificates.k8s.io/v1beta1", t, namespace)
 
 proc delete*(client: Client, t: typedesc[CertificateSigningRequest], name: string, namespace = "default") {.async.}=
   await client.delete("/apis/certificates.k8s.io/v1beta1", t, name, namespace)
 
 proc replace*(client: Client, t: CertificateSigningRequest, namespace = "default"): Future[CertificateSigningRequest] {.async.}=
-  return await client.replace("/apis/certificates.k8s.io/v1beta1", t, t.metadata.name, namespace, loadCertificateSigningRequest)
+  return await client.replace("/apis/certificates.k8s.io/v1beta1", t, t.metadata.name, namespace)
 
 proc watch*(client: Client, t: typedesc[CertificateSigningRequest], name: string, namespace = "default"): Future[FutureStream[WatchEv[CertificateSigningRequest]]] {.async.}=
-  return await client.watch("/apis/certificates.k8s.io/v1beta1", t, name, namespace, loadCertificateSigningRequest)
+  return await client.watch("/apis/certificates.k8s.io/v1beta1", t, name, namespace)
 
 type
   CertificateSigningRequestList* = object
@@ -282,10 +278,6 @@ proc isEmpty*(self: CertificateSigningRequestList): bool =
   if not self.`metadata`.isEmpty: return false
   true
 
-proc loadCertificateSigningRequestList(parser: var JsonParser):CertificateSigningRequestList = 
-  var ret: CertificateSigningRequestList
-  load(ret,parser)
-  return ret 
 
 proc list*(client: Client, t: typedesc[CertificateSigningRequest], namespace = "default"): Future[seq[CertificateSigningRequest]] {.async.}=
-  return (await client.list("/apis/certificates.k8s.io/v1beta1", CertificateSigningRequestList, namespace, loadCertificateSigningRequestList)).items
+  return (await client.list("/apis/certificates.k8s.io/v1beta1", CertificateSigningRequestList, namespace)).items

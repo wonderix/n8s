@@ -138,25 +138,21 @@ proc isEmpty*(self: RuntimeClass): bool =
   if not self.`metadata`.isEmpty: return false
   true
 
-proc loadRuntimeClass(parser: var JsonParser):RuntimeClass = 
-  var ret: RuntimeClass
-  load(ret,parser)
-  return ret 
 
 proc get*(client: Client, t: typedesc[RuntimeClass], name: string, namespace = "default"): Future[RuntimeClass] {.async.}=
-  return await client.get("/apis/node.k8s.io/v1beta1", t, name, namespace, loadRuntimeClass)
+  return await client.get("/apis/node.k8s.io/v1beta1", t, name, namespace)
 
 proc create*(client: Client, t: RuntimeClass, namespace = "default"): Future[RuntimeClass] {.async.}=
-  return await client.create("/apis/node.k8s.io/v1beta1", t, namespace, loadRuntimeClass)
+  return await client.create("/apis/node.k8s.io/v1beta1", t, namespace)
 
 proc delete*(client: Client, t: typedesc[RuntimeClass], name: string, namespace = "default") {.async.}=
   await client.delete("/apis/node.k8s.io/v1beta1", t, name, namespace)
 
 proc replace*(client: Client, t: RuntimeClass, namespace = "default"): Future[RuntimeClass] {.async.}=
-  return await client.replace("/apis/node.k8s.io/v1beta1", t, t.metadata.name, namespace, loadRuntimeClass)
+  return await client.replace("/apis/node.k8s.io/v1beta1", t, t.metadata.name, namespace)
 
 proc watch*(client: Client, t: typedesc[RuntimeClass], name: string, namespace = "default"): Future[FutureStream[WatchEv[RuntimeClass]]] {.async.}=
-  return await client.watch("/apis/node.k8s.io/v1beta1", t, name, namespace, loadRuntimeClass)
+  return await client.watch("/apis/node.k8s.io/v1beta1", t, name, namespace)
 
 type
   RuntimeClassList* = object
@@ -205,10 +201,6 @@ proc isEmpty*(self: RuntimeClassList): bool =
   if not self.`metadata`.isEmpty: return false
   true
 
-proc loadRuntimeClassList(parser: var JsonParser):RuntimeClassList = 
-  var ret: RuntimeClassList
-  load(ret,parser)
-  return ret 
 
 proc list*(client: Client, t: typedesc[RuntimeClass], namespace = "default"): Future[seq[RuntimeClass]] {.async.}=
-  return (await client.list("/apis/node.k8s.io/v1beta1", RuntimeClassList, namespace, loadRuntimeClassList)).items
+  return (await client.list("/apis/node.k8s.io/v1beta1", RuntimeClassList, namespace)).items

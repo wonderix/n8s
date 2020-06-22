@@ -209,25 +209,21 @@ proc isEmpty*(self: CronJob): bool =
   if not self.`metadata`.isEmpty: return false
   true
 
-proc loadCronJob(parser: var JsonParser):CronJob = 
-  var ret: CronJob
-  load(ret,parser)
-  return ret 
 
 proc get*(client: Client, t: typedesc[CronJob], name: string, namespace = "default"): Future[CronJob] {.async.}=
-  return await client.get("/apis/batch/v1beta1", t, name, namespace, loadCronJob)
+  return await client.get("/apis/batch/v1beta1", t, name, namespace)
 
 proc create*(client: Client, t: CronJob, namespace = "default"): Future[CronJob] {.async.}=
-  return await client.create("/apis/batch/v1beta1", t, namespace, loadCronJob)
+  return await client.create("/apis/batch/v1beta1", t, namespace)
 
 proc delete*(client: Client, t: typedesc[CronJob], name: string, namespace = "default") {.async.}=
   await client.delete("/apis/batch/v1beta1", t, name, namespace)
 
 proc replace*(client: Client, t: CronJob, namespace = "default"): Future[CronJob] {.async.}=
-  return await client.replace("/apis/batch/v1beta1", t, t.metadata.name, namespace, loadCronJob)
+  return await client.replace("/apis/batch/v1beta1", t, t.metadata.name, namespace)
 
 proc watch*(client: Client, t: typedesc[CronJob], name: string, namespace = "default"): Future[FutureStream[WatchEv[CronJob]]] {.async.}=
-  return await client.watch("/apis/batch/v1beta1", t, name, namespace, loadCronJob)
+  return await client.watch("/apis/batch/v1beta1", t, name, namespace)
 
 type
   CronJobList* = object
@@ -276,10 +272,6 @@ proc isEmpty*(self: CronJobList): bool =
   if not self.`metadata`.isEmpty: return false
   true
 
-proc loadCronJobList(parser: var JsonParser):CronJobList = 
-  var ret: CronJobList
-  load(ret,parser)
-  return ret 
 
 proc list*(client: Client, t: typedesc[CronJob], namespace = "default"): Future[seq[CronJob]] {.async.}=
-  return (await client.list("/apis/batch/v1beta1", CronJobList, namespace, loadCronJobList)).items
+  return (await client.list("/apis/batch/v1beta1", CronJobList, namespace)).items

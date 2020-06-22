@@ -299,25 +299,21 @@ proc isEmpty*(self: ValidatingWebhookConfiguration): bool =
   if not self.`metadata`.isEmpty: return false
   true
 
-proc loadValidatingWebhookConfiguration(parser: var JsonParser):ValidatingWebhookConfiguration = 
-  var ret: ValidatingWebhookConfiguration
-  load(ret,parser)
-  return ret 
 
 proc get*(client: Client, t: typedesc[ValidatingWebhookConfiguration], name: string, namespace = "default"): Future[ValidatingWebhookConfiguration] {.async.}=
-  return await client.get("/apis/admissionregistration.k8s.io/v1beta1", t, name, namespace, loadValidatingWebhookConfiguration)
+  return await client.get("/apis/admissionregistration.k8s.io/v1beta1", t, name, namespace)
 
 proc create*(client: Client, t: ValidatingWebhookConfiguration, namespace = "default"): Future[ValidatingWebhookConfiguration] {.async.}=
-  return await client.create("/apis/admissionregistration.k8s.io/v1beta1", t, namespace, loadValidatingWebhookConfiguration)
+  return await client.create("/apis/admissionregistration.k8s.io/v1beta1", t, namespace)
 
 proc delete*(client: Client, t: typedesc[ValidatingWebhookConfiguration], name: string, namespace = "default") {.async.}=
   await client.delete("/apis/admissionregistration.k8s.io/v1beta1", t, name, namespace)
 
 proc replace*(client: Client, t: ValidatingWebhookConfiguration, namespace = "default"): Future[ValidatingWebhookConfiguration] {.async.}=
-  return await client.replace("/apis/admissionregistration.k8s.io/v1beta1", t, t.metadata.name, namespace, loadValidatingWebhookConfiguration)
+  return await client.replace("/apis/admissionregistration.k8s.io/v1beta1", t, t.metadata.name, namespace)
 
 proc watch*(client: Client, t: typedesc[ValidatingWebhookConfiguration], name: string, namespace = "default"): Future[FutureStream[WatchEv[ValidatingWebhookConfiguration]]] {.async.}=
-  return await client.watch("/apis/admissionregistration.k8s.io/v1beta1", t, name, namespace, loadValidatingWebhookConfiguration)
+  return await client.watch("/apis/admissionregistration.k8s.io/v1beta1", t, name, namespace)
 
 type
   ValidatingWebhookConfigurationList* = object
@@ -366,13 +362,9 @@ proc isEmpty*(self: ValidatingWebhookConfigurationList): bool =
   if not self.`metadata`.isEmpty: return false
   true
 
-proc loadValidatingWebhookConfigurationList(parser: var JsonParser):ValidatingWebhookConfigurationList = 
-  var ret: ValidatingWebhookConfigurationList
-  load(ret,parser)
-  return ret 
 
 proc list*(client: Client, t: typedesc[ValidatingWebhookConfiguration], namespace = "default"): Future[seq[ValidatingWebhookConfiguration]] {.async.}=
-  return (await client.list("/apis/admissionregistration.k8s.io/v1beta1", ValidatingWebhookConfigurationList, namespace, loadValidatingWebhookConfigurationList)).items
+  return (await client.list("/apis/admissionregistration.k8s.io/v1beta1", ValidatingWebhookConfigurationList, namespace)).items
 
 type
   MutatingWebhook* = object
@@ -521,25 +513,21 @@ proc isEmpty*(self: MutatingWebhookConfiguration): bool =
   if not self.`metadata`.isEmpty: return false
   true
 
-proc loadMutatingWebhookConfiguration(parser: var JsonParser):MutatingWebhookConfiguration = 
-  var ret: MutatingWebhookConfiguration
-  load(ret,parser)
-  return ret 
 
 proc get*(client: Client, t: typedesc[MutatingWebhookConfiguration], name: string, namespace = "default"): Future[MutatingWebhookConfiguration] {.async.}=
-  return await client.get("/apis/admissionregistration.k8s.io/v1beta1", t, name, namespace, loadMutatingWebhookConfiguration)
+  return await client.get("/apis/admissionregistration.k8s.io/v1beta1", t, name, namespace)
 
 proc create*(client: Client, t: MutatingWebhookConfiguration, namespace = "default"): Future[MutatingWebhookConfiguration] {.async.}=
-  return await client.create("/apis/admissionregistration.k8s.io/v1beta1", t, namespace, loadMutatingWebhookConfiguration)
+  return await client.create("/apis/admissionregistration.k8s.io/v1beta1", t, namespace)
 
 proc delete*(client: Client, t: typedesc[MutatingWebhookConfiguration], name: string, namespace = "default") {.async.}=
   await client.delete("/apis/admissionregistration.k8s.io/v1beta1", t, name, namespace)
 
 proc replace*(client: Client, t: MutatingWebhookConfiguration, namespace = "default"): Future[MutatingWebhookConfiguration] {.async.}=
-  return await client.replace("/apis/admissionregistration.k8s.io/v1beta1", t, t.metadata.name, namespace, loadMutatingWebhookConfiguration)
+  return await client.replace("/apis/admissionregistration.k8s.io/v1beta1", t, t.metadata.name, namespace)
 
 proc watch*(client: Client, t: typedesc[MutatingWebhookConfiguration], name: string, namespace = "default"): Future[FutureStream[WatchEv[MutatingWebhookConfiguration]]] {.async.}=
-  return await client.watch("/apis/admissionregistration.k8s.io/v1beta1", t, name, namespace, loadMutatingWebhookConfiguration)
+  return await client.watch("/apis/admissionregistration.k8s.io/v1beta1", t, name, namespace)
 
 type
   MutatingWebhookConfigurationList* = object
@@ -588,10 +576,6 @@ proc isEmpty*(self: MutatingWebhookConfigurationList): bool =
   if not self.`metadata`.isEmpty: return false
   true
 
-proc loadMutatingWebhookConfigurationList(parser: var JsonParser):MutatingWebhookConfigurationList = 
-  var ret: MutatingWebhookConfigurationList
-  load(ret,parser)
-  return ret 
 
 proc list*(client: Client, t: typedesc[MutatingWebhookConfiguration], namespace = "default"): Future[seq[MutatingWebhookConfiguration]] {.async.}=
-  return (await client.list("/apis/admissionregistration.k8s.io/v1beta1", MutatingWebhookConfigurationList, namespace, loadMutatingWebhookConfigurationList)).items
+  return (await client.list("/apis/admissionregistration.k8s.io/v1beta1", MutatingWebhookConfigurationList, namespace)).items

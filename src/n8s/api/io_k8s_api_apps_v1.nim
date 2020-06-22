@@ -458,25 +458,21 @@ proc isEmpty*(self: DaemonSet): bool =
   if not self.`metadata`.isEmpty: return false
   true
 
-proc loadDaemonSet(parser: var JsonParser):DaemonSet = 
-  var ret: DaemonSet
-  load(ret,parser)
-  return ret 
 
 proc get*(client: Client, t: typedesc[DaemonSet], name: string, namespace = "default"): Future[DaemonSet] {.async.}=
-  return await client.get("/apis/apps/v1", t, name, namespace, loadDaemonSet)
+  return await client.get("/apis/apps/v1", t, name, namespace)
 
 proc create*(client: Client, t: DaemonSet, namespace = "default"): Future[DaemonSet] {.async.}=
-  return await client.create("/apis/apps/v1", t, namespace, loadDaemonSet)
+  return await client.create("/apis/apps/v1", t, namespace)
 
 proc delete*(client: Client, t: typedesc[DaemonSet], name: string, namespace = "default") {.async.}=
   await client.delete("/apis/apps/v1", t, name, namespace)
 
 proc replace*(client: Client, t: DaemonSet, namespace = "default"): Future[DaemonSet] {.async.}=
-  return await client.replace("/apis/apps/v1", t, t.metadata.name, namespace, loadDaemonSet)
+  return await client.replace("/apis/apps/v1", t, t.metadata.name, namespace)
 
 proc watch*(client: Client, t: typedesc[DaemonSet], name: string, namespace = "default"): Future[FutureStream[WatchEv[DaemonSet]]] {.async.}=
-  return await client.watch("/apis/apps/v1", t, name, namespace, loadDaemonSet)
+  return await client.watch("/apis/apps/v1", t, name, namespace)
 
 type
   RollingUpdateStatefulSetStrategy* = object
@@ -822,25 +818,21 @@ proc isEmpty*(self: StatefulSet): bool =
   if not self.`metadata`.isEmpty: return false
   true
 
-proc loadStatefulSet(parser: var JsonParser):StatefulSet = 
-  var ret: StatefulSet
-  load(ret,parser)
-  return ret 
 
 proc get*(client: Client, t: typedesc[StatefulSet], name: string, namespace = "default"): Future[StatefulSet] {.async.}=
-  return await client.get("/apis/apps/v1", t, name, namespace, loadStatefulSet)
+  return await client.get("/apis/apps/v1", t, name, namespace)
 
 proc create*(client: Client, t: StatefulSet, namespace = "default"): Future[StatefulSet] {.async.}=
-  return await client.create("/apis/apps/v1", t, namespace, loadStatefulSet)
+  return await client.create("/apis/apps/v1", t, namespace)
 
 proc delete*(client: Client, t: typedesc[StatefulSet], name: string, namespace = "default") {.async.}=
   await client.delete("/apis/apps/v1", t, name, namespace)
 
 proc replace*(client: Client, t: StatefulSet, namespace = "default"): Future[StatefulSet] {.async.}=
-  return await client.replace("/apis/apps/v1", t, t.metadata.name, namespace, loadStatefulSet)
+  return await client.replace("/apis/apps/v1", t, t.metadata.name, namespace)
 
 proc watch*(client: Client, t: typedesc[StatefulSet], name: string, namespace = "default"): Future[FutureStream[WatchEv[StatefulSet]]] {.async.}=
-  return await client.watch("/apis/apps/v1", t, name, namespace, loadStatefulSet)
+  return await client.watch("/apis/apps/v1", t, name, namespace)
 
 type
   StatefulSetList* = object
@@ -889,13 +881,9 @@ proc isEmpty*(self: StatefulSetList): bool =
   if not self.`metadata`.isEmpty: return false
   true
 
-proc loadStatefulSetList(parser: var JsonParser):StatefulSetList = 
-  var ret: StatefulSetList
-  load(ret,parser)
-  return ret 
 
 proc list*(client: Client, t: typedesc[StatefulSet], namespace = "default"): Future[seq[StatefulSet]] {.async.}=
-  return (await client.list("/apis/apps/v1", StatefulSetList, namespace, loadStatefulSetList)).items
+  return (await client.list("/apis/apps/v1", StatefulSetList, namespace)).items
 
 type
   ReplicaSetSpec* = object
@@ -1003,25 +991,21 @@ proc isEmpty*(self: ReplicaSet): bool =
   if not self.`metadata`.isEmpty: return false
   true
 
-proc loadReplicaSet(parser: var JsonParser):ReplicaSet = 
-  var ret: ReplicaSet
-  load(ret,parser)
-  return ret 
 
 proc get*(client: Client, t: typedesc[ReplicaSet], name: string, namespace = "default"): Future[ReplicaSet] {.async.}=
-  return await client.get("/apis/apps/v1", t, name, namespace, loadReplicaSet)
+  return await client.get("/apis/apps/v1", t, name, namespace)
 
 proc create*(client: Client, t: ReplicaSet, namespace = "default"): Future[ReplicaSet] {.async.}=
-  return await client.create("/apis/apps/v1", t, namespace, loadReplicaSet)
+  return await client.create("/apis/apps/v1", t, namespace)
 
 proc delete*(client: Client, t: typedesc[ReplicaSet], name: string, namespace = "default") {.async.}=
   await client.delete("/apis/apps/v1", t, name, namespace)
 
 proc replace*(client: Client, t: ReplicaSet, namespace = "default"): Future[ReplicaSet] {.async.}=
-  return await client.replace("/apis/apps/v1", t, t.metadata.name, namespace, loadReplicaSet)
+  return await client.replace("/apis/apps/v1", t, t.metadata.name, namespace)
 
 proc watch*(client: Client, t: typedesc[ReplicaSet], name: string, namespace = "default"): Future[FutureStream[WatchEv[ReplicaSet]]] {.async.}=
-  return await client.watch("/apis/apps/v1", t, name, namespace, loadReplicaSet)
+  return await client.watch("/apis/apps/v1", t, name, namespace)
 
 type
   ReplicaSetList* = object
@@ -1070,13 +1054,9 @@ proc isEmpty*(self: ReplicaSetList): bool =
   if not self.`metadata`.isEmpty: return false
   true
 
-proc loadReplicaSetList(parser: var JsonParser):ReplicaSetList = 
-  var ret: ReplicaSetList
-  load(ret,parser)
-  return ret 
 
 proc list*(client: Client, t: typedesc[ReplicaSet], namespace = "default"): Future[seq[ReplicaSet]] {.async.}=
-  return (await client.list("/apis/apps/v1", ReplicaSetList, namespace, loadReplicaSetList)).items
+  return (await client.list("/apis/apps/v1", ReplicaSetList, namespace)).items
 
 type
   RollingUpdateDeployment* = object
@@ -1431,25 +1411,21 @@ proc isEmpty*(self: Deployment): bool =
   if not self.`metadata`.isEmpty: return false
   true
 
-proc loadDeployment(parser: var JsonParser):Deployment = 
-  var ret: Deployment
-  load(ret,parser)
-  return ret 
 
 proc get*(client: Client, t: typedesc[Deployment], name: string, namespace = "default"): Future[Deployment] {.async.}=
-  return await client.get("/apis/apps/v1", t, name, namespace, loadDeployment)
+  return await client.get("/apis/apps/v1", t, name, namespace)
 
 proc create*(client: Client, t: Deployment, namespace = "default"): Future[Deployment] {.async.}=
-  return await client.create("/apis/apps/v1", t, namespace, loadDeployment)
+  return await client.create("/apis/apps/v1", t, namespace)
 
 proc delete*(client: Client, t: typedesc[Deployment], name: string, namespace = "default") {.async.}=
   await client.delete("/apis/apps/v1", t, name, namespace)
 
 proc replace*(client: Client, t: Deployment, namespace = "default"): Future[Deployment] {.async.}=
-  return await client.replace("/apis/apps/v1", t, t.metadata.name, namespace, loadDeployment)
+  return await client.replace("/apis/apps/v1", t, t.metadata.name, namespace)
 
 proc watch*(client: Client, t: typedesc[Deployment], name: string, namespace = "default"): Future[FutureStream[WatchEv[Deployment]]] {.async.}=
-  return await client.watch("/apis/apps/v1", t, name, namespace, loadDeployment)
+  return await client.watch("/apis/apps/v1", t, name, namespace)
 
 type
   ControllerRevision* = object
@@ -1505,25 +1481,21 @@ proc isEmpty*(self: ControllerRevision): bool =
   if not self.`metadata`.isEmpty: return false
   true
 
-proc loadControllerRevision(parser: var JsonParser):ControllerRevision = 
-  var ret: ControllerRevision
-  load(ret,parser)
-  return ret 
 
 proc get*(client: Client, t: typedesc[ControllerRevision], name: string, namespace = "default"): Future[ControllerRevision] {.async.}=
-  return await client.get("/apis/apps/v1", t, name, namespace, loadControllerRevision)
+  return await client.get("/apis/apps/v1", t, name, namespace)
 
 proc create*(client: Client, t: ControllerRevision, namespace = "default"): Future[ControllerRevision] {.async.}=
-  return await client.create("/apis/apps/v1", t, namespace, loadControllerRevision)
+  return await client.create("/apis/apps/v1", t, namespace)
 
 proc delete*(client: Client, t: typedesc[ControllerRevision], name: string, namespace = "default") {.async.}=
   await client.delete("/apis/apps/v1", t, name, namespace)
 
 proc replace*(client: Client, t: ControllerRevision, namespace = "default"): Future[ControllerRevision] {.async.}=
-  return await client.replace("/apis/apps/v1", t, t.metadata.name, namespace, loadControllerRevision)
+  return await client.replace("/apis/apps/v1", t, t.metadata.name, namespace)
 
 proc watch*(client: Client, t: typedesc[ControllerRevision], name: string, namespace = "default"): Future[FutureStream[WatchEv[ControllerRevision]]] {.async.}=
-  return await client.watch("/apis/apps/v1", t, name, namespace, loadControllerRevision)
+  return await client.watch("/apis/apps/v1", t, name, namespace)
 
 type
   ControllerRevisionList* = object
@@ -1572,13 +1544,9 @@ proc isEmpty*(self: ControllerRevisionList): bool =
   if not self.`metadata`.isEmpty: return false
   true
 
-proc loadControllerRevisionList(parser: var JsonParser):ControllerRevisionList = 
-  var ret: ControllerRevisionList
-  load(ret,parser)
-  return ret 
 
 proc list*(client: Client, t: typedesc[ControllerRevision], namespace = "default"): Future[seq[ControllerRevision]] {.async.}=
-  return (await client.list("/apis/apps/v1", ControllerRevisionList, namespace, loadControllerRevisionList)).items
+  return (await client.list("/apis/apps/v1", ControllerRevisionList, namespace)).items
 
 type
   DeploymentList* = object
@@ -1627,13 +1595,9 @@ proc isEmpty*(self: DeploymentList): bool =
   if not self.`metadata`.isEmpty: return false
   true
 
-proc loadDeploymentList(parser: var JsonParser):DeploymentList = 
-  var ret: DeploymentList
-  load(ret,parser)
-  return ret 
 
 proc list*(client: Client, t: typedesc[Deployment], namespace = "default"): Future[seq[Deployment]] {.async.}=
-  return (await client.list("/apis/apps/v1", DeploymentList, namespace, loadDeploymentList)).items
+  return (await client.list("/apis/apps/v1", DeploymentList, namespace)).items
 
 type
   DaemonSetList* = object
@@ -1682,10 +1646,6 @@ proc isEmpty*(self: DaemonSetList): bool =
   if not self.`metadata`.isEmpty: return false
   true
 
-proc loadDaemonSetList(parser: var JsonParser):DaemonSetList = 
-  var ret: DaemonSetList
-  load(ret,parser)
-  return ret 
 
 proc list*(client: Client, t: typedesc[DaemonSet], namespace = "default"): Future[seq[DaemonSet]] {.async.}=
-  return (await client.list("/apis/apps/v1", DaemonSetList, namespace, loadDaemonSetList)).items
+  return (await client.list("/apis/apps/v1", DaemonSetList, namespace)).items

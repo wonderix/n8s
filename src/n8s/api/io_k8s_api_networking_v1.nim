@@ -301,25 +301,21 @@ proc isEmpty*(self: NetworkPolicy): bool =
   if not self.`metadata`.isEmpty: return false
   true
 
-proc loadNetworkPolicy(parser: var JsonParser):NetworkPolicy = 
-  var ret: NetworkPolicy
-  load(ret,parser)
-  return ret 
 
 proc get*(client: Client, t: typedesc[NetworkPolicy], name: string, namespace = "default"): Future[NetworkPolicy] {.async.}=
-  return await client.get("/apis/networking.k8s.io/v1", t, name, namespace, loadNetworkPolicy)
+  return await client.get("/apis/networking.k8s.io/v1", t, name, namespace)
 
 proc create*(client: Client, t: NetworkPolicy, namespace = "default"): Future[NetworkPolicy] {.async.}=
-  return await client.create("/apis/networking.k8s.io/v1", t, namespace, loadNetworkPolicy)
+  return await client.create("/apis/networking.k8s.io/v1", t, namespace)
 
 proc delete*(client: Client, t: typedesc[NetworkPolicy], name: string, namespace = "default") {.async.}=
   await client.delete("/apis/networking.k8s.io/v1", t, name, namespace)
 
 proc replace*(client: Client, t: NetworkPolicy, namespace = "default"): Future[NetworkPolicy] {.async.}=
-  return await client.replace("/apis/networking.k8s.io/v1", t, t.metadata.name, namespace, loadNetworkPolicy)
+  return await client.replace("/apis/networking.k8s.io/v1", t, t.metadata.name, namespace)
 
 proc watch*(client: Client, t: typedesc[NetworkPolicy], name: string, namespace = "default"): Future[FutureStream[WatchEv[NetworkPolicy]]] {.async.}=
-  return await client.watch("/apis/networking.k8s.io/v1", t, name, namespace, loadNetworkPolicy)
+  return await client.watch("/apis/networking.k8s.io/v1", t, name, namespace)
 
 type
   NetworkPolicyList* = object
@@ -368,10 +364,6 @@ proc isEmpty*(self: NetworkPolicyList): bool =
   if not self.`metadata`.isEmpty: return false
   true
 
-proc loadNetworkPolicyList(parser: var JsonParser):NetworkPolicyList = 
-  var ret: NetworkPolicyList
-  load(ret,parser)
-  return ret 
 
 proc list*(client: Client, t: typedesc[NetworkPolicy], namespace = "default"): Future[seq[NetworkPolicy]] {.async.}=
-  return (await client.list("/apis/networking.k8s.io/v1", NetworkPolicyList, namespace, loadNetworkPolicyList)).items
+  return (await client.list("/apis/networking.k8s.io/v1", NetworkPolicyList, namespace)).items

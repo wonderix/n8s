@@ -288,25 +288,21 @@ proc isEmpty*(self: SubjectAccessReview): bool =
   if not self.`metadata`.isEmpty: return false
   true
 
-proc loadSubjectAccessReview(parser: var JsonParser):SubjectAccessReview = 
-  var ret: SubjectAccessReview
-  load(ret,parser)
-  return ret 
 
 proc get*(client: Client, t: typedesc[SubjectAccessReview], name: string, namespace = "default"): Future[SubjectAccessReview] {.async.}=
-  return await client.get("/apis/authorization.k8s.io/v1beta1", t, name, namespace, loadSubjectAccessReview)
+  return await client.get("/apis/authorization.k8s.io/v1beta1", t, name, namespace)
 
 proc create*(client: Client, t: SubjectAccessReview, namespace = "default"): Future[SubjectAccessReview] {.async.}=
-  return await client.create("/apis/authorization.k8s.io/v1beta1", t, namespace, loadSubjectAccessReview)
+  return await client.create("/apis/authorization.k8s.io/v1beta1", t, namespace)
 
 proc delete*(client: Client, t: typedesc[SubjectAccessReview], name: string, namespace = "default") {.async.}=
   await client.delete("/apis/authorization.k8s.io/v1beta1", t, name, namespace)
 
 proc replace*(client: Client, t: SubjectAccessReview, namespace = "default"): Future[SubjectAccessReview] {.async.}=
-  return await client.replace("/apis/authorization.k8s.io/v1beta1", t, t.metadata.name, namespace, loadSubjectAccessReview)
+  return await client.replace("/apis/authorization.k8s.io/v1beta1", t, t.metadata.name, namespace)
 
 proc watch*(client: Client, t: typedesc[SubjectAccessReview], name: string, namespace = "default"): Future[FutureStream[WatchEv[SubjectAccessReview]]] {.async.}=
-  return await client.watch("/apis/authorization.k8s.io/v1beta1", t, name, namespace, loadSubjectAccessReview)
+  return await client.watch("/apis/authorization.k8s.io/v1beta1", t, name, namespace)
 
 type
   SelfSubjectAccessReviewSpec* = object
@@ -568,25 +564,21 @@ proc isEmpty*(self: SelfSubjectRulesReview): bool =
   if not self.`metadata`.isEmpty: return false
   true
 
-proc loadSelfSubjectRulesReview(parser: var JsonParser):SelfSubjectRulesReview = 
-  var ret: SelfSubjectRulesReview
-  load(ret,parser)
-  return ret 
 
 proc get*(client: Client, t: typedesc[SelfSubjectRulesReview], name: string, namespace = "default"): Future[SelfSubjectRulesReview] {.async.}=
-  return await client.get("/apis/authorization.k8s.io/v1beta1", t, name, namespace, loadSelfSubjectRulesReview)
+  return await client.get("/apis/authorization.k8s.io/v1beta1", t, name, namespace)
 
 proc create*(client: Client, t: SelfSubjectRulesReview, namespace = "default"): Future[SelfSubjectRulesReview] {.async.}=
-  return await client.create("/apis/authorization.k8s.io/v1beta1", t, namespace, loadSelfSubjectRulesReview)
+  return await client.create("/apis/authorization.k8s.io/v1beta1", t, namespace)
 
 proc delete*(client: Client, t: typedesc[SelfSubjectRulesReview], name: string, namespace = "default") {.async.}=
   await client.delete("/apis/authorization.k8s.io/v1beta1", t, name, namespace)
 
 proc replace*(client: Client, t: SelfSubjectRulesReview, namespace = "default"): Future[SelfSubjectRulesReview] {.async.}=
-  return await client.replace("/apis/authorization.k8s.io/v1beta1", t, t.metadata.name, namespace, loadSelfSubjectRulesReview)
+  return await client.replace("/apis/authorization.k8s.io/v1beta1", t, t.metadata.name, namespace)
 
 proc watch*(client: Client, t: typedesc[SelfSubjectRulesReview], name: string, namespace = "default"): Future[FutureStream[WatchEv[SelfSubjectRulesReview]]] {.async.}=
-  return await client.watch("/apis/authorization.k8s.io/v1beta1", t, name, namespace, loadSelfSubjectRulesReview)
+  return await client.watch("/apis/authorization.k8s.io/v1beta1", t, name, namespace)
 
 type
   SelfSubjectAccessReview* = object
@@ -642,25 +634,21 @@ proc isEmpty*(self: SelfSubjectAccessReview): bool =
   if not self.`metadata`.isEmpty: return false
   true
 
-proc loadSelfSubjectAccessReview(parser: var JsonParser):SelfSubjectAccessReview = 
-  var ret: SelfSubjectAccessReview
-  load(ret,parser)
-  return ret 
 
 proc get*(client: Client, t: typedesc[SelfSubjectAccessReview], name: string, namespace = "default"): Future[SelfSubjectAccessReview] {.async.}=
-  return await client.get("/apis/authorization.k8s.io/v1beta1", t, name, namespace, loadSelfSubjectAccessReview)
+  return await client.get("/apis/authorization.k8s.io/v1beta1", t, name, namespace)
 
 proc create*(client: Client, t: SelfSubjectAccessReview, namespace = "default"): Future[SelfSubjectAccessReview] {.async.}=
-  return await client.create("/apis/authorization.k8s.io/v1beta1", t, namespace, loadSelfSubjectAccessReview)
+  return await client.create("/apis/authorization.k8s.io/v1beta1", t, namespace)
 
 proc delete*(client: Client, t: typedesc[SelfSubjectAccessReview], name: string, namespace = "default") {.async.}=
   await client.delete("/apis/authorization.k8s.io/v1beta1", t, name, namespace)
 
 proc replace*(client: Client, t: SelfSubjectAccessReview, namespace = "default"): Future[SelfSubjectAccessReview] {.async.}=
-  return await client.replace("/apis/authorization.k8s.io/v1beta1", t, t.metadata.name, namespace, loadSelfSubjectAccessReview)
+  return await client.replace("/apis/authorization.k8s.io/v1beta1", t, t.metadata.name, namespace)
 
 proc watch*(client: Client, t: typedesc[SelfSubjectAccessReview], name: string, namespace = "default"): Future[FutureStream[WatchEv[SelfSubjectAccessReview]]] {.async.}=
-  return await client.watch("/apis/authorization.k8s.io/v1beta1", t, name, namespace, loadSelfSubjectAccessReview)
+  return await client.watch("/apis/authorization.k8s.io/v1beta1", t, name, namespace)
 
 type
   LocalSubjectAccessReview* = object
@@ -716,22 +704,18 @@ proc isEmpty*(self: LocalSubjectAccessReview): bool =
   if not self.`metadata`.isEmpty: return false
   true
 
-proc loadLocalSubjectAccessReview(parser: var JsonParser):LocalSubjectAccessReview = 
-  var ret: LocalSubjectAccessReview
-  load(ret,parser)
-  return ret 
 
 proc get*(client: Client, t: typedesc[LocalSubjectAccessReview], name: string, namespace = "default"): Future[LocalSubjectAccessReview] {.async.}=
-  return await client.get("/apis/authorization.k8s.io/v1beta1", t, name, namespace, loadLocalSubjectAccessReview)
+  return await client.get("/apis/authorization.k8s.io/v1beta1", t, name, namespace)
 
 proc create*(client: Client, t: LocalSubjectAccessReview, namespace = "default"): Future[LocalSubjectAccessReview] {.async.}=
-  return await client.create("/apis/authorization.k8s.io/v1beta1", t, namespace, loadLocalSubjectAccessReview)
+  return await client.create("/apis/authorization.k8s.io/v1beta1", t, namespace)
 
 proc delete*(client: Client, t: typedesc[LocalSubjectAccessReview], name: string, namespace = "default") {.async.}=
   await client.delete("/apis/authorization.k8s.io/v1beta1", t, name, namespace)
 
 proc replace*(client: Client, t: LocalSubjectAccessReview, namespace = "default"): Future[LocalSubjectAccessReview] {.async.}=
-  return await client.replace("/apis/authorization.k8s.io/v1beta1", t, t.metadata.name, namespace, loadLocalSubjectAccessReview)
+  return await client.replace("/apis/authorization.k8s.io/v1beta1", t, t.metadata.name, namespace)
 
 proc watch*(client: Client, t: typedesc[LocalSubjectAccessReview], name: string, namespace = "default"): Future[FutureStream[WatchEv[LocalSubjectAccessReview]]] {.async.}=
-  return await client.watch("/apis/authorization.k8s.io/v1beta1", t, name, namespace, loadLocalSubjectAccessReview)
+  return await client.watch("/apis/authorization.k8s.io/v1beta1", t, name, namespace)

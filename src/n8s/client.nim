@@ -31,12 +31,12 @@ proc newClient*(kubeconfig: string = ""): Client =
   result.client = newAsyncHttpClient(result.account)
 
 
-proc loadJson[T](stream: Stream, path: string, load: proc(parser: var JsonParser): T): T =
+proc loadJson[T](stream: Stream, path: string): T =
   var parser: JsonParser
   try:
     parser.open(stream,path)
     parser.next
-    return load(parser)
+    load(result,parser)
   finally:
     parser.close
 
@@ -72,9 +72,7 @@ proc loadWatchEvsInto[T](source: FutureStream[string], target: FutureStream[Watc
   while true:
     let (hasData,data) = await source.read()
     if hasData:
-      proc x(parser: var JsonParser): WatchEv[T] = 
-        loadWatchEv(result,parser)
-      let obj = loadJson(newStringStream(data),"",x)
+      let obj = loadJson[WatchEv[T]](newStringStream(data),"")
       await target.write(obj)
     else:
       break
@@ -87,14 +85,14 @@ proc get(client: AsyncHttpClient, server: string, path: string): Future[FutureSt
 proc get*(client: Client, path: string): Future[FutureStream[string]]=
   client.client.get(client.config.server,path)
 
-proc get*[T](client: Client, groupVersion: string, t: typedesc[T], name: string, namespace: string, load: proc(parser: var JsonParser): T): Future[T] {.async.}=
+proc get*[T](client: Client, groupVersion: string, t: typedesc[T], name: string, namespace: string): Future[T] {.async.}=
   let path = groupVersion & "/namespaces/" & namespace & "/" & ($t).toLowerAscii() & "s/" & name
-  return loadJson(await toStream(await client.get(path)),path,load)
+  return loadJson[T](await toStream(await client.get(path)),path)
 
-proc watch*[T](client: Client, groupVersion: string, t: typedesc[T], name: string, namespace: string, load: proc(parser: var JsonParser): T): Future[FutureStream[WatchEv[T]]] {.async.}=
+proc watch*[T](client: Client, groupVersion: string, t: typedesc[T], name: string, namespace: string): Future[FutureStream[WatchEv[T]]] {.async.}=
   let res = newFutureStream[WatchEv[T]]()
   let path = groupVersion & "/namespaces/" & namespace & "/" & ($t).toLowerAscii() & "s/" & name
-  let obj = loadJson(await toStream(await client.get(path)),path,load)
+  let obj = loadJson[T](await toStream(await client.get(path)),path)
   await res.write(WatchEv[T](`type`:"",`object`:obj))
   proc background() {.async.} =
     let c = newAsyncHttpClient(client.account)
@@ -106,9 +104,9 @@ proc watch*[T](client: Client, groupVersion: string, t: typedesc[T], name: strin
   background().asyncCheck()
   return res
 
-proc list*[T](client: Client, groupVersion: string, t: typedesc[T], namespace: string, load: proc(parser: var JsonParser): T): Future[T] {.async.}=
+proc list*[T](client: Client, groupVersion: string, t: typedesc[T], namespace: string): Future[T] {.async.}=
   let path = groupVersion & "/namespaces/" & namespace & "/" & ($t).toLowerAscii()[0..^5] & "s"
-  return loadJson(await toStream(await client.get(path)),path,load)
+  return loadJson[T](await toStream(await client.get(path)),path)
 
 proc create*(client: Client, path: string, content: string): Future[Stream] {.async.}=
   let response = await client.client.request(client.config.server & path, httpMethod = HttpPost, body=content)
@@ -116,12 +114,12 @@ proc create*(client: Client, path: string, content: string): Future[Stream] {.as
   if not response.code.is2xx: raiseError(response, body)
   return newStringStream(body)
 
-proc create*[T](client: Client, groupVersion: string, t: T, namespace: string, load: proc(parser: var JsonParser): T): Future[T] {.async.}=
+proc create*[T](client: Client, groupVersion: string, t: T, namespace: string): Future[T] {.async.}=
   let path = groupVersion & "/namespaces/" & namespace & "/" & ($(typedesc[T])).toLowerAscii() & "s"
   let stream = newStringStream()
   t.dump(newJsonWriter(stream))
   stream.setPosition(0)
-  return loadJson(await client.create(path,stream.readAll()),path,load)
+  return loadJson[T](await client.create(path,stream.readAll()),path)
 
 proc delete*(client: Client, path: string) {.async.}=
   let response = await client.client.request(client.config.server & path, httpMethod = HttpDelete)
@@ -138,12 +136,12 @@ proc replace*(client: Client, path: string, content: string): Future[Stream] {.a
   if not response.code.is2xx: raiseError(response, body)
   return newStringStream(body)
 
-proc replace*[T](client: Client, groupVersion: string, t: T, name: string, namespace: string, load: proc(parser: var JsonParser): T): Future[T] {.async.}=
+proc replace*[T](client: Client, groupVersion: string, t: T, name: string, namespace: string): Future[T] {.async.}=
   let path = groupVersion & "/namespaces/" & namespace & "/" & ($(typedesc[T])).toLowerAscii() & "s/" & name
   let stream = newStringStream()
   t.dump(newJsonWriter(stream))
   stream.setPosition(0)
-  return loadJson(await client.replace(path,stream.readAll()),path,load)
+  return loadJson[T](await client.replace(path,stream.readAll()),path)
 
 proc apiResources*(client: Client): Future[seq[APIResource]] {.async.}=
   let response = await client.client.request(client.config.server & "/api/v1", httpMethod = HttpGet)

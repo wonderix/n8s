@@ -238,32 +238,28 @@ proc generateIsEmpty(definition: Definition, name: string, f: File) =
 proc generateApi(definition: Definition, name: string, apiPath: string, f: File) =
   let properties = definition.properties.get
   f.writeLine("")
-  f.writeLine("proc load", name.typename, "(parser: var JsonParser):", name.typename, " = ")
-  f.writeLine("  var ret: ", name.typename, "")
-  f.writeLine("  load(ret,parser)")
-  f.writeLine("  return ret ")
   if name.endsWith("List"):
     let itemName = name.typename[0..^5]
     f.writeLine("")
     f.writeLine("proc list*(client: Client, t: typedesc[", itemName, "], namespace = \"default\"): Future[seq[", itemName, "]] {.async.}=")
-    f.writeLine("  return (await client.list(\"" & apiPath & "\", ", name.typename, ", namespace, load", name.typename, ")).items")
+    f.writeLine("  return (await client.list(\"" & apiPath & "\", ", name.typename, ", namespace)).items")
   else:
     f.writeLine("")
     f.writeLine("proc get*(client: Client, t: typedesc[", name.typename, "], name: string, namespace = \"default\"): Future[", name.typename, "] {.async.}=")
-    f.writeLine("  return await client.get(\"" & apiPath & "\", t, name, namespace, load", name.typename, ")")
+    f.writeLine("  return await client.get(\"" & apiPath & "\", t, name, namespace)")
     f.writeLine("")
     f.writeLine("proc create*(client: Client, t: ", name.typename, ", namespace = \"default\"): Future[", name.typename, "] {.async.}=")
-    f.writeLine("  return await client.create(\"" & apiPath & "\", t, namespace, load", name.typename, ")")
+    f.writeLine("  return await client.create(\"" & apiPath & "\", t, namespace)")
     f.writeLine("")
     f.writeLine("proc delete*(client: Client, t: typedesc[", name.typename, "], name: string, namespace = \"default\") {.async.}=")
     f.writeLine("  await client.delete(\"" & apiPath & "\", t, name, namespace)")
     if properties.contains("metadata") and properties["metadata"].`$ref`.get("").endsWith("ObjectMeta"): 
       f.writeLine("")
       f.writeLine("proc replace*(client: Client, t: ", name.typename, ", namespace = \"default\"): Future[", name.typename, "] {.async.}=")
-      f.writeLine("  return await client.replace(\"" & apiPath & "\", t, t.metadata.name, namespace, load", name.typename, ")")
+      f.writeLine("  return await client.replace(\"" & apiPath & "\", t, t.metadata.name, namespace)")
       f.writeLine("")
       f.writeLine("proc watch*(client: Client, t: typedesc[", name.typename, "], name: string, namespace = \"default\"): Future[FutureStream[WatchEv[", name.typename, "]]] {.async.}=")
-      f.writeLine("  return await client.watch(\"" & apiPath & "\", t, name, namespace, load", name.typename, ")")
+      f.writeLine("  return await client.watch(\"" & apiPath & "\", t, name, namespace)")
 
 proc generateIntOrString(name: string, f: File) =
   f.writeLine("")

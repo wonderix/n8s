@@ -151,25 +151,21 @@ proc isEmpty*(self: RoleBinding): bool =
   if not self.`metadata`.isEmpty: return false
   true
 
-proc loadRoleBinding(parser: var JsonParser):RoleBinding = 
-  var ret: RoleBinding
-  load(ret,parser)
-  return ret 
 
 proc get*(client: Client, t: typedesc[RoleBinding], name: string, namespace = "default"): Future[RoleBinding] {.async.}=
-  return await client.get("/apis/rbac.authorization.k8s.io/v1", t, name, namespace, loadRoleBinding)
+  return await client.get("/apis/rbac.authorization.k8s.io/v1", t, name, namespace)
 
 proc create*(client: Client, t: RoleBinding, namespace = "default"): Future[RoleBinding] {.async.}=
-  return await client.create("/apis/rbac.authorization.k8s.io/v1", t, namespace, loadRoleBinding)
+  return await client.create("/apis/rbac.authorization.k8s.io/v1", t, namespace)
 
 proc delete*(client: Client, t: typedesc[RoleBinding], name: string, namespace = "default") {.async.}=
   await client.delete("/apis/rbac.authorization.k8s.io/v1", t, name, namespace)
 
 proc replace*(client: Client, t: RoleBinding, namespace = "default"): Future[RoleBinding] {.async.}=
-  return await client.replace("/apis/rbac.authorization.k8s.io/v1", t, t.metadata.name, namespace, loadRoleBinding)
+  return await client.replace("/apis/rbac.authorization.k8s.io/v1", t, t.metadata.name, namespace)
 
 proc watch*(client: Client, t: typedesc[RoleBinding], name: string, namespace = "default"): Future[FutureStream[WatchEv[RoleBinding]]] {.async.}=
-  return await client.watch("/apis/rbac.authorization.k8s.io/v1", t, name, namespace, loadRoleBinding)
+  return await client.watch("/apis/rbac.authorization.k8s.io/v1", t, name, namespace)
 
 type
   ClusterRoleBinding* = object
@@ -225,25 +221,21 @@ proc isEmpty*(self: ClusterRoleBinding): bool =
   if not self.`metadata`.isEmpty: return false
   true
 
-proc loadClusterRoleBinding(parser: var JsonParser):ClusterRoleBinding = 
-  var ret: ClusterRoleBinding
-  load(ret,parser)
-  return ret 
 
 proc get*(client: Client, t: typedesc[ClusterRoleBinding], name: string, namespace = "default"): Future[ClusterRoleBinding] {.async.}=
-  return await client.get("/apis/rbac.authorization.k8s.io/v1", t, name, namespace, loadClusterRoleBinding)
+  return await client.get("/apis/rbac.authorization.k8s.io/v1", t, name, namespace)
 
 proc create*(client: Client, t: ClusterRoleBinding, namespace = "default"): Future[ClusterRoleBinding] {.async.}=
-  return await client.create("/apis/rbac.authorization.k8s.io/v1", t, namespace, loadClusterRoleBinding)
+  return await client.create("/apis/rbac.authorization.k8s.io/v1", t, namespace)
 
 proc delete*(client: Client, t: typedesc[ClusterRoleBinding], name: string, namespace = "default") {.async.}=
   await client.delete("/apis/rbac.authorization.k8s.io/v1", t, name, namespace)
 
 proc replace*(client: Client, t: ClusterRoleBinding, namespace = "default"): Future[ClusterRoleBinding] {.async.}=
-  return await client.replace("/apis/rbac.authorization.k8s.io/v1", t, t.metadata.name, namespace, loadClusterRoleBinding)
+  return await client.replace("/apis/rbac.authorization.k8s.io/v1", t, t.metadata.name, namespace)
 
 proc watch*(client: Client, t: typedesc[ClusterRoleBinding], name: string, namespace = "default"): Future[FutureStream[WatchEv[ClusterRoleBinding]]] {.async.}=
-  return await client.watch("/apis/rbac.authorization.k8s.io/v1", t, name, namespace, loadClusterRoleBinding)
+  return await client.watch("/apis/rbac.authorization.k8s.io/v1", t, name, namespace)
 
 type
   ClusterRoleBindingList* = object
@@ -292,13 +284,9 @@ proc isEmpty*(self: ClusterRoleBindingList): bool =
   if not self.`metadata`.isEmpty: return false
   true
 
-proc loadClusterRoleBindingList(parser: var JsonParser):ClusterRoleBindingList = 
-  var ret: ClusterRoleBindingList
-  load(ret,parser)
-  return ret 
 
 proc list*(client: Client, t: typedesc[ClusterRoleBinding], namespace = "default"): Future[seq[ClusterRoleBinding]] {.async.}=
-  return (await client.list("/apis/rbac.authorization.k8s.io/v1", ClusterRoleBindingList, namespace, loadClusterRoleBindingList)).items
+  return (await client.list("/apis/rbac.authorization.k8s.io/v1", ClusterRoleBindingList, namespace)).items
 
 type
   PolicyRule* = object
@@ -405,13 +393,9 @@ proc isEmpty*(self: RoleBindingList): bool =
   if not self.`metadata`.isEmpty: return false
   true
 
-proc loadRoleBindingList(parser: var JsonParser):RoleBindingList = 
-  var ret: RoleBindingList
-  load(ret,parser)
-  return ret 
 
 proc list*(client: Client, t: typedesc[RoleBinding], namespace = "default"): Future[seq[RoleBinding]] {.async.}=
-  return (await client.list("/apis/rbac.authorization.k8s.io/v1", RoleBindingList, namespace, loadRoleBindingList)).items
+  return (await client.list("/apis/rbac.authorization.k8s.io/v1", RoleBindingList, namespace)).items
 
 type
   Role* = object
@@ -461,25 +445,21 @@ proc isEmpty*(self: Role): bool =
   if not self.`metadata`.isEmpty: return false
   true
 
-proc loadRole(parser: var JsonParser):Role = 
-  var ret: Role
-  load(ret,parser)
-  return ret 
 
 proc get*(client: Client, t: typedesc[Role], name: string, namespace = "default"): Future[Role] {.async.}=
-  return await client.get("/apis/rbac.authorization.k8s.io/v1", t, name, namespace, loadRole)
+  return await client.get("/apis/rbac.authorization.k8s.io/v1", t, name, namespace)
 
 proc create*(client: Client, t: Role, namespace = "default"): Future[Role] {.async.}=
-  return await client.create("/apis/rbac.authorization.k8s.io/v1", t, namespace, loadRole)
+  return await client.create("/apis/rbac.authorization.k8s.io/v1", t, namespace)
 
 proc delete*(client: Client, t: typedesc[Role], name: string, namespace = "default") {.async.}=
   await client.delete("/apis/rbac.authorization.k8s.io/v1", t, name, namespace)
 
 proc replace*(client: Client, t: Role, namespace = "default"): Future[Role] {.async.}=
-  return await client.replace("/apis/rbac.authorization.k8s.io/v1", t, t.metadata.name, namespace, loadRole)
+  return await client.replace("/apis/rbac.authorization.k8s.io/v1", t, t.metadata.name, namespace)
 
 proc watch*(client: Client, t: typedesc[Role], name: string, namespace = "default"): Future[FutureStream[WatchEv[Role]]] {.async.}=
-  return await client.watch("/apis/rbac.authorization.k8s.io/v1", t, name, namespace, loadRole)
+  return await client.watch("/apis/rbac.authorization.k8s.io/v1", t, name, namespace)
 
 type
   AggregationRule* = object
@@ -567,25 +547,21 @@ proc isEmpty*(self: ClusterRole): bool =
   if not self.`metadata`.isEmpty: return false
   true
 
-proc loadClusterRole(parser: var JsonParser):ClusterRole = 
-  var ret: ClusterRole
-  load(ret,parser)
-  return ret 
 
 proc get*(client: Client, t: typedesc[ClusterRole], name: string, namespace = "default"): Future[ClusterRole] {.async.}=
-  return await client.get("/apis/rbac.authorization.k8s.io/v1", t, name, namespace, loadClusterRole)
+  return await client.get("/apis/rbac.authorization.k8s.io/v1", t, name, namespace)
 
 proc create*(client: Client, t: ClusterRole, namespace = "default"): Future[ClusterRole] {.async.}=
-  return await client.create("/apis/rbac.authorization.k8s.io/v1", t, namespace, loadClusterRole)
+  return await client.create("/apis/rbac.authorization.k8s.io/v1", t, namespace)
 
 proc delete*(client: Client, t: typedesc[ClusterRole], name: string, namespace = "default") {.async.}=
   await client.delete("/apis/rbac.authorization.k8s.io/v1", t, name, namespace)
 
 proc replace*(client: Client, t: ClusterRole, namespace = "default"): Future[ClusterRole] {.async.}=
-  return await client.replace("/apis/rbac.authorization.k8s.io/v1", t, t.metadata.name, namespace, loadClusterRole)
+  return await client.replace("/apis/rbac.authorization.k8s.io/v1", t, t.metadata.name, namespace)
 
 proc watch*(client: Client, t: typedesc[ClusterRole], name: string, namespace = "default"): Future[FutureStream[WatchEv[ClusterRole]]] {.async.}=
-  return await client.watch("/apis/rbac.authorization.k8s.io/v1", t, name, namespace, loadClusterRole)
+  return await client.watch("/apis/rbac.authorization.k8s.io/v1", t, name, namespace)
 
 type
   ClusterRoleList* = object
@@ -634,13 +610,9 @@ proc isEmpty*(self: ClusterRoleList): bool =
   if not self.`metadata`.isEmpty: return false
   true
 
-proc loadClusterRoleList(parser: var JsonParser):ClusterRoleList = 
-  var ret: ClusterRoleList
-  load(ret,parser)
-  return ret 
 
 proc list*(client: Client, t: typedesc[ClusterRole], namespace = "default"): Future[seq[ClusterRole]] {.async.}=
-  return (await client.list("/apis/rbac.authorization.k8s.io/v1", ClusterRoleList, namespace, loadClusterRoleList)).items
+  return (await client.list("/apis/rbac.authorization.k8s.io/v1", ClusterRoleList, namespace)).items
 
 type
   RoleList* = object
@@ -689,10 +661,6 @@ proc isEmpty*(self: RoleList): bool =
   if not self.`metadata`.isEmpty: return false
   true
 
-proc loadRoleList(parser: var JsonParser):RoleList = 
-  var ret: RoleList
-  load(ret,parser)
-  return ret 
 
 proc list*(client: Client, t: typedesc[Role], namespace = "default"): Future[seq[Role]] {.async.}=
-  return (await client.list("/apis/rbac.authorization.k8s.io/v1", RoleList, namespace, loadRoleList)).items
+  return (await client.list("/apis/rbac.authorization.k8s.io/v1", RoleList, namespace)).items

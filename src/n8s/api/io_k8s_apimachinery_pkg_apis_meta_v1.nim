@@ -464,16 +464,12 @@ proc isEmpty*(self: Status_v2): bool =
   if not self.`metadata`.isEmpty: return false
   true
 
-proc loadStatus_v2(parser: var JsonParser):Status_v2 = 
-  var ret: Status_v2
-  load(ret,parser)
-  return ret 
 
 proc get*(client: Client, t: typedesc[Status_v2], name: string, namespace = "default"): Future[Status_v2] {.async.}=
-  return await client.get("/api/v1", t, name, namespace, loadStatus_v2)
+  return await client.get("/api/v1", t, name, namespace)
 
 proc create*(client: Client, t: Status_v2, namespace = "default"): Future[Status_v2] {.async.}=
-  return await client.create("/api/v1", t, namespace, loadStatus_v2)
+  return await client.create("/api/v1", t, namespace)
 
 proc delete*(client: Client, t: typedesc[Status_v2], name: string, namespace = "default") {.async.}=
   await client.delete("/api/v1", t, name, namespace)
@@ -1034,13 +1030,9 @@ proc isEmpty*(self: APIResourceList): bool =
   if not self.`kind`.isEmpty: return false
   true
 
-proc loadAPIResourceList(parser: var JsonParser):APIResourceList = 
-  var ret: APIResourceList
-  load(ret,parser)
-  return ret 
 
 proc list*(client: Client, t: typedesc[APIResource], namespace = "default"): Future[seq[APIResource]] {.async.}=
-  return (await client.list("/api/v1", APIResourceList, namespace, loadAPIResourceList)).items
+  return (await client.list("/api/v1", APIResourceList, namespace)).items
 
 type
   Preconditions_v2* = object
@@ -1205,16 +1197,12 @@ proc isEmpty*(self: APIGroup): bool =
   if not self.`preferredVersion`.isEmpty: return false
   true
 
-proc loadAPIGroup(parser: var JsonParser):APIGroup = 
-  var ret: APIGroup
-  load(ret,parser)
-  return ret 
 
 proc get*(client: Client, t: typedesc[APIGroup], name: string, namespace = "default"): Future[APIGroup] {.async.}=
-  return await client.get("/api/v1", t, name, namespace, loadAPIGroup)
+  return await client.get("/api/v1", t, name, namespace)
 
 proc create*(client: Client, t: APIGroup, namespace = "default"): Future[APIGroup] {.async.}=
-  return await client.create("/api/v1", t, namespace, loadAPIGroup)
+  return await client.create("/api/v1", t, namespace)
 
 proc delete*(client: Client, t: typedesc[APIGroup], name: string, namespace = "default") {.async.}=
   await client.delete("/api/v1", t, name, namespace)
@@ -1259,13 +1247,9 @@ proc isEmpty*(self: APIGroupList): bool =
   if not self.`kind`.isEmpty: return false
   true
 
-proc loadAPIGroupList(parser: var JsonParser):APIGroupList = 
-  var ret: APIGroupList
-  load(ret,parser)
-  return ret 
 
 proc list*(client: Client, t: typedesc[APIGroup], namespace = "default"): Future[seq[APIGroup]] {.async.}=
-  return (await client.list("/api/v1", APIGroupList, namespace, loadAPIGroupList)).items
+  return (await client.list("/api/v1", APIGroupList, namespace)).items
 
 type
   WatchEvent* = WatchEv
@@ -1479,16 +1463,12 @@ proc isEmpty*(self: APIResourceList_v2): bool =
   if not self.`kind`.isEmpty: return false
   true
 
-proc loadAPIResourceList_v2(parser: var JsonParser):APIResourceList_v2 = 
-  var ret: APIResourceList_v2
-  load(ret,parser)
-  return ret 
 
 proc get*(client: Client, t: typedesc[APIResourceList_v2], name: string, namespace = "default"): Future[APIResourceList_v2] {.async.}=
-  return await client.get("/api/v1", t, name, namespace, loadAPIResourceList_v2)
+  return await client.get("/api/v1", t, name, namespace)
 
 proc create*(client: Client, t: APIResourceList_v2, namespace = "default"): Future[APIResourceList_v2] {.async.}=
-  return await client.create("/api/v1", t, namespace, loadAPIResourceList_v2)
+  return await client.create("/api/v1", t, namespace)
 
 proc delete*(client: Client, t: typedesc[APIResourceList_v2], name: string, namespace = "default") {.async.}=
   await client.delete("/api/v1", t, name, namespace)
@@ -1539,16 +1519,12 @@ proc isEmpty*(self: APIVersions): bool =
   if not self.`kind`.isEmpty: return false
   true
 
-proc loadAPIVersions(parser: var JsonParser):APIVersions = 
-  var ret: APIVersions
-  load(ret,parser)
-  return ret 
 
 proc get*(client: Client, t: typedesc[APIVersions], name: string, namespace = "default"): Future[APIVersions] {.async.}=
-  return await client.get("/api/v1", t, name, namespace, loadAPIVersions)
+  return await client.get("/api/v1", t, name, namespace)
 
 proc create*(client: Client, t: APIVersions, namespace = "default"): Future[APIVersions] {.async.}=
-  return await client.create("/api/v1", t, namespace, loadAPIVersions)
+  return await client.create("/api/v1", t, namespace)
 
 proc delete*(client: Client, t: typedesc[APIVersions], name: string, namespace = "default") {.async.}=
   await client.delete("/api/v1", t, name, namespace)
@@ -1624,16 +1600,12 @@ proc isEmpty*(self: APIGroup_v2): bool =
   if not self.`preferredVersion`.isEmpty: return false
   true
 
-proc loadAPIGroup_v2(parser: var JsonParser):APIGroup_v2 = 
-  var ret: APIGroup_v2
-  load(ret,parser)
-  return ret 
 
 proc get*(client: Client, t: typedesc[APIGroup_v2], name: string, namespace = "default"): Future[APIGroup_v2] {.async.}=
-  return await client.get("/api/v1", t, name, namespace, loadAPIGroup_v2)
+  return await client.get("/api/v1", t, name, namespace)
 
 proc create*(client: Client, t: APIGroup_v2, namespace = "default"): Future[APIGroup_v2] {.async.}=
-  return await client.create("/api/v1", t, namespace, loadAPIGroup_v2)
+  return await client.create("/api/v1", t, namespace)
 
 proc delete*(client: Client, t: typedesc[APIGroup_v2], name: string, namespace = "default") {.async.}=
   await client.delete("/api/v1", t, name, namespace)
@@ -1773,16 +1745,12 @@ proc isEmpty*(self: DeleteOptions): bool =
   if not self.`preconditions`.isEmpty: return false
   true
 
-proc loadDeleteOptions(parser: var JsonParser):DeleteOptions = 
-  var ret: DeleteOptions
-  load(ret,parser)
-  return ret 
 
 proc get*(client: Client, t: typedesc[DeleteOptions], name: string, namespace = "default"): Future[DeleteOptions] {.async.}=
-  return await client.get("/api/v1", t, name, namespace, loadDeleteOptions)
+  return await client.get("/api/v1", t, name, namespace)
 
 proc create*(client: Client, t: DeleteOptions, namespace = "default"): Future[DeleteOptions] {.async.}=
-  return await client.create("/api/v1", t, namespace, loadDeleteOptions)
+  return await client.create("/api/v1", t, namespace)
 
 proc delete*(client: Client, t: typedesc[DeleteOptions], name: string, namespace = "default") {.async.}=
   await client.delete("/api/v1", t, name, namespace)
@@ -1985,16 +1953,12 @@ proc isEmpty*(self: DeleteOptions_v2): bool =
   if not self.`preconditions`.isEmpty: return false
   true
 
-proc loadDeleteOptions_v2(parser: var JsonParser):DeleteOptions_v2 = 
-  var ret: DeleteOptions_v2
-  load(ret,parser)
-  return ret 
 
 proc get*(client: Client, t: typedesc[DeleteOptions_v2], name: string, namespace = "default"): Future[DeleteOptions_v2] {.async.}=
-  return await client.get("/api/v1", t, name, namespace, loadDeleteOptions_v2)
+  return await client.get("/api/v1", t, name, namespace)
 
 proc create*(client: Client, t: DeleteOptions_v2, namespace = "default"): Future[DeleteOptions_v2] {.async.}=
-  return await client.create("/api/v1", t, namespace, loadDeleteOptions_v2)
+  return await client.create("/api/v1", t, namespace)
 
 proc delete*(client: Client, t: typedesc[DeleteOptions_v2], name: string, namespace = "default") {.async.}=
   await client.delete("/api/v1", t, name, namespace)
@@ -2075,16 +2039,12 @@ proc isEmpty*(self: Status): bool =
   if not self.`metadata`.isEmpty: return false
   true
 
-proc loadStatus(parser: var JsonParser):Status = 
-  var ret: Status
-  load(ret,parser)
-  return ret 
 
 proc get*(client: Client, t: typedesc[Status], name: string, namespace = "default"): Future[Status] {.async.}=
-  return await client.get("/api/v1", t, name, namespace, loadStatus)
+  return await client.get("/api/v1", t, name, namespace)
 
 proc create*(client: Client, t: Status, namespace = "default"): Future[Status] {.async.}=
-  return await client.create("/api/v1", t, namespace, loadStatus)
+  return await client.create("/api/v1", t, namespace)
 
 proc delete*(client: Client, t: typedesc[Status], name: string, namespace = "default") {.async.}=
   await client.delete("/api/v1", t, name, namespace)

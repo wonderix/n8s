@@ -317,25 +317,21 @@ proc isEmpty*(self: Ingress): bool =
   if not self.`metadata`.isEmpty: return false
   true
 
-proc loadIngress(parser: var JsonParser):Ingress = 
-  var ret: Ingress
-  load(ret,parser)
-  return ret 
 
 proc get*(client: Client, t: typedesc[Ingress], name: string, namespace = "default"): Future[Ingress] {.async.}=
-  return await client.get("/apis/networking.k8s.io/v1beta1", t, name, namespace, loadIngress)
+  return await client.get("/apis/networking.k8s.io/v1beta1", t, name, namespace)
 
 proc create*(client: Client, t: Ingress, namespace = "default"): Future[Ingress] {.async.}=
-  return await client.create("/apis/networking.k8s.io/v1beta1", t, namespace, loadIngress)
+  return await client.create("/apis/networking.k8s.io/v1beta1", t, namespace)
 
 proc delete*(client: Client, t: typedesc[Ingress], name: string, namespace = "default") {.async.}=
   await client.delete("/apis/networking.k8s.io/v1beta1", t, name, namespace)
 
 proc replace*(client: Client, t: Ingress, namespace = "default"): Future[Ingress] {.async.}=
-  return await client.replace("/apis/networking.k8s.io/v1beta1", t, t.metadata.name, namespace, loadIngress)
+  return await client.replace("/apis/networking.k8s.io/v1beta1", t, t.metadata.name, namespace)
 
 proc watch*(client: Client, t: typedesc[Ingress], name: string, namespace = "default"): Future[FutureStream[WatchEv[Ingress]]] {.async.}=
-  return await client.watch("/apis/networking.k8s.io/v1beta1", t, name, namespace, loadIngress)
+  return await client.watch("/apis/networking.k8s.io/v1beta1", t, name, namespace)
 
 type
   IngressList* = object
@@ -384,10 +380,6 @@ proc isEmpty*(self: IngressList): bool =
   if not self.`metadata`.isEmpty: return false
   true
 
-proc loadIngressList(parser: var JsonParser):IngressList = 
-  var ret: IngressList
-  load(ret,parser)
-  return ret 
 
 proc list*(client: Client, t: typedesc[Ingress], namespace = "default"): Future[seq[Ingress]] {.async.}=
-  return (await client.list("/apis/networking.k8s.io/v1beta1", IngressList, namespace, loadIngressList)).items
+  return (await client.list("/apis/networking.k8s.io/v1beta1", IngressList, namespace)).items

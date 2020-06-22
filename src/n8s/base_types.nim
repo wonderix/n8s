@@ -250,7 +250,7 @@ proc dump*(v: JsonNode, s: JsonWriter)=
 
 proc isEmpty*(value: JsonNode): bool =  value.len == 0
 
-proc loadWatchEv*[T](self: var WatchEv[T], parser: var JsonParser) =
+proc load*[T](self: var WatchEv[T], parser: var JsonParser) =
   if parser.kind != jsonObjectStart: raiseParseErr(parser,"object start")
   parser.next
   while true:

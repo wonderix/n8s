@@ -270,25 +270,21 @@ proc isEmpty*(self: Job): bool =
   if not self.`metadata`.isEmpty: return false
   true
 
-proc loadJob(parser: var JsonParser):Job = 
-  var ret: Job
-  load(ret,parser)
-  return ret 
 
 proc get*(client: Client, t: typedesc[Job], name: string, namespace = "default"): Future[Job] {.async.}=
-  return await client.get("/apis/batch/v1", t, name, namespace, loadJob)
+  return await client.get("/apis/batch/v1", t, name, namespace)
 
 proc create*(client: Client, t: Job, namespace = "default"): Future[Job] {.async.}=
-  return await client.create("/apis/batch/v1", t, namespace, loadJob)
+  return await client.create("/apis/batch/v1", t, namespace)
 
 proc delete*(client: Client, t: typedesc[Job], name: string, namespace = "default") {.async.}=
   await client.delete("/apis/batch/v1", t, name, namespace)
 
 proc replace*(client: Client, t: Job, namespace = "default"): Future[Job] {.async.}=
-  return await client.replace("/apis/batch/v1", t, t.metadata.name, namespace, loadJob)
+  return await client.replace("/apis/batch/v1", t, t.metadata.name, namespace)
 
 proc watch*(client: Client, t: typedesc[Job], name: string, namespace = "default"): Future[FutureStream[WatchEv[Job]]] {.async.}=
-  return await client.watch("/apis/batch/v1", t, name, namespace, loadJob)
+  return await client.watch("/apis/batch/v1", t, name, namespace)
 
 type
   JobList* = object
@@ -337,10 +333,6 @@ proc isEmpty*(self: JobList): bool =
   if not self.`metadata`.isEmpty: return false
   true
 
-proc loadJobList(parser: var JsonParser):JobList = 
-  var ret: JobList
-  load(ret,parser)
-  return ret 
 
 proc list*(client: Client, t: typedesc[Job], namespace = "default"): Future[seq[Job]] {.async.}=
-  return (await client.list("/apis/batch/v1", JobList, namespace, loadJobList)).items
+  return (await client.list("/apis/batch/v1", JobList, namespace)).items

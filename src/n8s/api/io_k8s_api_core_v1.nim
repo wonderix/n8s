@@ -5798,25 +5798,21 @@ proc isEmpty*(self: Pod): bool =
   if not self.`metadata`.isEmpty: return false
   true
 
-proc loadPod(parser: var JsonParser):Pod = 
-  var ret: Pod
-  load(ret,parser)
-  return ret 
 
 proc get*(client: Client, t: typedesc[Pod], name: string, namespace = "default"): Future[Pod] {.async.}=
-  return await client.get("/api/v1", t, name, namespace, loadPod)
+  return await client.get("/api/v1", t, name, namespace)
 
 proc create*(client: Client, t: Pod, namespace = "default"): Future[Pod] {.async.}=
-  return await client.create("/api/v1", t, namespace, loadPod)
+  return await client.create("/api/v1", t, namespace)
 
 proc delete*(client: Client, t: typedesc[Pod], name: string, namespace = "default") {.async.}=
   await client.delete("/api/v1", t, name, namespace)
 
 proc replace*(client: Client, t: Pod, namespace = "default"): Future[Pod] {.async.}=
-  return await client.replace("/api/v1", t, t.metadata.name, namespace, loadPod)
+  return await client.replace("/api/v1", t, t.metadata.name, namespace)
 
 proc watch*(client: Client, t: typedesc[Pod], name: string, namespace = "default"): Future[FutureStream[WatchEv[Pod]]] {.async.}=
-  return await client.watch("/api/v1", t, name, namespace, loadPod)
+  return await client.watch("/api/v1", t, name, namespace)
 
 type
   ObjectReference* = object
@@ -6079,25 +6075,21 @@ proc isEmpty*(self: Endpoints): bool =
   if not self.`metadata`.isEmpty: return false
   true
 
-proc loadEndpoints(parser: var JsonParser):Endpoints = 
-  var ret: Endpoints
-  load(ret,parser)
-  return ret 
 
 proc get*(client: Client, t: typedesc[Endpoints], name: string, namespace = "default"): Future[Endpoints] {.async.}=
-  return await client.get("/api/v1", t, name, namespace, loadEndpoints)
+  return await client.get("/api/v1", t, name, namespace)
 
 proc create*(client: Client, t: Endpoints, namespace = "default"): Future[Endpoints] {.async.}=
-  return await client.create("/api/v1", t, namespace, loadEndpoints)
+  return await client.create("/api/v1", t, namespace)
 
 proc delete*(client: Client, t: typedesc[Endpoints], name: string, namespace = "default") {.async.}=
   await client.delete("/api/v1", t, name, namespace)
 
 proc replace*(client: Client, t: Endpoints, namespace = "default"): Future[Endpoints] {.async.}=
-  return await client.replace("/api/v1", t, t.metadata.name, namespace, loadEndpoints)
+  return await client.replace("/api/v1", t, t.metadata.name, namespace)
 
 proc watch*(client: Client, t: typedesc[Endpoints], name: string, namespace = "default"): Future[FutureStream[WatchEv[Endpoints]]] {.async.}=
-  return await client.watch("/api/v1", t, name, namespace, loadEndpoints)
+  return await client.watch("/api/v1", t, name, namespace)
 
 type
   ScopedResourceSelectorRequirement* = object
@@ -6620,25 +6612,21 @@ proc isEmpty*(self: ReplicationController): bool =
   if not self.`metadata`.isEmpty: return false
   true
 
-proc loadReplicationController(parser: var JsonParser):ReplicationController = 
-  var ret: ReplicationController
-  load(ret,parser)
-  return ret 
 
 proc get*(client: Client, t: typedesc[ReplicationController], name: string, namespace = "default"): Future[ReplicationController] {.async.}=
-  return await client.get("/api/v1", t, name, namespace, loadReplicationController)
+  return await client.get("/api/v1", t, name, namespace)
 
 proc create*(client: Client, t: ReplicationController, namespace = "default"): Future[ReplicationController] {.async.}=
-  return await client.create("/api/v1", t, namespace, loadReplicationController)
+  return await client.create("/api/v1", t, namespace)
 
 proc delete*(client: Client, t: typedesc[ReplicationController], name: string, namespace = "default") {.async.}=
   await client.delete("/api/v1", t, name, namespace)
 
 proc replace*(client: Client, t: ReplicationController, namespace = "default"): Future[ReplicationController] {.async.}=
-  return await client.replace("/api/v1", t, t.metadata.name, namespace, loadReplicationController)
+  return await client.replace("/api/v1", t, t.metadata.name, namespace)
 
 proc watch*(client: Client, t: typedesc[ReplicationController], name: string, namespace = "default"): Future[FutureStream[WatchEv[ReplicationController]]] {.async.}=
-  return await client.watch("/api/v1", t, name, namespace, loadReplicationController)
+  return await client.watch("/api/v1", t, name, namespace)
 
 type
   LimitRangeItem* = object
@@ -6784,25 +6772,21 @@ proc isEmpty*(self: LimitRange): bool =
   if not self.`metadata`.isEmpty: return false
   true
 
-proc loadLimitRange(parser: var JsonParser):LimitRange = 
-  var ret: LimitRange
-  load(ret,parser)
-  return ret 
 
 proc get*(client: Client, t: typedesc[LimitRange], name: string, namespace = "default"): Future[LimitRange] {.async.}=
-  return await client.get("/api/v1", t, name, namespace, loadLimitRange)
+  return await client.get("/api/v1", t, name, namespace)
 
 proc create*(client: Client, t: LimitRange, namespace = "default"): Future[LimitRange] {.async.}=
-  return await client.create("/api/v1", t, namespace, loadLimitRange)
+  return await client.create("/api/v1", t, namespace)
 
 proc delete*(client: Client, t: typedesc[LimitRange], name: string, namespace = "default") {.async.}=
   await client.delete("/api/v1", t, name, namespace)
 
 proc replace*(client: Client, t: LimitRange, namespace = "default"): Future[LimitRange] {.async.}=
-  return await client.replace("/api/v1", t, t.metadata.name, namespace, loadLimitRange)
+  return await client.replace("/api/v1", t, t.metadata.name, namespace)
 
 proc watch*(client: Client, t: typedesc[LimitRange], name: string, namespace = "default"): Future[FutureStream[WatchEv[LimitRange]]] {.async.}=
-  return await client.watch("/api/v1", t, name, namespace, loadLimitRange)
+  return await client.watch("/api/v1", t, name, namespace)
 
 type
   LimitRangeList* = object
@@ -6851,13 +6835,9 @@ proc isEmpty*(self: LimitRangeList): bool =
   if not self.`metadata`.isEmpty: return false
   true
 
-proc loadLimitRangeList(parser: var JsonParser):LimitRangeList = 
-  var ret: LimitRangeList
-  load(ret,parser)
-  return ret 
 
 proc list*(client: Client, t: typedesc[LimitRange], namespace = "default"): Future[seq[LimitRange]] {.async.}=
-  return (await client.list("/api/v1", LimitRangeList, namespace, loadLimitRangeList)).items
+  return (await client.list("/api/v1", LimitRangeList, namespace)).items
 
 type
   Node* = object
@@ -6914,25 +6894,21 @@ proc isEmpty*(self: Node): bool =
   if not self.`metadata`.isEmpty: return false
   true
 
-proc loadNode(parser: var JsonParser):Node = 
-  var ret: Node
-  load(ret,parser)
-  return ret 
 
 proc get*(client: Client, t: typedesc[Node], name: string, namespace = "default"): Future[Node] {.async.}=
-  return await client.get("/api/v1", t, name, namespace, loadNode)
+  return await client.get("/api/v1", t, name, namespace)
 
 proc create*(client: Client, t: Node, namespace = "default"): Future[Node] {.async.}=
-  return await client.create("/api/v1", t, namespace, loadNode)
+  return await client.create("/api/v1", t, namespace)
 
 proc delete*(client: Client, t: typedesc[Node], name: string, namespace = "default") {.async.}=
   await client.delete("/api/v1", t, name, namespace)
 
 proc replace*(client: Client, t: Node, namespace = "default"): Future[Node] {.async.}=
-  return await client.replace("/api/v1", t, t.metadata.name, namespace, loadNode)
+  return await client.replace("/api/v1", t, t.metadata.name, namespace)
 
 proc watch*(client: Client, t: typedesc[Node], name: string, namespace = "default"): Future[FutureStream[WatchEv[Node]]] {.async.}=
-  return await client.watch("/api/v1", t, name, namespace, loadNode)
+  return await client.watch("/api/v1", t, name, namespace)
 
 type
   NodeList* = object
@@ -6981,13 +6957,9 @@ proc isEmpty*(self: NodeList): bool =
   if not self.`metadata`.isEmpty: return false
   true
 
-proc loadNodeList(parser: var JsonParser):NodeList = 
-  var ret: NodeList
-  load(ret,parser)
-  return ret 
 
 proc list*(client: Client, t: typedesc[Node], namespace = "default"): Future[seq[Node]] {.async.}=
-  return (await client.list("/api/v1", NodeList, namespace, loadNodeList)).items
+  return (await client.list("/api/v1", NodeList, namespace)).items
 
 type
   ServicePort* = object
@@ -7192,25 +7164,21 @@ proc isEmpty*(self: ConfigMap): bool =
   if not self.`metadata`.isEmpty: return false
   true
 
-proc loadConfigMap(parser: var JsonParser):ConfigMap = 
-  var ret: ConfigMap
-  load(ret,parser)
-  return ret 
 
 proc get*(client: Client, t: typedesc[ConfigMap], name: string, namespace = "default"): Future[ConfigMap] {.async.}=
-  return await client.get("/api/v1", t, name, namespace, loadConfigMap)
+  return await client.get("/api/v1", t, name, namespace)
 
 proc create*(client: Client, t: ConfigMap, namespace = "default"): Future[ConfigMap] {.async.}=
-  return await client.create("/api/v1", t, namespace, loadConfigMap)
+  return await client.create("/api/v1", t, namespace)
 
 proc delete*(client: Client, t: typedesc[ConfigMap], name: string, namespace = "default") {.async.}=
   await client.delete("/api/v1", t, name, namespace)
 
 proc replace*(client: Client, t: ConfigMap, namespace = "default"): Future[ConfigMap] {.async.}=
-  return await client.replace("/api/v1", t, t.metadata.name, namespace, loadConfigMap)
+  return await client.replace("/api/v1", t, t.metadata.name, namespace)
 
 proc watch*(client: Client, t: typedesc[ConfigMap], name: string, namespace = "default"): Future[FutureStream[WatchEv[ConfigMap]]] {.async.}=
-  return await client.watch("/api/v1", t, name, namespace, loadConfigMap)
+  return await client.watch("/api/v1", t, name, namespace)
 
 type
   ConfigMapList* = object
@@ -7259,13 +7227,9 @@ proc isEmpty*(self: ConfigMapList): bool =
   if not self.`metadata`.isEmpty: return false
   true
 
-proc loadConfigMapList(parser: var JsonParser):ConfigMapList = 
-  var ret: ConfigMapList
-  load(ret,parser)
-  return ret 
 
 proc list*(client: Client, t: typedesc[ConfigMap], namespace = "default"): Future[seq[ConfigMap]] {.async.}=
-  return (await client.list("/api/v1", ConfigMapList, namespace, loadConfigMapList)).items
+  return (await client.list("/api/v1", ConfigMapList, namespace)).items
 
 type
   ClientIPConfig* = object
@@ -7606,25 +7570,21 @@ proc isEmpty*(self: Service): bool =
   if not self.`metadata`.isEmpty: return false
   true
 
-proc loadService(parser: var JsonParser):Service = 
-  var ret: Service
-  load(ret,parser)
-  return ret 
 
 proc get*(client: Client, t: typedesc[Service], name: string, namespace = "default"): Future[Service] {.async.}=
-  return await client.get("/api/v1", t, name, namespace, loadService)
+  return await client.get("/api/v1", t, name, namespace)
 
 proc create*(client: Client, t: Service, namespace = "default"): Future[Service] {.async.}=
-  return await client.create("/api/v1", t, namespace, loadService)
+  return await client.create("/api/v1", t, namespace)
 
 proc delete*(client: Client, t: typedesc[Service], name: string, namespace = "default") {.async.}=
   await client.delete("/api/v1", t, name, namespace)
 
 proc replace*(client: Client, t: Service, namespace = "default"): Future[Service] {.async.}=
-  return await client.replace("/api/v1", t, t.metadata.name, namespace, loadService)
+  return await client.replace("/api/v1", t, t.metadata.name, namespace)
 
 proc watch*(client: Client, t: typedesc[Service], name: string, namespace = "default"): Future[FutureStream[WatchEv[Service]]] {.async.}=
-  return await client.watch("/api/v1", t, name, namespace, loadService)
+  return await client.watch("/api/v1", t, name, namespace)
 
 type
   ServiceList* = object
@@ -7673,13 +7633,9 @@ proc isEmpty*(self: ServiceList): bool =
   if not self.`metadata`.isEmpty: return false
   true
 
-proc loadServiceList(parser: var JsonParser):ServiceList = 
-  var ret: ServiceList
-  load(ret,parser)
-  return ret 
 
 proc list*(client: Client, t: typedesc[Service], namespace = "default"): Future[seq[Service]] {.async.}=
-  return (await client.list("/api/v1", ServiceList, namespace, loadServiceList)).items
+  return (await client.list("/api/v1", ServiceList, namespace)).items
 
 type
   NamespaceCondition* = object
@@ -8034,25 +7990,21 @@ proc isEmpty*(self: ResourceQuota): bool =
   if not self.`metadata`.isEmpty: return false
   true
 
-proc loadResourceQuota(parser: var JsonParser):ResourceQuota = 
-  var ret: ResourceQuota
-  load(ret,parser)
-  return ret 
 
 proc get*(client: Client, t: typedesc[ResourceQuota], name: string, namespace = "default"): Future[ResourceQuota] {.async.}=
-  return await client.get("/api/v1", t, name, namespace, loadResourceQuota)
+  return await client.get("/api/v1", t, name, namespace)
 
 proc create*(client: Client, t: ResourceQuota, namespace = "default"): Future[ResourceQuota] {.async.}=
-  return await client.create("/api/v1", t, namespace, loadResourceQuota)
+  return await client.create("/api/v1", t, namespace)
 
 proc delete*(client: Client, t: typedesc[ResourceQuota], name: string, namespace = "default") {.async.}=
   await client.delete("/api/v1", t, name, namespace)
 
 proc replace*(client: Client, t: ResourceQuota, namespace = "default"): Future[ResourceQuota] {.async.}=
-  return await client.replace("/api/v1", t, t.metadata.name, namespace, loadResourceQuota)
+  return await client.replace("/api/v1", t, t.metadata.name, namespace)
 
 proc watch*(client: Client, t: typedesc[ResourceQuota], name: string, namespace = "default"): Future[FutureStream[WatchEv[ResourceQuota]]] {.async.}=
-  return await client.watch("/api/v1", t, name, namespace, loadResourceQuota)
+  return await client.watch("/api/v1", t, name, namespace)
 
 type
   ISCSIPersistentVolumeSource* = object
@@ -9129,25 +9081,21 @@ proc isEmpty*(self: Event): bool =
   if not self.`metadata`.isEmpty: return false
   true
 
-proc loadEvent(parser: var JsonParser):Event = 
-  var ret: Event
-  load(ret,parser)
-  return ret 
 
 proc get*(client: Client, t: typedesc[Event], name: string, namespace = "default"): Future[Event] {.async.}=
-  return await client.get("/api/v1", t, name, namespace, loadEvent)
+  return await client.get("/api/v1", t, name, namespace)
 
 proc create*(client: Client, t: Event, namespace = "default"): Future[Event] {.async.}=
-  return await client.create("/api/v1", t, namespace, loadEvent)
+  return await client.create("/api/v1", t, namespace)
 
 proc delete*(client: Client, t: typedesc[Event], name: string, namespace = "default") {.async.}=
   await client.delete("/api/v1", t, name, namespace)
 
 proc replace*(client: Client, t: Event, namespace = "default"): Future[Event] {.async.}=
-  return await client.replace("/api/v1", t, t.metadata.name, namespace, loadEvent)
+  return await client.replace("/api/v1", t, t.metadata.name, namespace)
 
 proc watch*(client: Client, t: typedesc[Event], name: string, namespace = "default"): Future[FutureStream[WatchEv[Event]]] {.async.}=
-  return await client.watch("/api/v1", t, name, namespace, loadEvent)
+  return await client.watch("/api/v1", t, name, namespace)
 
 type
   EventList* = object
@@ -9196,13 +9144,9 @@ proc isEmpty*(self: EventList): bool =
   if not self.`metadata`.isEmpty: return false
   true
 
-proc loadEventList(parser: var JsonParser):EventList = 
-  var ret: EventList
-  load(ret,parser)
-  return ret 
 
 proc list*(client: Client, t: typedesc[Event], namespace = "default"): Future[seq[Event]] {.async.}=
-  return (await client.list("/api/v1", EventList, namespace, loadEventList)).items
+  return (await client.list("/api/v1", EventList, namespace)).items
 
 type
   PersistentVolume* = object
@@ -9259,25 +9203,21 @@ proc isEmpty*(self: PersistentVolume): bool =
   if not self.`metadata`.isEmpty: return false
   true
 
-proc loadPersistentVolume(parser: var JsonParser):PersistentVolume = 
-  var ret: PersistentVolume
-  load(ret,parser)
-  return ret 
 
 proc get*(client: Client, t: typedesc[PersistentVolume], name: string, namespace = "default"): Future[PersistentVolume] {.async.}=
-  return await client.get("/api/v1", t, name, namespace, loadPersistentVolume)
+  return await client.get("/api/v1", t, name, namespace)
 
 proc create*(client: Client, t: PersistentVolume, namespace = "default"): Future[PersistentVolume] {.async.}=
-  return await client.create("/api/v1", t, namespace, loadPersistentVolume)
+  return await client.create("/api/v1", t, namespace)
 
 proc delete*(client: Client, t: typedesc[PersistentVolume], name: string, namespace = "default") {.async.}=
   await client.delete("/api/v1", t, name, namespace)
 
 proc replace*(client: Client, t: PersistentVolume, namespace = "default"): Future[PersistentVolume] {.async.}=
-  return await client.replace("/api/v1", t, t.metadata.name, namespace, loadPersistentVolume)
+  return await client.replace("/api/v1", t, t.metadata.name, namespace)
 
 proc watch*(client: Client, t: typedesc[PersistentVolume], name: string, namespace = "default"): Future[FutureStream[WatchEv[PersistentVolume]]] {.async.}=
-  return await client.watch("/api/v1", t, name, namespace, loadPersistentVolume)
+  return await client.watch("/api/v1", t, name, namespace)
 
 type
   TypedLocalObjectReference* = object
@@ -9370,25 +9310,21 @@ proc isEmpty*(self: PodTemplate): bool =
   if not self.`metadata`.isEmpty: return false
   true
 
-proc loadPodTemplate(parser: var JsonParser):PodTemplate = 
-  var ret: PodTemplate
-  load(ret,parser)
-  return ret 
 
 proc get*(client: Client, t: typedesc[PodTemplate], name: string, namespace = "default"): Future[PodTemplate] {.async.}=
-  return await client.get("/api/v1", t, name, namespace, loadPodTemplate)
+  return await client.get("/api/v1", t, name, namespace)
 
 proc create*(client: Client, t: PodTemplate, namespace = "default"): Future[PodTemplate] {.async.}=
-  return await client.create("/api/v1", t, namespace, loadPodTemplate)
+  return await client.create("/api/v1", t, namespace)
 
 proc delete*(client: Client, t: typedesc[PodTemplate], name: string, namespace = "default") {.async.}=
   await client.delete("/api/v1", t, name, namespace)
 
 proc replace*(client: Client, t: PodTemplate, namespace = "default"): Future[PodTemplate] {.async.}=
-  return await client.replace("/api/v1", t, t.metadata.name, namespace, loadPodTemplate)
+  return await client.replace("/api/v1", t, t.metadata.name, namespace)
 
 proc watch*(client: Client, t: typedesc[PodTemplate], name: string, namespace = "default"): Future[FutureStream[WatchEv[PodTemplate]]] {.async.}=
-  return await client.watch("/api/v1", t, name, namespace, loadPodTemplate)
+  return await client.watch("/api/v1", t, name, namespace)
 
 type
   PodTemplateList* = object
@@ -9437,13 +9373,9 @@ proc isEmpty*(self: PodTemplateList): bool =
   if not self.`metadata`.isEmpty: return false
   true
 
-proc loadPodTemplateList(parser: var JsonParser):PodTemplateList = 
-  var ret: PodTemplateList
-  load(ret,parser)
-  return ret 
 
 proc list*(client: Client, t: typedesc[PodTemplate], namespace = "default"): Future[seq[PodTemplate]] {.async.}=
-  return (await client.list("/api/v1", PodTemplateList, namespace, loadPodTemplateList)).items
+  return (await client.list("/api/v1", PodTemplateList, namespace)).items
 
 type
   ComponentCondition* = object
@@ -9543,25 +9475,21 @@ proc isEmpty*(self: ComponentStatus): bool =
   if not self.`metadata`.isEmpty: return false
   true
 
-proc loadComponentStatus(parser: var JsonParser):ComponentStatus = 
-  var ret: ComponentStatus
-  load(ret,parser)
-  return ret 
 
 proc get*(client: Client, t: typedesc[ComponentStatus], name: string, namespace = "default"): Future[ComponentStatus] {.async.}=
-  return await client.get("/api/v1", t, name, namespace, loadComponentStatus)
+  return await client.get("/api/v1", t, name, namespace)
 
 proc create*(client: Client, t: ComponentStatus, namespace = "default"): Future[ComponentStatus] {.async.}=
-  return await client.create("/api/v1", t, namespace, loadComponentStatus)
+  return await client.create("/api/v1", t, namespace)
 
 proc delete*(client: Client, t: typedesc[ComponentStatus], name: string, namespace = "default") {.async.}=
   await client.delete("/api/v1", t, name, namespace)
 
 proc replace*(client: Client, t: ComponentStatus, namespace = "default"): Future[ComponentStatus] {.async.}=
-  return await client.replace("/api/v1", t, t.metadata.name, namespace, loadComponentStatus)
+  return await client.replace("/api/v1", t, t.metadata.name, namespace)
 
 proc watch*(client: Client, t: typedesc[ComponentStatus], name: string, namespace = "default"): Future[FutureStream[WatchEv[ComponentStatus]]] {.async.}=
-  return await client.watch("/api/v1", t, name, namespace, loadComponentStatus)
+  return await client.watch("/api/v1", t, name, namespace)
 
 type
   ComponentStatusList* = object
@@ -9610,13 +9538,9 @@ proc isEmpty*(self: ComponentStatusList): bool =
   if not self.`metadata`.isEmpty: return false
   true
 
-proc loadComponentStatusList(parser: var JsonParser):ComponentStatusList = 
-  var ret: ComponentStatusList
-  load(ret,parser)
-  return ret 
 
 proc list*(client: Client, t: typedesc[ComponentStatus], namespace = "default"): Future[seq[ComponentStatus]] {.async.}=
-  return (await client.list("/api/v1", ComponentStatusList, namespace, loadComponentStatusList)).items
+  return (await client.list("/api/v1", ComponentStatusList, namespace)).items
 
 type
   PersistentVolumeClaimSpec* = object
@@ -9746,25 +9670,21 @@ proc isEmpty*(self: PersistentVolumeClaim): bool =
   if not self.`metadata`.isEmpty: return false
   true
 
-proc loadPersistentVolumeClaim(parser: var JsonParser):PersistentVolumeClaim = 
-  var ret: PersistentVolumeClaim
-  load(ret,parser)
-  return ret 
 
 proc get*(client: Client, t: typedesc[PersistentVolumeClaim], name: string, namespace = "default"): Future[PersistentVolumeClaim] {.async.}=
-  return await client.get("/api/v1", t, name, namespace, loadPersistentVolumeClaim)
+  return await client.get("/api/v1", t, name, namespace)
 
 proc create*(client: Client, t: PersistentVolumeClaim, namespace = "default"): Future[PersistentVolumeClaim] {.async.}=
-  return await client.create("/api/v1", t, namespace, loadPersistentVolumeClaim)
+  return await client.create("/api/v1", t, namespace)
 
 proc delete*(client: Client, t: typedesc[PersistentVolumeClaim], name: string, namespace = "default") {.async.}=
   await client.delete("/api/v1", t, name, namespace)
 
 proc replace*(client: Client, t: PersistentVolumeClaim, namespace = "default"): Future[PersistentVolumeClaim] {.async.}=
-  return await client.replace("/api/v1", t, t.metadata.name, namespace, loadPersistentVolumeClaim)
+  return await client.replace("/api/v1", t, t.metadata.name, namespace)
 
 proc watch*(client: Client, t: typedesc[PersistentVolumeClaim], name: string, namespace = "default"): Future[FutureStream[WatchEv[PersistentVolumeClaim]]] {.async.}=
-  return await client.watch("/api/v1", t, name, namespace, loadPersistentVolumeClaim)
+  return await client.watch("/api/v1", t, name, namespace)
 
 type
   PersistentVolumeList* = object
@@ -9813,13 +9733,9 @@ proc isEmpty*(self: PersistentVolumeList): bool =
   if not self.`metadata`.isEmpty: return false
   true
 
-proc loadPersistentVolumeList(parser: var JsonParser):PersistentVolumeList = 
-  var ret: PersistentVolumeList
-  load(ret,parser)
-  return ret 
 
 proc list*(client: Client, t: typedesc[PersistentVolume], namespace = "default"): Future[seq[PersistentVolume]] {.async.}=
-  return (await client.list("/api/v1", PersistentVolumeList, namespace, loadPersistentVolumeList)).items
+  return (await client.list("/api/v1", PersistentVolumeList, namespace)).items
 
 type
   Binding* = object
@@ -9868,25 +9784,21 @@ proc isEmpty*(self: Binding): bool =
   if not self.`metadata`.isEmpty: return false
   true
 
-proc loadBinding(parser: var JsonParser):Binding = 
-  var ret: Binding
-  load(ret,parser)
-  return ret 
 
 proc get*(client: Client, t: typedesc[Binding], name: string, namespace = "default"): Future[Binding] {.async.}=
-  return await client.get("/api/v1", t, name, namespace, loadBinding)
+  return await client.get("/api/v1", t, name, namespace)
 
 proc create*(client: Client, t: Binding, namespace = "default"): Future[Binding] {.async.}=
-  return await client.create("/api/v1", t, namespace, loadBinding)
+  return await client.create("/api/v1", t, namespace)
 
 proc delete*(client: Client, t: typedesc[Binding], name: string, namespace = "default") {.async.}=
   await client.delete("/api/v1", t, name, namespace)
 
 proc replace*(client: Client, t: Binding, namespace = "default"): Future[Binding] {.async.}=
-  return await client.replace("/api/v1", t, t.metadata.name, namespace, loadBinding)
+  return await client.replace("/api/v1", t, t.metadata.name, namespace)
 
 proc watch*(client: Client, t: typedesc[Binding], name: string, namespace = "default"): Future[FutureStream[WatchEv[Binding]]] {.async.}=
-  return await client.watch("/api/v1", t, name, namespace, loadBinding)
+  return await client.watch("/api/v1", t, name, namespace)
 
 type
   NamespaceSpec* = object
@@ -9974,25 +9886,21 @@ proc isEmpty*(self: Namespace): bool =
   if not self.`metadata`.isEmpty: return false
   true
 
-proc loadNamespace(parser: var JsonParser):Namespace = 
-  var ret: Namespace
-  load(ret,parser)
-  return ret 
 
 proc get*(client: Client, t: typedesc[Namespace], name: string, namespace = "default"): Future[Namespace] {.async.}=
-  return await client.get("/api/v1", t, name, namespace, loadNamespace)
+  return await client.get("/api/v1", t, name, namespace)
 
 proc create*(client: Client, t: Namespace, namespace = "default"): Future[Namespace] {.async.}=
-  return await client.create("/api/v1", t, namespace, loadNamespace)
+  return await client.create("/api/v1", t, namespace)
 
 proc delete*(client: Client, t: typedesc[Namespace], name: string, namespace = "default") {.async.}=
   await client.delete("/api/v1", t, name, namespace)
 
 proc replace*(client: Client, t: Namespace, namespace = "default"): Future[Namespace] {.async.}=
-  return await client.replace("/api/v1", t, t.metadata.name, namespace, loadNamespace)
+  return await client.replace("/api/v1", t, t.metadata.name, namespace)
 
 proc watch*(client: Client, t: typedesc[Namespace], name: string, namespace = "default"): Future[FutureStream[WatchEv[Namespace]]] {.async.}=
-  return await client.watch("/api/v1", t, name, namespace, loadNamespace)
+  return await client.watch("/api/v1", t, name, namespace)
 
 type
   ResourceQuotaList* = object
@@ -10041,13 +9949,9 @@ proc isEmpty*(self: ResourceQuotaList): bool =
   if not self.`metadata`.isEmpty: return false
   true
 
-proc loadResourceQuotaList(parser: var JsonParser):ResourceQuotaList = 
-  var ret: ResourceQuotaList
-  load(ret,parser)
-  return ret 
 
 proc list*(client: Client, t: typedesc[ResourceQuota], namespace = "default"): Future[seq[ResourceQuota]] {.async.}=
-  return (await client.list("/api/v1", ResourceQuotaList, namespace, loadResourceQuotaList)).items
+  return (await client.list("/api/v1", ResourceQuotaList, namespace)).items
 
 type
   PersistentVolumeClaimList* = object
@@ -10096,13 +10000,9 @@ proc isEmpty*(self: PersistentVolumeClaimList): bool =
   if not self.`metadata`.isEmpty: return false
   true
 
-proc loadPersistentVolumeClaimList(parser: var JsonParser):PersistentVolumeClaimList = 
-  var ret: PersistentVolumeClaimList
-  load(ret,parser)
-  return ret 
 
 proc list*(client: Client, t: typedesc[PersistentVolumeClaim], namespace = "default"): Future[seq[PersistentVolumeClaim]] {.async.}=
-  return (await client.list("/api/v1", PersistentVolumeClaimList, namespace, loadPersistentVolumeClaimList)).items
+  return (await client.list("/api/v1", PersistentVolumeClaimList, namespace)).items
 
 type
   PodList* = object
@@ -10151,13 +10051,9 @@ proc isEmpty*(self: PodList): bool =
   if not self.`metadata`.isEmpty: return false
   true
 
-proc loadPodList(parser: var JsonParser):PodList = 
-  var ret: PodList
-  load(ret,parser)
-  return ret 
 
 proc list*(client: Client, t: typedesc[Pod], namespace = "default"): Future[seq[Pod]] {.async.}=
-  return (await client.list("/api/v1", PodList, namespace, loadPodList)).items
+  return (await client.list("/api/v1", PodList, namespace)).items
 
 type
   ServiceAccount* = object
@@ -10221,25 +10117,21 @@ proc isEmpty*(self: ServiceAccount): bool =
   if not self.`metadata`.isEmpty: return false
   true
 
-proc loadServiceAccount(parser: var JsonParser):ServiceAccount = 
-  var ret: ServiceAccount
-  load(ret,parser)
-  return ret 
 
 proc get*(client: Client, t: typedesc[ServiceAccount], name: string, namespace = "default"): Future[ServiceAccount] {.async.}=
-  return await client.get("/api/v1", t, name, namespace, loadServiceAccount)
+  return await client.get("/api/v1", t, name, namespace)
 
 proc create*(client: Client, t: ServiceAccount, namespace = "default"): Future[ServiceAccount] {.async.}=
-  return await client.create("/api/v1", t, namespace, loadServiceAccount)
+  return await client.create("/api/v1", t, namespace)
 
 proc delete*(client: Client, t: typedesc[ServiceAccount], name: string, namespace = "default") {.async.}=
   await client.delete("/api/v1", t, name, namespace)
 
 proc replace*(client: Client, t: ServiceAccount, namespace = "default"): Future[ServiceAccount] {.async.}=
-  return await client.replace("/api/v1", t, t.metadata.name, namespace, loadServiceAccount)
+  return await client.replace("/api/v1", t, t.metadata.name, namespace)
 
 proc watch*(client: Client, t: typedesc[ServiceAccount], name: string, namespace = "default"): Future[FutureStream[WatchEv[ServiceAccount]]] {.async.}=
-  return await client.watch("/api/v1", t, name, namespace, loadServiceAccount)
+  return await client.watch("/api/v1", t, name, namespace)
 
 type
   ServiceAccountList* = object
@@ -10288,13 +10180,9 @@ proc isEmpty*(self: ServiceAccountList): bool =
   if not self.`metadata`.isEmpty: return false
   true
 
-proc loadServiceAccountList(parser: var JsonParser):ServiceAccountList = 
-  var ret: ServiceAccountList
-  load(ret,parser)
-  return ret 
 
 proc list*(client: Client, t: typedesc[ServiceAccount], namespace = "default"): Future[seq[ServiceAccount]] {.async.}=
-  return (await client.list("/api/v1", ServiceAccountList, namespace, loadServiceAccountList)).items
+  return (await client.list("/api/v1", ServiceAccountList, namespace)).items
 
 type
   ReplicationControllerList* = object
@@ -10343,13 +10231,9 @@ proc isEmpty*(self: ReplicationControllerList): bool =
   if not self.`metadata`.isEmpty: return false
   true
 
-proc loadReplicationControllerList(parser: var JsonParser):ReplicationControllerList = 
-  var ret: ReplicationControllerList
-  load(ret,parser)
-  return ret 
 
 proc list*(client: Client, t: typedesc[ReplicationController], namespace = "default"): Future[seq[ReplicationController]] {.async.}=
-  return (await client.list("/api/v1", ReplicationControllerList, namespace, loadReplicationControllerList)).items
+  return (await client.list("/api/v1", ReplicationControllerList, namespace)).items
 
 type
   EndpointsList* = object
@@ -10398,13 +10282,9 @@ proc isEmpty*(self: EndpointsList): bool =
   if not self.`metadata`.isEmpty: return false
   true
 
-proc loadEndpointsList(parser: var JsonParser):EndpointsList = 
-  var ret: EndpointsList
-  load(ret,parser)
-  return ret 
 
 proc list*(client: Client, t: typedesc[Endpoints], namespace = "default"): Future[seq[Endpoints]] {.async.}=
-  return (await client.list("/api/v1", EndpointsList, namespace, loadEndpointsList)).items
+  return (await client.list("/api/v1", EndpointsList, namespace)).items
 
 type
   NamespaceList* = object
@@ -10453,13 +10333,9 @@ proc isEmpty*(self: NamespaceList): bool =
   if not self.`metadata`.isEmpty: return false
   true
 
-proc loadNamespaceList(parser: var JsonParser):NamespaceList = 
-  var ret: NamespaceList
-  load(ret,parser)
-  return ret 
 
 proc list*(client: Client, t: typedesc[Namespace], namespace = "default"): Future[seq[Namespace]] {.async.}=
-  return (await client.list("/api/v1", NamespaceList, namespace, loadNamespaceList)).items
+  return (await client.list("/api/v1", NamespaceList, namespace)).items
 
 type
   Secret* = object
@@ -10523,25 +10399,21 @@ proc isEmpty*(self: Secret): bool =
   if not self.`metadata`.isEmpty: return false
   true
 
-proc loadSecret(parser: var JsonParser):Secret = 
-  var ret: Secret
-  load(ret,parser)
-  return ret 
 
 proc get*(client: Client, t: typedesc[Secret], name: string, namespace = "default"): Future[Secret] {.async.}=
-  return await client.get("/api/v1", t, name, namespace, loadSecret)
+  return await client.get("/api/v1", t, name, namespace)
 
 proc create*(client: Client, t: Secret, namespace = "default"): Future[Secret] {.async.}=
-  return await client.create("/api/v1", t, namespace, loadSecret)
+  return await client.create("/api/v1", t, namespace)
 
 proc delete*(client: Client, t: typedesc[Secret], name: string, namespace = "default") {.async.}=
   await client.delete("/api/v1", t, name, namespace)
 
 proc replace*(client: Client, t: Secret, namespace = "default"): Future[Secret] {.async.}=
-  return await client.replace("/api/v1", t, t.metadata.name, namespace, loadSecret)
+  return await client.replace("/api/v1", t, t.metadata.name, namespace)
 
 proc watch*(client: Client, t: typedesc[Secret], name: string, namespace = "default"): Future[FutureStream[WatchEv[Secret]]] {.async.}=
-  return await client.watch("/api/v1", t, name, namespace, loadSecret)
+  return await client.watch("/api/v1", t, name, namespace)
 
 type
   SecretList* = object
@@ -10590,10 +10462,6 @@ proc isEmpty*(self: SecretList): bool =
   if not self.`metadata`.isEmpty: return false
   true
 
-proc loadSecretList(parser: var JsonParser):SecretList = 
-  var ret: SecretList
-  load(ret,parser)
-  return ret 
 
 proc list*(client: Client, t: typedesc[Secret], namespace = "default"): Future[seq[Secret]] {.async.}=
-  return (await client.list("/api/v1", SecretList, namespace, loadSecretList)).items
+  return (await client.list("/api/v1", SecretList, namespace)).items

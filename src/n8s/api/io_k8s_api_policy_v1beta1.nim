@@ -683,25 +683,21 @@ proc isEmpty*(self: PodSecurityPolicy): bool =
   if not self.`metadata`.isEmpty: return false
   true
 
-proc loadPodSecurityPolicy(parser: var JsonParser):PodSecurityPolicy = 
-  var ret: PodSecurityPolicy
-  load(ret,parser)
-  return ret 
 
 proc get*(client: Client, t: typedesc[PodSecurityPolicy], name: string, namespace = "default"): Future[PodSecurityPolicy] {.async.}=
-  return await client.get("/apis/policy/v1beta1", t, name, namespace, loadPodSecurityPolicy)
+  return await client.get("/apis/policy/v1beta1", t, name, namespace)
 
 proc create*(client: Client, t: PodSecurityPolicy, namespace = "default"): Future[PodSecurityPolicy] {.async.}=
-  return await client.create("/apis/policy/v1beta1", t, namespace, loadPodSecurityPolicy)
+  return await client.create("/apis/policy/v1beta1", t, namespace)
 
 proc delete*(client: Client, t: typedesc[PodSecurityPolicy], name: string, namespace = "default") {.async.}=
   await client.delete("/apis/policy/v1beta1", t, name, namespace)
 
 proc replace*(client: Client, t: PodSecurityPolicy, namespace = "default"): Future[PodSecurityPolicy] {.async.}=
-  return await client.replace("/apis/policy/v1beta1", t, t.metadata.name, namespace, loadPodSecurityPolicy)
+  return await client.replace("/apis/policy/v1beta1", t, t.metadata.name, namespace)
 
 proc watch*(client: Client, t: typedesc[PodSecurityPolicy], name: string, namespace = "default"): Future[FutureStream[WatchEv[PodSecurityPolicy]]] {.async.}=
-  return await client.watch("/apis/policy/v1beta1", t, name, namespace, loadPodSecurityPolicy)
+  return await client.watch("/apis/policy/v1beta1", t, name, namespace)
 
 type
   PodDisruptionBudgetStatus* = object
@@ -820,25 +816,21 @@ proc isEmpty*(self: PodDisruptionBudget): bool =
   if not self.`metadata`.isEmpty: return false
   true
 
-proc loadPodDisruptionBudget(parser: var JsonParser):PodDisruptionBudget = 
-  var ret: PodDisruptionBudget
-  load(ret,parser)
-  return ret 
 
 proc get*(client: Client, t: typedesc[PodDisruptionBudget], name: string, namespace = "default"): Future[PodDisruptionBudget] {.async.}=
-  return await client.get("/apis/policy/v1beta1", t, name, namespace, loadPodDisruptionBudget)
+  return await client.get("/apis/policy/v1beta1", t, name, namespace)
 
 proc create*(client: Client, t: PodDisruptionBudget, namespace = "default"): Future[PodDisruptionBudget] {.async.}=
-  return await client.create("/apis/policy/v1beta1", t, namespace, loadPodDisruptionBudget)
+  return await client.create("/apis/policy/v1beta1", t, namespace)
 
 proc delete*(client: Client, t: typedesc[PodDisruptionBudget], name: string, namespace = "default") {.async.}=
   await client.delete("/apis/policy/v1beta1", t, name, namespace)
 
 proc replace*(client: Client, t: PodDisruptionBudget, namespace = "default"): Future[PodDisruptionBudget] {.async.}=
-  return await client.replace("/apis/policy/v1beta1", t, t.metadata.name, namespace, loadPodDisruptionBudget)
+  return await client.replace("/apis/policy/v1beta1", t, t.metadata.name, namespace)
 
 proc watch*(client: Client, t: typedesc[PodDisruptionBudget], name: string, namespace = "default"): Future[FutureStream[WatchEv[PodDisruptionBudget]]] {.async.}=
-  return await client.watch("/apis/policy/v1beta1", t, name, namespace, loadPodDisruptionBudget)
+  return await client.watch("/apis/policy/v1beta1", t, name, namespace)
 
 type
   Eviction* = object
@@ -888,25 +880,21 @@ proc isEmpty*(self: Eviction): bool =
   if not self.`metadata`.isEmpty: return false
   true
 
-proc loadEviction(parser: var JsonParser):Eviction = 
-  var ret: Eviction
-  load(ret,parser)
-  return ret 
 
 proc get*(client: Client, t: typedesc[Eviction], name: string, namespace = "default"): Future[Eviction] {.async.}=
-  return await client.get("/apis/policy/v1beta1", t, name, namespace, loadEviction)
+  return await client.get("/apis/policy/v1beta1", t, name, namespace)
 
 proc create*(client: Client, t: Eviction, namespace = "default"): Future[Eviction] {.async.}=
-  return await client.create("/apis/policy/v1beta1", t, namespace, loadEviction)
+  return await client.create("/apis/policy/v1beta1", t, namespace)
 
 proc delete*(client: Client, t: typedesc[Eviction], name: string, namespace = "default") {.async.}=
   await client.delete("/apis/policy/v1beta1", t, name, namespace)
 
 proc replace*(client: Client, t: Eviction, namespace = "default"): Future[Eviction] {.async.}=
-  return await client.replace("/apis/policy/v1beta1", t, t.metadata.name, namespace, loadEviction)
+  return await client.replace("/apis/policy/v1beta1", t, t.metadata.name, namespace)
 
 proc watch*(client: Client, t: typedesc[Eviction], name: string, namespace = "default"): Future[FutureStream[WatchEv[Eviction]]] {.async.}=
-  return await client.watch("/apis/policy/v1beta1", t, name, namespace, loadEviction)
+  return await client.watch("/apis/policy/v1beta1", t, name, namespace)
 
 type
   PodDisruptionBudgetList* = object
@@ -955,13 +943,9 @@ proc isEmpty*(self: PodDisruptionBudgetList): bool =
   if not self.`metadata`.isEmpty: return false
   true
 
-proc loadPodDisruptionBudgetList(parser: var JsonParser):PodDisruptionBudgetList = 
-  var ret: PodDisruptionBudgetList
-  load(ret,parser)
-  return ret 
 
 proc list*(client: Client, t: typedesc[PodDisruptionBudget], namespace = "default"): Future[seq[PodDisruptionBudget]] {.async.}=
-  return (await client.list("/apis/policy/v1beta1", PodDisruptionBudgetList, namespace, loadPodDisruptionBudgetList)).items
+  return (await client.list("/apis/policy/v1beta1", PodDisruptionBudgetList, namespace)).items
 
 type
   PodSecurityPolicyList* = object
@@ -1010,10 +994,6 @@ proc isEmpty*(self: PodSecurityPolicyList): bool =
   if not self.`metadata`.isEmpty: return false
   true
 
-proc loadPodSecurityPolicyList(parser: var JsonParser):PodSecurityPolicyList = 
-  var ret: PodSecurityPolicyList
-  load(ret,parser)
-  return ret 
 
 proc list*(client: Client, t: typedesc[PodSecurityPolicy], namespace = "default"): Future[seq[PodSecurityPolicy]] {.async.}=
-  return (await client.list("/apis/policy/v1beta1", PodSecurityPolicyList, namespace, loadPodSecurityPolicyList)).items
+  return (await client.list("/apis/policy/v1beta1", PodSecurityPolicyList, namespace)).items

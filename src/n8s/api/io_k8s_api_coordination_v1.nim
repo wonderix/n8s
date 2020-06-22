@@ -112,25 +112,21 @@ proc isEmpty*(self: Lease): bool =
   if not self.`metadata`.isEmpty: return false
   true
 
-proc loadLease(parser: var JsonParser):Lease = 
-  var ret: Lease
-  load(ret,parser)
-  return ret 
 
 proc get*(client: Client, t: typedesc[Lease], name: string, namespace = "default"): Future[Lease] {.async.}=
-  return await client.get("/apis/coordination.k8s.io/v1", t, name, namespace, loadLease)
+  return await client.get("/apis/coordination.k8s.io/v1", t, name, namespace)
 
 proc create*(client: Client, t: Lease, namespace = "default"): Future[Lease] {.async.}=
-  return await client.create("/apis/coordination.k8s.io/v1", t, namespace, loadLease)
+  return await client.create("/apis/coordination.k8s.io/v1", t, namespace)
 
 proc delete*(client: Client, t: typedesc[Lease], name: string, namespace = "default") {.async.}=
   await client.delete("/apis/coordination.k8s.io/v1", t, name, namespace)
 
 proc replace*(client: Client, t: Lease, namespace = "default"): Future[Lease] {.async.}=
-  return await client.replace("/apis/coordination.k8s.io/v1", t, t.metadata.name, namespace, loadLease)
+  return await client.replace("/apis/coordination.k8s.io/v1", t, t.metadata.name, namespace)
 
 proc watch*(client: Client, t: typedesc[Lease], name: string, namespace = "default"): Future[FutureStream[WatchEv[Lease]]] {.async.}=
-  return await client.watch("/apis/coordination.k8s.io/v1", t, name, namespace, loadLease)
+  return await client.watch("/apis/coordination.k8s.io/v1", t, name, namespace)
 
 type
   LeaseList* = object
@@ -179,10 +175,6 @@ proc isEmpty*(self: LeaseList): bool =
   if not self.`metadata`.isEmpty: return false
   true
 
-proc loadLeaseList(parser: var JsonParser):LeaseList = 
-  var ret: LeaseList
-  load(ret,parser)
-  return ret 
 
 proc list*(client: Client, t: typedesc[Lease], namespace = "default"): Future[seq[Lease]] {.async.}=
-  return (await client.list("/apis/coordination.k8s.io/v1", LeaseList, namespace, loadLeaseList)).items
+  return (await client.list("/apis/coordination.k8s.io/v1", LeaseList, namespace)).items

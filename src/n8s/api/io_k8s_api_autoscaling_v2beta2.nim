@@ -823,25 +823,21 @@ proc isEmpty*(self: HorizontalPodAutoscaler): bool =
   if not self.`metadata`.isEmpty: return false
   true
 
-proc loadHorizontalPodAutoscaler(parser: var JsonParser):HorizontalPodAutoscaler = 
-  var ret: HorizontalPodAutoscaler
-  load(ret,parser)
-  return ret 
 
 proc get*(client: Client, t: typedesc[HorizontalPodAutoscaler], name: string, namespace = "default"): Future[HorizontalPodAutoscaler] {.async.}=
-  return await client.get("/apis/autoscaling/v2beta2", t, name, namespace, loadHorizontalPodAutoscaler)
+  return await client.get("/apis/autoscaling/v2beta2", t, name, namespace)
 
 proc create*(client: Client, t: HorizontalPodAutoscaler, namespace = "default"): Future[HorizontalPodAutoscaler] {.async.}=
-  return await client.create("/apis/autoscaling/v2beta2", t, namespace, loadHorizontalPodAutoscaler)
+  return await client.create("/apis/autoscaling/v2beta2", t, namespace)
 
 proc delete*(client: Client, t: typedesc[HorizontalPodAutoscaler], name: string, namespace = "default") {.async.}=
   await client.delete("/apis/autoscaling/v2beta2", t, name, namespace)
 
 proc replace*(client: Client, t: HorizontalPodAutoscaler, namespace = "default"): Future[HorizontalPodAutoscaler] {.async.}=
-  return await client.replace("/apis/autoscaling/v2beta2", t, t.metadata.name, namespace, loadHorizontalPodAutoscaler)
+  return await client.replace("/apis/autoscaling/v2beta2", t, t.metadata.name, namespace)
 
 proc watch*(client: Client, t: typedesc[HorizontalPodAutoscaler], name: string, namespace = "default"): Future[FutureStream[WatchEv[HorizontalPodAutoscaler]]] {.async.}=
-  return await client.watch("/apis/autoscaling/v2beta2", t, name, namespace, loadHorizontalPodAutoscaler)
+  return await client.watch("/apis/autoscaling/v2beta2", t, name, namespace)
 
 type
   HorizontalPodAutoscalerList* = object
@@ -890,10 +886,6 @@ proc isEmpty*(self: HorizontalPodAutoscalerList): bool =
   if not self.`metadata`.isEmpty: return false
   true
 
-proc loadHorizontalPodAutoscalerList(parser: var JsonParser):HorizontalPodAutoscalerList = 
-  var ret: HorizontalPodAutoscalerList
-  load(ret,parser)
-  return ret 
 
 proc list*(client: Client, t: typedesc[HorizontalPodAutoscaler], namespace = "default"): Future[seq[HorizontalPodAutoscaler]] {.async.}=
-  return (await client.list("/apis/autoscaling/v2beta2", HorizontalPodAutoscalerList, namespace, loadHorizontalPodAutoscalerList)).items
+  return (await client.list("/apis/autoscaling/v2beta2", HorizontalPodAutoscalerList, namespace)).items

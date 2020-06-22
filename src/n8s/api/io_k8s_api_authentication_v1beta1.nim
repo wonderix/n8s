@@ -202,22 +202,18 @@ proc isEmpty*(self: TokenReview): bool =
   if not self.`metadata`.isEmpty: return false
   true
 
-proc loadTokenReview(parser: var JsonParser):TokenReview = 
-  var ret: TokenReview
-  load(ret,parser)
-  return ret 
 
 proc get*(client: Client, t: typedesc[TokenReview], name: string, namespace = "default"): Future[TokenReview] {.async.}=
-  return await client.get("/apis/authentication.k8s.io/v1beta1", t, name, namespace, loadTokenReview)
+  return await client.get("/apis/authentication.k8s.io/v1beta1", t, name, namespace)
 
 proc create*(client: Client, t: TokenReview, namespace = "default"): Future[TokenReview] {.async.}=
-  return await client.create("/apis/authentication.k8s.io/v1beta1", t, namespace, loadTokenReview)
+  return await client.create("/apis/authentication.k8s.io/v1beta1", t, namespace)
 
 proc delete*(client: Client, t: typedesc[TokenReview], name: string, namespace = "default") {.async.}=
   await client.delete("/apis/authentication.k8s.io/v1beta1", t, name, namespace)
 
 proc replace*(client: Client, t: TokenReview, namespace = "default"): Future[TokenReview] {.async.}=
-  return await client.replace("/apis/authentication.k8s.io/v1beta1", t, t.metadata.name, namespace, loadTokenReview)
+  return await client.replace("/apis/authentication.k8s.io/v1beta1", t, t.metadata.name, namespace)
 
 proc watch*(client: Client, t: typedesc[TokenReview], name: string, namespace = "default"): Future[FutureStream[WatchEv[TokenReview]]] {.async.}=
-  return await client.watch("/apis/authentication.k8s.io/v1beta1", t, name, namespace, loadTokenReview)
+  return await client.watch("/apis/authentication.k8s.io/v1beta1", t, name, namespace)

@@ -263,25 +263,21 @@ proc isEmpty*(self: APIService): bool =
   if not self.`metadata`.isEmpty: return false
   true
 
-proc loadAPIService(parser: var JsonParser):APIService = 
-  var ret: APIService
-  load(ret,parser)
-  return ret 
 
 proc get*(client: Client, t: typedesc[APIService], name: string, namespace = "default"): Future[APIService] {.async.}=
-  return await client.get("/apis/apiregistration.k8s.io/v1", t, name, namespace, loadAPIService)
+  return await client.get("/apis/apiregistration.k8s.io/v1", t, name, namespace)
 
 proc create*(client: Client, t: APIService, namespace = "default"): Future[APIService] {.async.}=
-  return await client.create("/apis/apiregistration.k8s.io/v1", t, namespace, loadAPIService)
+  return await client.create("/apis/apiregistration.k8s.io/v1", t, namespace)
 
 proc delete*(client: Client, t: typedesc[APIService], name: string, namespace = "default") {.async.}=
   await client.delete("/apis/apiregistration.k8s.io/v1", t, name, namespace)
 
 proc replace*(client: Client, t: APIService, namespace = "default"): Future[APIService] {.async.}=
-  return await client.replace("/apis/apiregistration.k8s.io/v1", t, t.metadata.name, namespace, loadAPIService)
+  return await client.replace("/apis/apiregistration.k8s.io/v1", t, t.metadata.name, namespace)
 
 proc watch*(client: Client, t: typedesc[APIService], name: string, namespace = "default"): Future[FutureStream[WatchEv[APIService]]] {.async.}=
-  return await client.watch("/apis/apiregistration.k8s.io/v1", t, name, namespace, loadAPIService)
+  return await client.watch("/apis/apiregistration.k8s.io/v1", t, name, namespace)
 
 type
   APIServiceList* = object
@@ -330,10 +326,6 @@ proc isEmpty*(self: APIServiceList): bool =
   if not self.`metadata`.isEmpty: return false
   true
 
-proc loadAPIServiceList(parser: var JsonParser):APIServiceList = 
-  var ret: APIServiceList
-  load(ret,parser)
-  return ret 
 
 proc list*(client: Client, t: typedesc[APIService], namespace = "default"): Future[seq[APIService]] {.async.}=
-  return (await client.list("/apis/apiregistration.k8s.io/v1", APIServiceList, namespace, loadAPIServiceList)).items
+  return (await client.list("/apis/apiregistration.k8s.io/v1", APIServiceList, namespace)).items

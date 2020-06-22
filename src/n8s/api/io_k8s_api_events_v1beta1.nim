@@ -186,25 +186,21 @@ proc isEmpty*(self: Event): bool =
   if not self.`metadata`.isEmpty: return false
   true
 
-proc loadEvent(parser: var JsonParser):Event = 
-  var ret: Event
-  load(ret,parser)
-  return ret 
 
 proc get*(client: Client, t: typedesc[Event], name: string, namespace = "default"): Future[Event] {.async.}=
-  return await client.get("/apis/events.k8s.io/v1beta1", t, name, namespace, loadEvent)
+  return await client.get("/apis/events.k8s.io/v1beta1", t, name, namespace)
 
 proc create*(client: Client, t: Event, namespace = "default"): Future[Event] {.async.}=
-  return await client.create("/apis/events.k8s.io/v1beta1", t, namespace, loadEvent)
+  return await client.create("/apis/events.k8s.io/v1beta1", t, namespace)
 
 proc delete*(client: Client, t: typedesc[Event], name: string, namespace = "default") {.async.}=
   await client.delete("/apis/events.k8s.io/v1beta1", t, name, namespace)
 
 proc replace*(client: Client, t: Event, namespace = "default"): Future[Event] {.async.}=
-  return await client.replace("/apis/events.k8s.io/v1beta1", t, t.metadata.name, namespace, loadEvent)
+  return await client.replace("/apis/events.k8s.io/v1beta1", t, t.metadata.name, namespace)
 
 proc watch*(client: Client, t: typedesc[Event], name: string, namespace = "default"): Future[FutureStream[WatchEv[Event]]] {.async.}=
-  return await client.watch("/apis/events.k8s.io/v1beta1", t, name, namespace, loadEvent)
+  return await client.watch("/apis/events.k8s.io/v1beta1", t, name, namespace)
 
 type
   EventList* = object
@@ -253,10 +249,6 @@ proc isEmpty*(self: EventList): bool =
   if not self.`metadata`.isEmpty: return false
   true
 
-proc loadEventList(parser: var JsonParser):EventList = 
-  var ret: EventList
-  load(ret,parser)
-  return ret 
 
 proc list*(client: Client, t: typedesc[Event], namespace = "default"): Future[seq[Event]] {.async.}=
-  return (await client.list("/apis/events.k8s.io/v1beta1", EventList, namespace, loadEventList)).items
+  return (await client.list("/apis/events.k8s.io/v1beta1", EventList, namespace)).items

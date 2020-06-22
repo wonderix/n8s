@@ -96,25 +96,21 @@ proc isEmpty*(self: StorageClass): bool =
   if not self.`metadata`.isEmpty: return false
   true
 
-proc loadStorageClass(parser: var JsonParser):StorageClass = 
-  var ret: StorageClass
-  load(ret,parser)
-  return ret 
 
 proc get*(client: Client, t: typedesc[StorageClass], name: string, namespace = "default"): Future[StorageClass] {.async.}=
-  return await client.get("/apis/storage.k8s.io/v1", t, name, namespace, loadStorageClass)
+  return await client.get("/apis/storage.k8s.io/v1", t, name, namespace)
 
 proc create*(client: Client, t: StorageClass, namespace = "default"): Future[StorageClass] {.async.}=
-  return await client.create("/apis/storage.k8s.io/v1", t, namespace, loadStorageClass)
+  return await client.create("/apis/storage.k8s.io/v1", t, namespace)
 
 proc delete*(client: Client, t: typedesc[StorageClass], name: string, namespace = "default") {.async.}=
   await client.delete("/apis/storage.k8s.io/v1", t, name, namespace)
 
 proc replace*(client: Client, t: StorageClass, namespace = "default"): Future[StorageClass] {.async.}=
-  return await client.replace("/apis/storage.k8s.io/v1", t, t.metadata.name, namespace, loadStorageClass)
+  return await client.replace("/apis/storage.k8s.io/v1", t, t.metadata.name, namespace)
 
 proc watch*(client: Client, t: typedesc[StorageClass], name: string, namespace = "default"): Future[FutureStream[WatchEv[StorageClass]]] {.async.}=
-  return await client.watch("/apis/storage.k8s.io/v1", t, name, namespace, loadStorageClass)
+  return await client.watch("/apis/storage.k8s.io/v1", t, name, namespace)
 
 type
   StorageClassList* = object
@@ -163,13 +159,9 @@ proc isEmpty*(self: StorageClassList): bool =
   if not self.`metadata`.isEmpty: return false
   true
 
-proc loadStorageClassList(parser: var JsonParser):StorageClassList = 
-  var ret: StorageClassList
-  load(ret,parser)
-  return ret 
 
 proc list*(client: Client, t: typedesc[StorageClass], namespace = "default"): Future[seq[StorageClass]] {.async.}=
-  return (await client.list("/apis/storage.k8s.io/v1", StorageClassList, namespace, loadStorageClassList)).items
+  return (await client.list("/apis/storage.k8s.io/v1", StorageClassList, namespace)).items
 
 type
   VolumeAttachmentSource* = object
@@ -394,25 +386,21 @@ proc isEmpty*(self: VolumeAttachment): bool =
   if not self.`metadata`.isEmpty: return false
   true
 
-proc loadVolumeAttachment(parser: var JsonParser):VolumeAttachment = 
-  var ret: VolumeAttachment
-  load(ret,parser)
-  return ret 
 
 proc get*(client: Client, t: typedesc[VolumeAttachment], name: string, namespace = "default"): Future[VolumeAttachment] {.async.}=
-  return await client.get("/apis/storage.k8s.io/v1", t, name, namespace, loadVolumeAttachment)
+  return await client.get("/apis/storage.k8s.io/v1", t, name, namespace)
 
 proc create*(client: Client, t: VolumeAttachment, namespace = "default"): Future[VolumeAttachment] {.async.}=
-  return await client.create("/apis/storage.k8s.io/v1", t, namespace, loadVolumeAttachment)
+  return await client.create("/apis/storage.k8s.io/v1", t, namespace)
 
 proc delete*(client: Client, t: typedesc[VolumeAttachment], name: string, namespace = "default") {.async.}=
   await client.delete("/apis/storage.k8s.io/v1", t, name, namespace)
 
 proc replace*(client: Client, t: VolumeAttachment, namespace = "default"): Future[VolumeAttachment] {.async.}=
-  return await client.replace("/apis/storage.k8s.io/v1", t, t.metadata.name, namespace, loadVolumeAttachment)
+  return await client.replace("/apis/storage.k8s.io/v1", t, t.metadata.name, namespace)
 
 proc watch*(client: Client, t: typedesc[VolumeAttachment], name: string, namespace = "default"): Future[FutureStream[WatchEv[VolumeAttachment]]] {.async.}=
-  return await client.watch("/apis/storage.k8s.io/v1", t, name, namespace, loadVolumeAttachment)
+  return await client.watch("/apis/storage.k8s.io/v1", t, name, namespace)
 
 type
   VolumeAttachmentList* = object
@@ -461,10 +449,6 @@ proc isEmpty*(self: VolumeAttachmentList): bool =
   if not self.`metadata`.isEmpty: return false
   true
 
-proc loadVolumeAttachmentList(parser: var JsonParser):VolumeAttachmentList = 
-  var ret: VolumeAttachmentList
-  load(ret,parser)
-  return ret 
 
 proc list*(client: Client, t: typedesc[VolumeAttachment], namespace = "default"): Future[seq[VolumeAttachment]] {.async.}=
-  return (await client.list("/apis/storage.k8s.io/v1", VolumeAttachmentList, namespace, loadVolumeAttachmentList)).items
+  return (await client.list("/apis/storage.k8s.io/v1", VolumeAttachmentList, namespace)).items
