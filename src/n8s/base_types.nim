@@ -28,7 +28,7 @@ proc constructObject*( s: var YamlStream, c: ConstructionContext, result: var By
     except ValueError:
       raise newException(YamlConstructionError,"error")
 
-proc representObject*(value: ByteArray, ts: TagStyle, c: SerializationContext, tag: TagId) {.raises: [].} =
+proc representObject*(value: ByteArray, ts: TagStyle, c: SerializationContext, tag: Tag) {.raises: [].} =
   ## represents an integer value as YAML scalar
   c.put(scalarEvent(encode(string(value)), tag, yAnchorNone))
 

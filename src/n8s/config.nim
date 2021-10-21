@@ -85,9 +85,9 @@ proc constructObject*( s: var YamlStream, c: ConstructionContext, result: var Ac
     
 
 
-proc representObject*(value: Account, ts: TagStyle, c: SerializationContext, tag: TagId) {.raises: [].} =
+proc representObject*(value: Account, ts: TagStyle, c: SerializationContext, tag: Tag) {.raises: [].} =
   ## represents an integer value as YAML scalar
-  c.put(startMapEvent(tag))
+  c.put(startMapEvent(tag = tag))
   let childTagStyle = if ts == tsRootOnly: tsNone else: ts
   case value.kind:
     of akToken:
@@ -105,7 +105,7 @@ proc representObject*(value: Account, ts: TagStyle, c: SerializationContext, tag
         representChild(value.password, childTagStyle, c)
   c.put(endMapEvent())
 
-setDefaultValue(Config, preferences, Table[string,string]())
+# setDefaultValue(Config, preferences, Table[string,string]())
 
 proc authHeaders*(self: Account): HttpHeaders =
     case self.kind:
